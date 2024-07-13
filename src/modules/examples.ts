@@ -1,6 +1,5 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
-import { getPref } from "../utils/prefs";
 
 function example(
   target: any,
@@ -191,53 +190,27 @@ export class UIExampleFactory {
     });
   }
 
-  static getDisplayTitle(item: Zotero.Item): string {
-        const rawTitle = item.getField('title')
-        const extra = item.getField('extra').split('\n')
-        const mappingItems = extra.map(i=>i.split(':', 2)).filter(i=>i.length===2)
-        const mapping = Object.fromEntries(mappingItems)
-        const translatedTitle = mapping['titleTranslation']
-        const finalTitle = translatedTitle ?? rawTitle
-        const tagNames = item.getTags().map(i=>i.tag).filter(i=>i.startsWith('⭐'))
-        const stars = (tagNames.length === 1) ? tagNames[0] : ''
-        return `${stars}${finalTitle}`
+  static getCategorialTagsColumn(item: Zotero.Item): string {
+    return  item.getTags()
+      .map(i=>i.tag).filter(i=>i.startsWith('#'))
+      .map(i=>i.split('#', 2)).filter(i=>i.length === 2).map(i=>i[1])
+      .map(i=>i.split('/', 2)).filter(i=>i.length === 2)
+      .sort((v1,v2)=>v1[0] > v2[0] ? 1 : -1)
+      .map(i=>i[1])
+      .join(' ')
   }
 
 
   @example
   static async registerExtraColumn() {
-    const rawGetDisplayTitle = Zotero.Item.prototype.getDisplayTitle
-    const newGetDisplayTitle = function() {
-      return UIExampleFactory.getDisplayTitle(this)
-    }
-
-    if (addon.data.env === 'development'){
-      await Zotero.ItemTreeManager.registerColumns({
-        pluginID: config.addonID,
-        dataKey: 'hashtag-tags',
-        label: getString( "hashtag-tags-column-name"),
-        dataProvider: (item: Zotero.Item, dataKey: string) => {
-          return item.getTags().map(i=>i.tag).filter(i=>i.startsWith('#')).map(i=>i.split('/').slice(-1)).sort().join(' ')
-        },
-      });
-
-
-      await Zotero.ItemTreeManager.registerColumns({
-        pluginID: config.addonID,
-        dataKey: 'better-title',
-        label: 'Better Title',
-        dataProvider: (item: Zotero.Item, dataKey: string) => {
-          return UIExampleFactory.getDisplayTitle(item)
-        },
-      });
-    }
-
-
-
-
-    if (getPref('enable-title') ?? true){
-      Zotero.Item.prototype.getDisplayTitle = newGetDisplayTitle
-    }
+    await Zotero.ItemTreeManager.registerColumns({
+      pluginID: config.addonID,
+      dataKey: 'categorial-tags',
+      label: getString( 'categorial-tags-column-name'),
+      dataProvider: (item: Zotero.Item, dataKey: string) => {
+        return UIExampleFactory.getCategorialTagsColumn(item)
+      },
+    });
   }
 
 
