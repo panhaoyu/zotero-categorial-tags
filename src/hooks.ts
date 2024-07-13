@@ -3,7 +3,7 @@ import {
   HelperExampleFactory,
   KeyExampleFactory,
   PromptExampleFactory,
-  UIExampleFactory,
+  UIExampleFactory
 } from "./modules/examples";
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
@@ -11,6 +11,17 @@ import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
 
 async function onStartup() {
+  await Promise.all([
+    Zotero.initializationPromise,
+    Zotero.unlockPromise,
+    Zotero.uiReadyPromise,
+  ]);
+  initLocale()
+
+  await UIExampleFactory.registerExtraColumn()
+  await BasicExampleFactory.registerPrefs()
+}
+async function onStartupBak() {
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,

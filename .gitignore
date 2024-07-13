@@ -6,3 +6,5 @@ yarn.lock
 zotero-cmd.json
 .DS_Store
 .env
+/.idea
+/data
