@@ -888,11 +888,11 @@ export class HelperExampleFactory {
   static clipboardExample() {
     new ztoolkit.Clipboard()
       .addText(
-        "![Plugin Template](https://github.com/panhaoyu/Zotero-Title)",
+        "![Plugin Template](https://github.com/panhaoyu/zotero-categorial-tags)",
         "text/unicode",
       )
       .addText(
-        '<a href="https://github.com/panhaoyu/Zotero-Title">Plugin Template</a>',
+        '<a href="https://github.com/panhaoyu/zotero-categorial-tags">Plugin Template</a>',
         "text/html",
       )
       .copy();

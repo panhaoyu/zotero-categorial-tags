@@ -1,7 +1,7 @@
 {
-  "name": "zotero-title",
+  "name": "zotero-cateogrial-tags",
   "version": "0.0.23",
-  "description": "Show better and configurable zotero title column.",
+  "description": "Manage tags better by categorizing the tags.",
   "config": {
     "addonName": "Zotero Categorial Tags",
     "addonID": "categorialtags@panhaoyu.com",
@@ -11,13 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/panhaoyu/Zotero-Title.git"
+    "url": "git+https://github.com/panhaoyu/zotero-categorial-tags.git"
   },
   "author": "panhaoyu",
   "bugs": {
-    "url": "https://github.com/panhaoyu/Zotero-Title/issues"
+    "url": "https://github.com/panhaoyu/zotero-categorial-tags/issues"
   },
-  "homepage": "https://github.com/panhaoyu/Zotero-Title#readme",
+  "homepage": "https://github.com/panhaoyu/zotero-categorial-tags#readme",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "start": "zotero-plugin serve",
