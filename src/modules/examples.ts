@@ -132,6 +132,12 @@ export class KeyExampleFactory {
       }
       ]
     });
+    dialog.addButton("Confirm", "close-button", {
+      noClose: false, callback: ev => {
+        ztoolkit.log("Confirmed!");
+      }
+    });
+    dialog.addButton("Cancel", "close-button", { noClose: false });
     dialog.open("Tags", { centerscreen: true, fitContent: true });
   }
 }
