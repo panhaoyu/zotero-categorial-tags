@@ -93,7 +93,6 @@ export class KeyExampleFactory {
     });
   }
 
-  @example
   static exampleShortcutOpenTagsTabCallback() {
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length !== 1) {
@@ -109,19 +108,22 @@ export class KeyExampleFactory {
     });
     const dialog = new ztoolkit.Dialog(2, 1);
     dialog.addCell(0, 0, {
-      tag: "div", listeners: [{
-        type: "keyup", options: { capture: true }, listener: (evt: KeyboardEvent) => {
-          ztoolkit.log(123);
-        }
-      }], children: [{
+      tag: "div", children: [{
         tag: "table", children: [{
-          tag: "tbody", children: Object.entries(mapping).map(([k, v]) => ({
+          tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagNames]) => ({
             tag: "tr",
             children: [
-              { tag: "th", properties: { innerText: k } },
+              { tag: "th", properties: { innerText: categoryName } },
               {
-                tag: "td", children: v.map(v2 => ({
-                  tag: "span", properties: { innerText: v2 }, styles: { marginLeft: "4px", background: "#e5beff" }
+                tag: "td", children: tagNames.map(tagName => ({
+                  tag: "span", properties: { innerText: tagName }, styles: { marginLeft: "4px", background: "#e5beff" },
+                  listeners: [{
+                    type: "click", listener: (evt: MouseEvent) => {
+                      const tagString = `#${categoryName}/${tagName}`;
+                      ztoolkit.log(tagString as any);
+                      dialog.unregisterAll();
+                    }
+                  }]
                 }))
               }
             ]
