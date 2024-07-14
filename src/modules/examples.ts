@@ -86,26 +86,11 @@ export class BasicExampleFactory {
 export class KeyExampleFactory {
   @example
   static registerShortcuts() {
-    // Register an event key for Alt+L
     ztoolkit.Keyboard.register((ev, keyOptions) => {
-      // ztoolkit.log(ev, keyOptions.keyboard);
-      // if (keyOptions.keyboard?.equals("shift,l")) {
-      //   addon.hooks.onShortcuts("larger");
-      // }
-      // if (ev.shiftKey && ev.key === "S") {
-      //   addon.hooks.onShortcuts("smaller");
-      // }
-      if (ev.ctrlKey && ev.key === "T") {
+      if (ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
         addon.hooks.onShortcuts("open-tag-tab");
       }
     });
-
-    // new ztoolkit.ProgressWindow(config.addonName)
-    //   .createLine({
-    //     text: "Example Shortcuts: Alt+L/S/C",
-    //     type: "success"
-    //   })
-    //   .show();
   }
 
   // @example
