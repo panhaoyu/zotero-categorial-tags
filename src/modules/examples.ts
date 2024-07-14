@@ -107,11 +107,30 @@ export class KeyExampleFactory {
       mapping[k] ??= [];
       mapping[k].push(v);
     });
-    const tagsLines = Object.entries(mapping).map(([k, v]) => `${k}: ${v.join(" ")}`);
-    new ztoolkit.Dialog(3, 3)
-      .addCell(0, 0, { tag: "h1", properties: { innerHTML: "Tags1:" } })
-      .addCell(1, 0, { tag: "p", properties: { innerHTML: tagsLines.join('<br/>') } })
-      .open("Tags", { width: 800, height: 600, centerscreen: true });
+    const dialog = new ztoolkit.Dialog(2, 1);
+    dialog.addCell(0, 0, {
+      tag: "div", listeners: [{
+        type: "keyup", options: { capture: true }, listener: (evt: KeyboardEvent) => {
+          ztoolkit.log(123);
+        }
+      }], children: [{
+        tag: "table", children: [{
+          tag: "tbody", children: Object.entries(mapping).map(([k, v]) => ({
+            tag: "tr",
+            children: [
+              { tag: "th", properties: { innerText: k } },
+              {
+                tag: "td", children: v.map(v2 => ({
+                  tag: "span", properties: { innerText: v2 }, styles: { marginLeft: "4px", background: "#e5beff" }
+                }))
+              }
+            ]
+          }))
+        }]
+      }
+      ]
+    });
+    dialog.open("Tags", { centerscreen: true, fitContent: true });
   }
 }
 
