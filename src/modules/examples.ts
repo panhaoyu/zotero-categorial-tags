@@ -95,12 +95,9 @@ export class KeyExampleFactory {
 
   @example
   static exampleShortcutOpenTagsTabCallback() {
-    new ztoolkit.ProgressWindow(config.addonName)
-      .createLine({
-        text: "Open tags!",
-        type: "default"
-      })
-      .show();
+    new ztoolkit.Dialog(3, 3)
+      .addCell(0, 0, { tag: "h1", properties: { innerHTML: "Tags1:" } })
+      .open("Tags", { width: 800, height: 600, centerscreen: true });
   }
 }
 
