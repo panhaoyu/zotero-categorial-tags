@@ -20,6 +20,7 @@ async function onStartup() {
 
   await UIExampleFactory.registerExtraColumn();
   await BasicExampleFactory.registerPrefs();
+  KeyExampleFactory.registerShortcuts();
 }
 
 async function onStartupBak() {
