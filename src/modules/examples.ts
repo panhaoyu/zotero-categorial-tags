@@ -95,8 +95,22 @@ export class KeyExampleFactory {
 
   @example
   static exampleShortcutOpenTagsTabCallback() {
+    const selections = ZoteroPane.getSelectedItems();
+    if (selections.length !== 1) {
+      new ztoolkit.ProgressWindow("Tags manager only supports exactly 1 item").show();
+      return;
+    }
+    const selection = selections[0];
+    const tags = UIExampleFactory.getCategorialTags(selection);
+    const mapping: { [key: string]: string[] } = {};
+    tags.forEach(([k, v]) => {
+      mapping[k] ??= [];
+      mapping[k].push(v);
+    });
+    const tagsLines = Object.entries(mapping).map(([k, v]) => `${k}: ${v.join(" ")}`);
     new ztoolkit.Dialog(3, 3)
       .addCell(0, 0, { tag: "h1", properties: { innerHTML: "Tags1:" } })
+      .addCell(1, 0, { tag: "p", properties: { innerHTML: tagsLines.join('<br/>') } })
       .open("Tags", { width: 800, height: 600, centerscreen: true });
   }
 }
@@ -165,14 +179,16 @@ export class UIExampleFactory {
     });
   }
 
-  static getCategorialTagsColumn(item: Zotero.Item): string {
+  static getCategorialTags(item: Zotero.Item): [string, string][] {
     return item.getTags()
       .map(i => i.tag).filter(i => i.startsWith("#"))
       .map(i => i.split("#", 2)).filter(i => i.length === 2).map(i => i[1])
       .map(i => i.split("/", 2)).filter(i => i.length === 2)
-      .sort((v1, v2) => v1[0] > v2[0] ? 1 : -1)
-      .map(i => i[1])
-      .join(" ");
+      .sort((v1, v2) => v1[0] > v2[0] ? 1 : -1);
+  }
+
+  static getCategorialTagsColumn(item: Zotero.Item): string {
+    return UIExampleFactory.getCategorialTags(item).map(i => i[1]).join(" ");
   }
 
 
