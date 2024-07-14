@@ -14,18 +14,19 @@ async function onStartup() {
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
-    Zotero.uiReadyPromise,
+    Zotero.uiReadyPromise
   ]);
-  initLocale()
+  initLocale();
 
-  await UIExampleFactory.registerExtraColumn()
-  await BasicExampleFactory.registerPrefs()
+  await UIExampleFactory.registerExtraColumn();
+  await BasicExampleFactory.registerPrefs();
 }
+
 async function onStartupBak() {
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
-    Zotero.uiReadyPromise,
+    Zotero.uiReadyPromise
   ]);
 
   initLocale();
@@ -56,19 +57,19 @@ async function onMainWindowLoad(win: Window): Promise<void> {
 
   const popupWin = new ztoolkit.ProgressWindow(config.addonName, {
     closeOnClick: true,
-    closeTime: -1,
+    closeTime: -1
   })
     .createLine({
       text: getString("startup-begin"),
       type: "default",
-      progress: 0,
+      progress: 0
     })
     .show();
 
   await Zotero.Promise.delay(1000);
   popupWin.changeLine({
     progress: 30,
-    text: `[30%] ${getString("startup-begin")}`,
+    text: `[30%] ${getString("startup-begin")}`
   });
 
   UIExampleFactory.registerStyleSheet();
@@ -91,7 +92,7 @@ async function onMainWindowLoad(win: Window): Promise<void> {
 
   popupWin.changeLine({
     progress: 100,
-    text: `[100%] ${getString("startup-finish")}`,
+    text: `[100%] ${getString("startup-finish")}`
   });
   popupWin.startCloseTimer(5000);
 
@@ -119,7 +120,7 @@ async function onNotify(
   event: string,
   type: string,
   ids: Array<string | number>,
-  extraData: { [key: string]: any },
+  extraData: { [key: string]: any }
 ) {
   // You can add your code to the corresponding notify type
   ztoolkit.log("notify", event, type, ids, extraData);
@@ -152,11 +153,14 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 
 function onShortcuts(type: string) {
   switch (type) {
-    case "larger":
-      KeyExampleFactory.exampleShortcutLargerCallback();
-      break;
-    case "smaller":
-      KeyExampleFactory.exampleShortcutSmallerCallback();
+    // case "larger":
+    //   KeyExampleFactory.exampleShortcutLargerCallback();
+    //   break;
+    // case "smaller":
+    //   KeyExampleFactory.exampleShortcutSmallerCallback();
+    //   break;
+    case "open-tag-tab":
+      KeyExampleFactory.exampleShortcutOpenTagsTabCallback();
       break;
     default:
       break;
@@ -197,5 +201,5 @@ export default {
   onNotify,
   onPrefsEvent,
   onShortcuts,
-  onDialogEvents,
+  onDialogEvents
 };
