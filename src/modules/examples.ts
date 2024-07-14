@@ -93,16 +93,6 @@ export class KeyExampleFactory {
     });
   }
 
-  // @example
-  // static exampleShortcutLargerCallback() {
-  //   new ztoolkit.ProgressWindow(config.addonName)
-  //     .createLine({
-  //       text: "Larger!",
-  //       type: "default"
-  //     })
-  //     .show();
-  // }
-
   @example
   static exampleShortcutOpenTagsTabCallback() {
     new ztoolkit.ProgressWindow(config.addonName)
@@ -112,16 +102,6 @@ export class KeyExampleFactory {
       })
       .show();
   }
-
-  // @example
-  // static exampleShortcutSmallerCallback() {
-  //   new ztoolkit.ProgressWindow(config.addonName)
-  //     .createLine({
-  //       text: "Smaller!",
-  //       type: "default"
-  //     })
-  //     .show();
-  // }
 }
 
 export class UIExampleFactory {
