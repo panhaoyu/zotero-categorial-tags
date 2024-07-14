@@ -1,5 +1,6 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
+import * as diagnostics_channel from "diagnostics_channel";
 
 function example(
   target: any,
@@ -107,6 +108,7 @@ export class KeyExampleFactory {
       mapping[k].push(v);
     });
     const dialog = new ztoolkit.Dialog(2, 1);
+
     dialog.addCell(0, 0, {
       tag: "div", children: [{
         tag: "table", children: [{
@@ -121,7 +123,6 @@ export class KeyExampleFactory {
                     type: "click", listener: (evt: MouseEvent) => {
                       const tagString = `#${categoryName}/${tagName}`;
                       ztoolkit.log(tagString as any);
-                      dialog.unregisterAll();
                     }
                   }]
                 }))
