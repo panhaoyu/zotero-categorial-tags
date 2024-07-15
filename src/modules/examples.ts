@@ -1,5 +1,6 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
+import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import TagJson = _ZoteroTypes.Tags.TagJson;
 
 function example(
@@ -85,6 +86,9 @@ export class BasicExampleFactory {
 }
 
 export class KeyExampleFactory {
+
+  static currentDialog: DialogHelper | undefined = undefined;
+
   @example
   static registerShortcuts() {
     ztoolkit.Keyboard.register((ev, keyOptions) => {
@@ -94,7 +98,18 @@ export class KeyExampleFactory {
     });
   }
 
+  static async closeCurrentDialog() {
+    try {
+      const dialog = KeyExampleFactory.currentDialog;
+      if (dialog === undefined) return;
+      dialog.window.close();
+      KeyExampleFactory.currentDialog = undefined;
+    } catch (e) {
+    }
+  }
+
   static async exampleShortcutOpenTagsTabCallback() {
+    await KeyExampleFactory.closeCurrentDialog();
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length !== 1) {
       new ztoolkit.ProgressWindow("Tags manager only supports exactly 1 item").show();
@@ -127,6 +142,10 @@ export class KeyExampleFactory {
       mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
     const tagsToChange: { [key in string]: boolean } = {};
+
+    if (KeyExampleFactory.currentDialog !== undefined) {
+      return;
+    }
 
     const dialog = new ztoolkit.Dialog(2, 1);
 
