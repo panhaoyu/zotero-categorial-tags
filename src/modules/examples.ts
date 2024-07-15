@@ -101,29 +101,36 @@ export class KeyExampleFactory {
       return;
     }
     const selection = selections[0];
-    const tags = UIExampleFactory.getCategorialTagsOfItem(selection);
-    const mapping: { [key: string]: string[] } = {};
-    tags.forEach(([k, v]) => {
-      mapping[k] ??= [];
-      mapping[k].push(v);
-    });
+    const mapping: { [key: string]: { name: string, activated: boolean }[] } = {};
     const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
+    UIExampleFactory.getCategorialTagsOfList(allTags).forEach(([k, v]) => {
+      mapping[k] ??= [];
+      mapping[k].push({ name: v, activated: false });
+    });
+    UIExampleFactory.getCategorialTagsOfItem(selection).forEach(([k, v]) => {
+      mapping[k].find(v2 => v2.name === v)!.activated = true;
+    });
 
     const dialog = new ztoolkit.Dialog(2, 1);
 
     dialog.addCell(0, 0, {
       tag: "div", children: [{
         tag: "table", children: [{
-          tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagNames]) => ({
+          tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagsData]) => ({
             tag: "tr",
             children: [
               { tag: "th", properties: { innerText: categoryName } },
               {
-                tag: "td", children: tagNames.map(tagName => ({
-                  tag: "span", properties: { innerText: tagName }, styles: { marginLeft: "4px", background: "#e5beff" },
+                tag: "td", children: tagsData.map(tagData => ({
+                  tag: "span", properties: { innerText: tagData.name },
+                  styles:
+                    {
+                      marginLeft: "4px",
+                      background: tagData.activated ? "#e5beff" : "#00000000"
+                    },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
-                      const tagString = `#${categoryName}/${tagName}`;
+                      const tagString = `#${categoryName}/${tagData.name}`;
                       ztoolkit.log(tagString as any);
                       dialog.window.close();
                     }
