@@ -1,6 +1,5 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
-import * as diagnostics_channel from "diagnostics_channel";
 
 function example(
   target: any,
@@ -123,6 +122,7 @@ export class KeyExampleFactory {
                     type: "click", listener: (evt: MouseEvent) => {
                       const tagString = `#${categoryName}/${tagName}`;
                       ztoolkit.log(tagString as any);
+                      dialog.window.close();
                     }
                   }]
                 }))
@@ -133,13 +133,15 @@ export class KeyExampleFactory {
       }
       ]
     });
-    dialog.addButton("Confirm", "close-button", {
-      noClose: false, callback: ev => {
-        ztoolkit.log("Confirmed!");
-      }
-    });
+    dialog.addButton("Save", "save-button", { noClose: true });
     dialog.addButton("Cancel", "close-button", { noClose: false });
     dialog.open("Tags", { centerscreen: true, fitContent: true });
+    dialog.window.addEventListener("keydown", (event) => {
+      if (event.key.toLowerCase() === "escape") {
+        dialog.window.close();
+      }
+    });
+
   }
 }
 
