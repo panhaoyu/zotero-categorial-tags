@@ -184,6 +184,7 @@ export class KeyExampleFactory {
           } else {
             selection.removeTag(tagName);
           }
+          selection.save();
         });
       }
     });
