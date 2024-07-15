@@ -1,5 +1,6 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
+import TagJson = _ZoteroTypes.Tags.TagJson;
 
 function example(
   target: any,
@@ -93,19 +94,21 @@ export class KeyExampleFactory {
     });
   }
 
-  static exampleShortcutOpenTagsTabCallback() {
+  static async exampleShortcutOpenTagsTabCallback() {
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length !== 1) {
       new ztoolkit.ProgressWindow("Tags manager only supports exactly 1 item").show();
       return;
     }
     const selection = selections[0];
-    const tags = UIExampleFactory.getCategorialTags(selection);
+    const tags = UIExampleFactory.getCategorialTagsOfItem(selection);
     const mapping: { [key: string]: string[] } = {};
     tags.forEach(([k, v]) => {
       mapping[k] ??= [];
       mapping[k].push(v);
     });
+    const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
+
     const dialog = new ztoolkit.Dialog(2, 1);
 
     dialog.addCell(0, 0, {
@@ -208,16 +211,20 @@ export class UIExampleFactory {
     });
   }
 
-  static getCategorialTags(item: Zotero.Item): [string, string][] {
-    return item.getTags()
-      .map(i => i.tag).filter(i => i.startsWith("#"))
+
+  static getCategorialTagsOfList(tags: TagJson[]): [string, string][] {
+    return tags.map(i => i.tag).filter(i => i.startsWith("#"))
       .map(i => i.split("#", 2)).filter(i => i.length === 2).map(i => i[1])
       .map(i => i.split("/", 2)).filter(i => i.length === 2)
       .sort((v1, v2) => v1[0] > v2[0] ? 1 : -1);
   }
 
+  static getCategorialTagsOfItem(item: Zotero.Item): [string, string][] {
+    return UIExampleFactory.getCategorialTagsOfList(item.getTags() as TagJson[]);
+  }
+
   static getCategorialTagsColumn(item: Zotero.Item): string {
-    return UIExampleFactory.getCategorialTags(item).map(i => i[1]).join(" ");
+    return UIExampleFactory.getCategorialTagsOfItem(item).map(i => i[1]).join(" ");
   }
 
 

@@ -161,7 +161,7 @@ function onShortcuts(type: string) {
     //   KeyExampleFactory.exampleShortcutSmallerCallback();
     //   break;
     case "open-tag-tab":
-      KeyExampleFactory.exampleShortcutOpenTagsTabCallback();
+      KeyExampleFactory.exampleShortcutOpenTagsTabCallback().then();
       break;
     default:
       break;
