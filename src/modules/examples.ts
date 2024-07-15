@@ -130,8 +130,7 @@ export class KeyExampleFactory {
             ]
           }))
         }]
-      }
-      ]
+      }]
     });
     dialog.addButton("Save", "save-button", { noClose: true });
     dialog.addButton("Cancel", "close-button", { noClose: false });
