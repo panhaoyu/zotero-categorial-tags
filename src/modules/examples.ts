@@ -118,15 +118,23 @@ export class KeyExampleFactory {
         tag: "table", children: [{
           tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagsData]) => ({
             tag: "tr",
+            styles: {
+              marginBottom: "6px"
+            },
             children: [
               { tag: "th", properties: { innerText: categoryName } },
               {
-                tag: "td", children: tagsData.map(tagData => ({
+                tag: "td",
+                styles: {
+                  maxWidth: "800px"
+                },
+                children: tagsData.map(tagData => ({
                   tag: "span", properties: { innerText: tagData.name },
                   styles:
                     {
-                      marginLeft: "4px",
-                      background: tagData.activated ? "#e5beff" : "#00000000"
+                      marginLeft: "8px",
+                      background: tagData.activated ? "#e5beff" : "#00000000",
+                      whiteSpace: "nowrap"
                     },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
