@@ -209,7 +209,8 @@ export class KeyExampleFactory {
     });
     dialog.addButton("Cancel", "close-button", { noClose: false });
     dialog.open("Tags", { centerscreen: true, fitContent: true });
-    dialog.window.addEventListener("keydown", (event) => {
+    KeyExampleFactory.currentDialog = dialog;
+    dialog.window.addEventListener("keyup", (event) => {
       if (event.key.toLowerCase() === "escape") {
         KeyExampleFactory.closeCurrentDialog();
       }
