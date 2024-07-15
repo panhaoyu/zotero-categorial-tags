@@ -92,7 +92,7 @@ export class KeyExampleFactory {
   @example
   static registerShortcuts() {
     ztoolkit.Keyboard.register((ev, keyOptions) => {
-      if (ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
+      if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
         addon.hooks.onShortcuts("open-tag-tab");
       }
     });
