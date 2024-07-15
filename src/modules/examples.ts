@@ -103,22 +103,28 @@ export class KeyExampleFactory {
     const selection = selections[0];
     const mapping: {
       [key: string]: {
-        name: string,
+        tagName: string,
         activated: boolean,
         elementId: string,
+        categoryName: string,
+        tagJson: TagJson
+        tagIndex: number
       }[]
     } = {};
     const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
     UIExampleFactory.getCategorialTagsOfList(allTags).forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
       mapping[tagData.categoryName].push({
-        name: tagData.tagName,
+        categoryName: tagData.categoryName,
+        tagIndex: tagIndex,
+        tagJson: tagData.tagJson,
+        tagName: tagData.tagName,
         activated: false,
-        elementId: `tags-dialog-category-index-${tagIndex}`
+        elementId: `tags-dialog-item-${selection.id}-tag-${tagIndex}`
       });
     });
     UIExampleFactory.getCategorialTagsOfItem(selection).forEach(tagData => {
-      mapping[tagData.categoryName].find(v2 => v2.name === tagData.tagName)!.activated = true;
+      mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
     const tagsToChange: { [key in string]: boolean } = {};
 
@@ -146,7 +152,7 @@ export class KeyExampleFactory {
                 children: tagsData.map(tagData => ({
                   tag: "span",
                   id: tagData.elementId,
-                  properties: { innerText: tagData.name },
+                  properties: { innerText: tagData.tagName },
                   styles:
                     {
                       marginLeft: "8px",
@@ -156,10 +162,11 @@ export class KeyExampleFactory {
                     },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
-                      const tagString = `#${categoryName}/${tagData.name}`;
+                      const tagString = tagData.tagName;
                       tagData.activated = !tagData.activated;
                       const element: HTMLSpanElement = dialog.window.document.querySelector(`#${tagData.elementId}`);
                       element.style.background = tagData.activated ? "#e5beff" : "#00000000";
+                      tagsToChange[tagData.tagJson.tag] = tagData.activated;
                     }
                   }]
                 }))
@@ -169,7 +176,17 @@ export class KeyExampleFactory {
         }]
       }]
     });
-    dialog.addButton("Save", "save-button", { noClose: true });
+    dialog.addButton("Save and close", "save-button", {
+      noClose: false, callback(ev) {
+        Object.entries(tagsToChange).map(([tagName, activation]) => {
+          if (activation) {
+            selection.addTag(tagName);
+          } else {
+            selection.removeTag(tagName);
+          }
+        });
+      }
+    });
     dialog.addButton("Cancel", "close-button", { noClose: false });
     dialog.open("Tags", { centerscreen: true, fitContent: true });
     dialog.window.addEventListener("keydown", (event) => {
