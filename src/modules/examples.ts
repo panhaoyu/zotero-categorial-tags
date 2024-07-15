@@ -109,19 +109,27 @@ export class KeyExampleFactory {
       }[]
     } = {};
     const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
-    UIExampleFactory.getCategorialTagsOfList(allTags).forEach(([k, v], tagIndex) => {
-      mapping[k] ??= [];
-      mapping[k].push({ name: v, activated: false, elementId: `tags-dialog-category-index-${tagIndex}` });
+    UIExampleFactory.getCategorialTagsOfList(allTags).forEach((tagData, tagIndex) => {
+      mapping[tagData.categoryName] ??= [];
+      mapping[tagData.categoryName].push({
+        name: tagData.tagName,
+        activated: false,
+        elementId: `tags-dialog-category-index-${tagIndex}`
+      });
     });
-    UIExampleFactory.getCategorialTagsOfItem(selection).forEach(([k, v]) => {
-      mapping[k].find(v2 => v2.name === v)!.activated = true;
+    UIExampleFactory.getCategorialTagsOfItem(selection).forEach(tagData => {
+      mapping[tagData.categoryName].find(v2 => v2.name === tagData.tagName)!.activated = true;
     });
     const tagsToChange: { [key in string]: boolean } = {};
 
     const dialog = new ztoolkit.Dialog(2, 1);
 
     dialog.addCell(0, 0, {
-      tag: "div", children: [{
+      tag: "div",
+      styles: {
+        userSelect: "none"
+      },
+      children: [{
         tag: "table", children: [{
           tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagsData]) => ({
             tag: "tr",
@@ -144,7 +152,7 @@ export class KeyExampleFactory {
                       marginLeft: "8px",
                       background: tagData.activated ? "#e5beff" : "#00000000",
                       whiteSpace: "nowrap",
-                      cursor: "pointer",
+                      cursor: "pointer"
                     },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
@@ -238,23 +246,28 @@ export class UIExampleFactory {
   }
 
 
-  static getCategorialTagsOfList(tags: TagJson[]): [string, string][] {
-    return tags.map(i => i.tag)
-      .filter(i => i.startsWith("#"))
-      .map(i => i.split("#", 2))
-      .filter(i => i.length === 2)
-      .map(i => i[1])
-      .map(i => i.split("/", 2))
-      .filter(i => i.length === 2)
-      .sort((v1, v2) => v1[0] > v2[0] ? 1 : -1);
+  static getCategorialTagsOfList(tags: TagJson[]) {
+    return tags
+      .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
+      .map(tagJson => {
+        const tagName = tagJson.tag;
+        const removePrefix = tagName.slice(1);
+        const [part1, part2] = removePrefix.split("/", 2);
+        return {
+          categoryName: part1,
+          tagName: part2,
+          tagJson: tagJson
+        };
+      })
+      .sort((v1, v2) => v1?.tagJson.tag > v2?.tagJson.tag ? 1 : -1);
   }
 
-  static getCategorialTagsOfItem(item: Zotero.Item): [string, string][] {
+  static getCategorialTagsOfItem(item: Zotero.Item) {
     return UIExampleFactory.getCategorialTagsOfList(item.getTags() as TagJson[]);
   }
 
   static getCategorialTagsColumn(item: Zotero.Item): string {
-    return UIExampleFactory.getCategorialTagsOfItem(item).map(i => i[1]).join(" ");
+    return UIExampleFactory.getCategorialTagsOfItem(item).map(i => i.tagName).join(" ");
   }
 
 
