@@ -101,15 +101,22 @@ export class KeyExampleFactory {
       return;
     }
     const selection = selections[0];
-    const mapping: { [key: string]: { name: string, activated: boolean }[] } = {};
+    const mapping: {
+      [key: string]: {
+        name: string,
+        activated: boolean,
+        elementId: string,
+      }[]
+    } = {};
     const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
-    UIExampleFactory.getCategorialTagsOfList(allTags).forEach(([k, v]) => {
+    UIExampleFactory.getCategorialTagsOfList(allTags).forEach(([k, v], tagIndex) => {
       mapping[k] ??= [];
-      mapping[k].push({ name: v, activated: false });
+      mapping[k].push({ name: v, activated: false, elementId: `tags-dialog-category-index-${tagIndex}` });
     });
     UIExampleFactory.getCategorialTagsOfItem(selection).forEach(([k, v]) => {
       mapping[k].find(v2 => v2.name === v)!.activated = true;
     });
+    const tagsToChange: { [key in string]: boolean } = {};
 
     const dialog = new ztoolkit.Dialog(2, 1);
 
@@ -129,18 +136,22 @@ export class KeyExampleFactory {
                   maxWidth: "800px"
                 },
                 children: tagsData.map(tagData => ({
-                  tag: "span", properties: { innerText: tagData.name },
+                  tag: "span",
+                  id: tagData.elementId,
+                  properties: { innerText: tagData.name },
                   styles:
                     {
                       marginLeft: "8px",
                       background: tagData.activated ? "#e5beff" : "#00000000",
-                      whiteSpace: "nowrap"
+                      whiteSpace: "nowrap",
+                      cursor: "pointer",
                     },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
                       const tagString = `#${categoryName}/${tagData.name}`;
-                      ztoolkit.log(tagString as any);
-                      dialog.window.close();
+                      tagData.activated = !tagData.activated;
+                      const element: HTMLSpanElement = dialog.window.document.querySelector(`#${tagData.elementId}`);
+                      element.style.background = tagData.activated ? "#e5beff" : "#00000000";
                     }
                   }]
                 }))
@@ -228,9 +239,13 @@ export class UIExampleFactory {
 
 
   static getCategorialTagsOfList(tags: TagJson[]): [string, string][] {
-    return tags.map(i => i.tag).filter(i => i.startsWith("#"))
-      .map(i => i.split("#", 2)).filter(i => i.length === 2).map(i => i[1])
-      .map(i => i.split("/", 2)).filter(i => i.length === 2)
+    return tags.map(i => i.tag)
+      .filter(i => i.startsWith("#"))
+      .map(i => i.split("#", 2))
+      .filter(i => i.length === 2)
+      .map(i => i[1])
+      .map(i => i.split("/", 2))
+      .filter(i => i.length === 2)
       .sort((v1, v2) => v1[0] > v2[0] ? 1 : -1);
   }
 
