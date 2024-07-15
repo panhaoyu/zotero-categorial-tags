@@ -211,7 +211,7 @@ export class KeyExampleFactory {
     dialog.open("Tags", { centerscreen: true, fitContent: true });
     dialog.window.addEventListener("keydown", (event) => {
       if (event.key.toLowerCase() === "escape") {
-        dialog.window.close();
+        KeyExampleFactory.closeCurrentDialog();
       }
     });
 
