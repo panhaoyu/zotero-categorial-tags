@@ -1,19 +1,15 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
-import { ColumnManager } from "./column";
+import { tagManager } from "./manager";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 export class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
-  uiFactory: ColumnManager;
 
-  static instance: ShortcutManager;
 
-  constructor(uiFactory: ColumnManager) {
-    this.uiFactory = uiFactory;
-    ShortcutManager.instance = this;
+  constructor() {
   }
 
-  init() {
+  async init() {
     ztoolkit.Keyboard.register((ev, keyOptions) => {
       if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
         addon.hooks.onShortcuts("open-tag-tab");
@@ -27,7 +23,7 @@ export class ShortcutManager {
       this.currentDialog.window.close();
       this.currentDialog = undefined;
     } catch (e) {
-      ztoolkit.log("Error closing dialog", e);
+      ztoolkit.log("Error closing dialog" as any, e);
     }
   }
 
@@ -53,7 +49,7 @@ export class ShortcutManager {
     } = {};
 
     const allTags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID());
-    const categorialTagsList = this.uiFactory.getCategorialTagsOfList(allTags as TagJson[]);
+    const categorialTagsList = tagManager.getCategorialTagsOfList(allTags as TagJson[]);
 
     categorialTagsList.forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
@@ -67,7 +63,7 @@ export class ShortcutManager {
       });
     });
 
-    const categorialTagsOfItem = this.uiFactory.getCategorialTagsOfItem(selection);
+    const categorialTagsOfItem = tagManager.getCategorialTagsOfItem(selection);
     categorialTagsOfItem.forEach(tagData => {
       mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
@@ -151,3 +147,5 @@ export class ShortcutManager {
     });
   }
 }
+
+export const shortcutsManager = new ShortcutManager();

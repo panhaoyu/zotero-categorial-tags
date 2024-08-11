@@ -6,13 +6,13 @@ export class Manager {
   private categories: Category[] | null = null;
   private cache: CategorialTag[] | null = null;
 
-  constructor() {
-  }
 
   // Initialize the Manager by updating the cache
   async init() {
     await this.updateCache();
-  }// Update and cache all CategorialTag instances and categories
+  }
+
+  // Update and cache all CategorialTag instances and categories
   async updateCache(): Promise<void> {
     let libraryId = ZoteroPane.getSelectedLibraryID();
     while (libraryId === undefined) {
@@ -50,6 +50,27 @@ export class Manager {
     );
   }
 
+  getCategorialTagsOfList(tags: TagJson[]): { categoryName: string, tagName: string, tagJson: TagJson }[] {
+    return tags
+      .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
+      .map(tagJson => {
+        const tagName = tagJson.tag;
+        const removePrefix = tagName.slice(1);
+        const [categoryName, tagNamePart] = removePrefix.split("/", 2);
+        return {
+          categoryName,
+          tagName: tagNamePart,
+          tagJson
+        };
+      })
+      .sort((v1, v2) => v1.tagJson.tag > v2.tagJson.tag ? 1 : -1);
+  }
+
+  getCategorialTagsOfItem(item: Zotero.Item): { categoryName: string, tagName: string, tagJson: TagJson }[] {
+    const tags = item.getTags() as TagJson[];
+    return this.getCategorialTagsOfList(tags);
+  }
+
   // Get a specific category by name
   async getByName(name: string): Promise<Category | undefined> {
     if (!this.categories) await this.updateCache();
@@ -68,3 +89,5 @@ export class Manager {
     return this.cache!;
   }
 }
+
+export const tagManager = new Manager();

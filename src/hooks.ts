@@ -3,9 +3,10 @@ import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
-import { ColumnManager } from "./modules/column";
-import { ShortcutManager } from "./modules/shortcuts";
-import { PreferencesManager } from "./modules/prefs";
+import { columnManager } from "./modules/column";
+import { shortcutsManager } from "./modules/shortcuts";
+import { preferenceManager } from "./modules/prefs";
+import { tagManager } from "./modules/manager";
 
 async function onStartup() {
   await Promise.all([
@@ -15,12 +16,10 @@ async function onStartup() {
   ]);
   initLocale();
 
-  const columnManager = new ColumnManager();
+  await tagManager.init();
   await columnManager.init();
-  const preferencesManager = new PreferencesManager();
-  preferencesManager.init();
-  const shortcut = new ShortcutManager(columnManager);
-  shortcut.init();
+  await preferenceManager.init();
+  await shortcutsManager.init();
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
@@ -104,7 +103,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 function onShortcuts(type: string) {
   switch (type) {
     case "open-tag-tab":
-      ShortcutManager.instance.openTagsTabCallback().then();
+      shortcutsManager.openTagsTabCallback().then();
       break;
     default:
       break;
