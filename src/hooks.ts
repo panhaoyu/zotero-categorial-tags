@@ -18,9 +18,9 @@ async function onStartup() {
   const columnManager = new ColumnManager();
   await columnManager.init();
   const preferencesManager = new PreferencesManager();
-  preferencesManager.registerPrefs();
+  preferencesManager.init();
   const shortcut = new ShortcutManager(columnManager);
-  shortcut.registerShortcuts();
+  shortcut.init();
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {

@@ -10,7 +10,7 @@ export class ShortcutManager {
     this.uiFactory = uiFactory;
   }
 
-  registerShortcuts() {
+  init() {
     ztoolkit.log("Shortcuts registered");
     ztoolkit.Keyboard.register((ev, keyOptions) => {
       ztoolkit.log("Key pressed");
