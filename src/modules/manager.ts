@@ -4,7 +4,7 @@ import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 class Manager {
   private categories: Category[] = [];
-  private tagMappingByName: { [key: string]: CategorialTag } = {};
+  private tagQueryMapping: { [key: string]: CategorialTag } = {};
 
   // Initialize the Manager by updating the cache
   async register() {
@@ -28,21 +28,21 @@ class Manager {
         })
         .map(async tagJson => {
           const tagId = Zotero.Tags.getID(tagJson.tag);
-          const items = tagId === false ? [] : await Zotero.Tags.getTagItems(libraryId, tagId) as Zotero.Item[];
-          return new CategorialTag(tagJson, items);
+          if (tagId === false) {
+            throw `Tag id not found: ${tagJson.tag}`;
+          }
+          const items = await Zotero.Tags.getTagItems(libraryId, tagId) as Zotero.Item[];
+          return new CategorialTag(tagId, tagJson, items);
         })
     );
 
     const categoryMap = new Map<string, CategorialTag[]>();
-    this.tagMappingByName = {};
+    this.tagQueryMapping = {};
 
     categorialTags.forEach(tag => {
-      // Update tagMappingByName
-      const key = `#${tag.categoryName}/${tag.tagName}`;
-      this.tagMappingByName[key] = tag;
-
-      // Update categoryMap
-      if (!categoryMap.has(tag.categoryName)) {
+      this.tagQueryMapping[tag.fullName] = tag;
+      this.tagQueryMapping[tag.tagId] = tag;
+      if (!categoryMap.get(tag.categoryName)) {
         categoryMap.set(tag.categoryName, []);
       }
       categoryMap.get(tag.categoryName)!.push(tag);
@@ -50,22 +50,23 @@ class Manager {
 
     this.categories = Array.from(categoryMap.entries()).map(
       ([name, tags]) => new Category(name, tags)
-    ).sort((i, j) => i.itemCount - j.itemCount);
+    ).sort((i, j) => j.itemCount - i.itemCount);
   }
 
-  getTagByName(name: string): CategorialTag | undefined {
-    return this.tagMappingByName[name];
+  getTag(idOrName: string | number): CategorialTag | undefined {
+    return this.tagQueryMapping[idOrName];
   }
 
   getTagsOfItem(item: Zotero.Item): CategorialTag[] {
     return item.getTags()
-      .map(tag => this.getTagByName(tag.tag))
+      .map(tag => this.getTag(tag.tag))
       .filter(i => i !== undefined)
-      .map(i => i as CategorialTag);
+      .map(i => i as CategorialTag)
+      .sort((i, j) => j.itemCount - i.itemCount);
   }
 
   getAllTags(): CategorialTag[] {
-    return Object.values(this.tagMappingByName);
+    return Object.values(this.tagQueryMapping);
   }
 
   getAllCategories(): Category[] {

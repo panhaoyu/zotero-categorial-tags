@@ -1,6 +1,5 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { tagManager } from "./manager";
-import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
@@ -37,37 +36,19 @@ class ShortcutManager {
     }
 
     const selection = selections[0];
-    const mapping: {
-      [key: string]: {
-        tagName: string,
-        activated: boolean,
-        elementId: string,
-        categoryName: string,
-        tagJson: TagJson
-        tagIndex: number
-      }[]
-    } = {};
-
-    const categorialTagsList = tagManager.getAllTags();
-
-    categorialTagsList.forEach((tagData, tagIndex) => {
-      mapping[tagData.categoryName] ??= [];
-      mapping[tagData.categoryName].push({
-        categoryName: tagData.categoryName,
-        tagIndex: tagIndex,
-        tagJson: tagData.tagJson,
-        tagName: tagData.tagName,
-        activated: false,
-        elementId: `tags-dialog-item-${selection.id}-tag-${tagIndex}`
-      });
-    });
-
-    const tags = tagManager.getTagsOfItem(selection);
-    tags.forEach(tagData => {
-      mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
-    });
-
-    const tagsToChange: { [key in string]: boolean } = {};
+    const itemTagNames: string[] = selection.getTags().map(i => i.tag);
+    const itemTags: {
+      [key: number]: {
+        changed: boolean
+        active: boolean
+      }
+    } = Object.fromEntries(
+      tagManager.getAllTags()
+        .map(i => [i.tagId, {
+          changed: false,
+          active: itemTagNames.includes(i.fullName)
+        }])
+    );
 
     if (this.currentDialog !== undefined) {
       return;
@@ -86,26 +67,26 @@ class ShortcutManager {
           children: [
             {
               tag: "tbody",
-              children: Object.entries(mapping).map(
-                ([categoryName, tagsData]) => ({
+              children: tagManager.getAllCategories().map(
+                category => ({
                   tag: "tr",
                   styles: {
                     marginBottom: "6px"
                   },
                   children: [
-                    { tag: "th", properties: { innerText: categoryName } },
+                    { tag: "th", properties: { innerText: category.name } },
                     {
                       tag: "td",
                       styles: {
                         maxWidth: "800px"
                       },
-                      children: tagsData.map((tagData) => ({
+                      children: category.tags.map((tagData) => ({
                         tag: "span",
-                        id: tagData.elementId,
+                        id: tagData.uniqueElementId,
                         properties: { innerText: tagData.tagName },
                         styles: {
                           marginLeft: "8px",
-                          background: tagData.activated
+                          background: itemTags[tagData.tagId].active
                             ? "#e5beff"
                             : "#00000000",
                           whiteSpace: "nowrap",
@@ -115,16 +96,15 @@ class ShortcutManager {
                           {
                             type: "click",
                             listener: (evt: MouseEvent) => {
-                              tagData.activated = !tagData.activated;
+                              itemTags[tagData.tagId].active = !itemTags[tagData.tagId].active;
+                              itemTags[tagData.tagId].changed = true;
                               const element: HTMLSpanElement =
                                 dialog.window.document.querySelector(
-                                  `#${tagData.elementId}`
+                                  `#${tagData.uniqueElementId}`
                                 );
-                              element.style.background = tagData.activated
+                              element.style.background = itemTags[tagData.tagId].active
                                 ? "#e5beff"
                                 : "#00000000";
-                              tagsToChange[tagData.tagJson.tag] =
-                                tagData.activated;
                             }
                           }
                         ]
@@ -142,11 +122,14 @@ class ShortcutManager {
     dialog.addButton("Save and close", "save-button", {
       noClose: false,
       callback: (ev) => {
-        Object.entries(tagsToChange).forEach(([tagName, activation]) => {
-          if (activation) {
-            selection.addTag(tagName);
+        Object.entries(itemTags).forEach(([tagId, activeData]) => {
+          if (!activeData.changed) return;
+          const tag = tagManager.getTag(tagId);
+          if (tag === undefined) return;
+          if (activeData.active) {
+            selection.addTag(tag.fullName);
           } else {
-            selection.removeTag(tagName);
+            selection.removeTag(tag.fullName);
           }
           selection.save();
         });

@@ -6,7 +6,7 @@ export class Category {
   readonly itemCount: number;
 
   constructor(name: string, tags: CategorialTag[]) {
-    tags = tags.sort((a, b) => a.itemCount - b.itemCount);
+    tags = tags.sort((i, j) => j.itemCount - i.itemCount);
     this.name = name;
     this.tags = tags;
     this.itemCount = this.tags.map(i => i.itemCount).reduce((i, j) => i + j, 0);
