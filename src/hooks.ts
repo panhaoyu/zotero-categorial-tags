@@ -1,10 +1,11 @@
-import { BasicExampleFactory, HelperExampleFactory } from "./modules/examples";
+import { HelperExampleFactory } from "./modules/examples";
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
 import { UIExampleFactory } from "./modules/column";
 import { KeyExampleFactory } from "./modules/shortcuts";
+import { BasicExampleFactory } from "./modules/prefs";
 
 async function onStartup() {
   await Promise.all([
@@ -19,7 +20,6 @@ async function onStartup() {
   await BasicExampleFactory.registerPrefs();
   KeyExampleFactory.uiFactory = ui_factory;
   KeyExampleFactory.registerShortcuts();
-  ztoolkit.log("registered");
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
