@@ -1,7 +1,7 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
-export class BasicExampleFactory {
+export class Preferences {
   static registerPrefs() {
     const prefOptions = {
       pluginID: config.addonID,

@@ -1,13 +1,16 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
-import { UIExampleFactory } from "./column";
+import { CategorialTagsColumn } from "./column";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
-export class KeyExampleFactory {
+export class Shortcut {
+  currentDialog: DialogHelper | undefined = undefined;
+  uiFactory: CategorialTagsColumn;
 
-  static currentDialog: DialogHelper | undefined = undefined;
-  static uiFactory: UIExampleFactory;
+  constructor(uiFactory: CategorialTagsColumn) {
+    this.uiFactory = uiFactory;
+  }
 
-  static registerShortcuts() {
+  registerShortcuts() {
     ztoolkit.log("Shortcuts registered");
     ztoolkit.Keyboard.register((ev, keyOptions) => {
       ztoolkit.log("Key pressed");
@@ -18,18 +21,18 @@ export class KeyExampleFactory {
     });
   }
 
-  static async closeCurrentDialog() {
+  async closeCurrentDialog() {
     try {
-      const dialog = KeyExampleFactory.currentDialog;
-      if (dialog === undefined) return;
-      dialog.window.close();
-      KeyExampleFactory.currentDialog = undefined;
+      if (this.currentDialog === undefined) return;
+      this.currentDialog.window.close();
+      this.currentDialog = undefined;
     } catch (e) {
+      ztoolkit.log("Error closing dialog", e);
     }
   }
 
-  static async openTagsTabCallback() {
-    await KeyExampleFactory.closeCurrentDialog();
+  async openTagsTabCallback() {
+    await this.closeCurrentDialog();
 
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length !== 1) {
@@ -50,7 +53,7 @@ export class KeyExampleFactory {
     } = {};
 
     const allTags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID());
-    const categorialTagsList = KeyExampleFactory.uiFactory.getCategorialTagsOfList(allTags as TagJson[]);
+    const categorialTagsList = this.uiFactory.getCategorialTagsOfList(allTags as TagJson[]);
 
     categorialTagsList.forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
@@ -64,14 +67,14 @@ export class KeyExampleFactory {
       });
     });
 
-    const categorialTagsOfItem = KeyExampleFactory.uiFactory.getCategorialTagsOfItem(selection);
+    const categorialTagsOfItem = this.uiFactory.getCategorialTagsOfItem(selection);
     categorialTagsOfItem.forEach(tagData => {
       mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
 
     const tagsToChange: { [key in string]: boolean } = {};
 
-    if (KeyExampleFactory.currentDialog !== undefined) {
+    if (this.currentDialog !== undefined) {
       return;
     }
 
@@ -124,7 +127,7 @@ export class KeyExampleFactory {
     });
 
     dialog.addButton("Save and close", "save-button", {
-      noClose: false, callback(ev) {
+      noClose: false, callback: (ev) => {
         Object.entries(tagsToChange).forEach(([tagName, activation]) => {
           if (activation) {
             selection.addTag(tagName);
@@ -139,11 +142,11 @@ export class KeyExampleFactory {
     dialog.addButton("Cancel", "close-button", { noClose: false });
 
     dialog.open("Tags", { centerscreen: true, fitContent: true });
-    KeyExampleFactory.currentDialog = dialog;
+    this.currentDialog = dialog;
 
     dialog.window.addEventListener("keyup", (event) => {
       if (event.key.toLowerCase() === "escape") {
-        KeyExampleFactory.closeCurrentDialog();
+        this.closeCurrentDialog();
       }
     });
   }

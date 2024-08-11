@@ -3,9 +3,9 @@ import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
-import { UIExampleFactory } from "./modules/column";
-import { KeyExampleFactory } from "./modules/shortcuts";
-import { BasicExampleFactory } from "./modules/prefs";
+import { CategorialTagsColumn } from "./modules/column";
+import { Shortcut } from "./modules/shortcuts";
+import { Preferences } from "./modules/prefs";
 
 async function onStartup() {
   await Promise.all([
@@ -15,11 +15,11 @@ async function onStartup() {
   ]);
   initLocale();
 
-  const ui_factory = new UIExampleFactory();
+  const ui_factory = new CategorialTagsColumn();
   await ui_factory.init();
-  await BasicExampleFactory.registerPrefs();
-  KeyExampleFactory.uiFactory = ui_factory;
-  KeyExampleFactory.registerShortcuts();
+  await Preferences.registerPrefs();
+  const shortcut = new Shortcut(ui_factory);
+  shortcut.registerShortcuts();
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
@@ -103,7 +103,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 function onShortcuts(type: string) {
   switch (type) {
     case "open-tag-tab":
-      KeyExampleFactory.openTagsTabCallback().then();
+      Shortcut.openTagsTabCallback().then();
       break;
     default:
       break;

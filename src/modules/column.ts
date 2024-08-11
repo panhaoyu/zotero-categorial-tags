@@ -3,7 +3,7 @@ import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
-export class UIExampleFactory {
+export class CategorialTagsColumn {
   private readonly tagManager: Manager;
 
   constructor() {
