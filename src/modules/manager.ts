@@ -1,18 +1,41 @@
 import { Category } from "./category";
 import { CategorialTag } from "./categorialTag";
-import TagJson = _ZoteroTypes.Tags.TagJson;
+import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 export class Manager {
   private categories: Category[] | null = null;
-  private categorialTag: CategorialTag;
+  private cache: CategorialTag[] | null = null;
 
-  constructor() {
-    this.categorialTag = new CategorialTag({} as TagJson, []);
+  // Method to create a CategorialTag instance from a TagJson object
+  async fromTagJson(tagJson: TagJson): Promise<CategorialTag> {
+    const libraryId = ZoteroPane.getSelectedLibraryID();
+    const tagId = Zotero.Tags.getID(tagJson.tag);
+    const items = tagId === false ? [] : await Zotero.Tags.getTagItems(libraryId, tagId) as Zotero.Item[];
+    return new CategorialTag(tagJson, items);
+  }
+
+  // Method to fetch and cache all CategorialTag instances from Zotero.Tags
+  async updateCategorialTagCache(): Promise<CategorialTag[]> {
+    const tags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()) as TagJson[];
+
+    const categorialTags = await Promise.all(
+      tags
+        .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
+        .map(tagJson => this.fromTagJson(tagJson))
+    );
+
+    this.cache = categorialTags;
+    return categorialTags;
+  }
+
+  // Method to get all cached CategorialTag instances
+  async allCategorialTags(): Promise<CategorialTag[]> {
+    return this.cache ?? await this.updateCategorialTagCache();
   }
 
   // Update and cache all categories
   async updateCache(): Promise<Category[]> {
-    const categorialTags = await this.categorialTag.all();
+    const categorialTags = await this.allCategorialTags();
 
     const categoryMap = new Map<string, CategorialTag[]>();
 
