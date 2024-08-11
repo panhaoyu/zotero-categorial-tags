@@ -6,8 +6,33 @@ class Manager {
   private categories: Category[] = [];
   private tagQueryMapping: { [key: string]: CategorialTag } = {};
 
-  // Initialize the Manager by updating the cache
   async register() {
+    await this.updateCache();
+
+    // 添加 hooks，在变动的时候，触发 onTagChanged
+    const originalCreate = Zotero.Tags.create;
+    Zotero.Tags.create = async (...args) => {
+      const result = await originalCreate.apply(Zotero.Tags, args);
+      await this.onTagChanged();
+      return result;
+    };
+
+    const originalRemoveFromLibrary = Zotero.Tags.removeFromLibrary;
+    Zotero.Tags.removeFromLibrary = async (...args) => {
+      const result = await originalRemoveFromLibrary.apply(Zotero.Tags, args);
+      await this.onTagChanged();
+      return result;
+    };
+
+    const originalRename = Zotero.Tags.rename;
+    Zotero.Tags.rename = async (...args) => {
+      const result = await originalRename.apply(Zotero.Tags, args);
+      await this.onTagChanged();
+      return result;
+    };
+  }
+
+  async onTagChanged() {
     await this.updateCache();
   }
 
