@@ -1,8 +1,8 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
-export class Preferences {
-  static registerPrefs() {
+export class PreferencesManager {
+  registerPrefs() {
     const prefOptions = {
       pluginID: config.addonID,
       src: rootURI + "chrome/content/preferences.xhtml",

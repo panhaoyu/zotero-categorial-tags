@@ -1,12 +1,12 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
-import { CategorialTagsColumn } from "./column";
+import { ColumnManager } from "./column";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
-export class Shortcut {
+export class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
-  uiFactory: CategorialTagsColumn;
+  uiFactory: ColumnManager;
 
-  constructor(uiFactory: CategorialTagsColumn) {
+  constructor(uiFactory: ColumnManager) {
     this.uiFactory = uiFactory;
   }
 
