@@ -49,38 +49,26 @@ class Manager {
     });
 
     this.categories = Array.from(categoryMap.entries()).map(
-      ([name, tags]) => new Category(name, tags.sort((a, b) => b.itemCount - a.itemCount))
-    );
+      ([name, tags]) => new Category(name, tags)
+    ).sort((i, j) => i.itemCount - j.itemCount);
   }
 
-  getCategorialTagsOfList(tags: TagJson[]): { categoryName: string, tagName: string, tagJson: TagJson }[] {
-    return tags
-      .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
-      .map(tagJson => {
-        const tagName = tagJson.tag;
-        const removePrefix = tagName.slice(1);
-        const [categoryName, tagNamePart] = removePrefix.split("/", 2);
-        const key = `#${categoryName}/${tagNamePart}`;
-        const tag = this.tagMappingByName[key];
-        return {
-          categoryName: tag.categoryName,
-          tagName: tag.tagName,
-          tagJson: tag.tagJson
-        };
-      })
-      .sort((v1, v2) => v1.tagJson.tag > v2.tagJson.tag ? 1 : -1);
+  getTagByName(name: string): CategorialTag | undefined {
+    return this.tagMappingByName[name];
   }
 
-  getCategorialTagsOfItem(item: Zotero.Item): { categoryName: string, tagName: string, tagJson: TagJson }[] {
-    const tags = item.getTags() as TagJson[];
-    return this.getCategorialTagsOfList(tags);
+  getTagsOfItem(item: Zotero.Item): CategorialTag[] {
+    return item.getTags()
+      .map(tag => this.getTagByName(tag.tag))
+      .filter(i => i !== undefined)
+      .map(i => i as CategorialTag);
   }
 
-  getTags(): CategorialTag[] {
+  getAllTags(): CategorialTag[] {
     return Object.values(this.tagMappingByName);
   }
 
-  getCategories(): Category[] {
+  getAllCategories(): Category[] {
     return this.categories;
   }
 }

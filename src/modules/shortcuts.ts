@@ -48,7 +48,7 @@ class ShortcutManager {
       }[]
     } = {};
 
-    const categorialTagsList = tagManager.getTags();
+    const categorialTagsList = tagManager.getAllTags();
 
     categorialTagsList.forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
@@ -62,8 +62,8 @@ class ShortcutManager {
       });
     });
 
-    const categorialTagsOfItem = tagManager.getCategorialTagsOfItem(selection);
-    categorialTagsOfItem.forEach(tagData => {
+    const tags = tagManager.getTagsOfItem(selection);
+    tags.forEach(tagData => {
       mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
 

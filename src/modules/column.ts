@@ -18,8 +18,7 @@ export class ColumnManager {
   }
 
   getCategorialTagsColumn(item: Zotero.Item): string {
-    const categorialTags = tagManager.getCategorialTagsOfItem(item);
-    return categorialTags.map(i => i.tagName).join(" ");
+    return tagManager.getTagsOfItem(item).map(i => i.tagName).join(" ");
   }
 }
 

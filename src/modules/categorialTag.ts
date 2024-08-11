@@ -1,11 +1,11 @@
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 export class CategorialTag {
-  categoryName: string;
-  tagName: string;
-  tagJson: TagJson;
-  itemCount: number;
-  items: Zotero.Item[];
+  readonly categoryName: string;
+  readonly tagName: string;
+  readonly tagJson: TagJson;
+  readonly itemCount: number;
+  readonly items: Zotero.Item[];
 
   constructor(tagJson: TagJson, items: Zotero.Item[]) {
     this.tagJson = tagJson;
