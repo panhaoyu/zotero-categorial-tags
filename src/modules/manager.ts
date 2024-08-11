@@ -20,7 +20,10 @@ export class Manager {
 
     const categorialTags = await Promise.all(
       tags
-        .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
+        .filter(tagJson => {
+          const tagName = tagJson.tag;
+          return tagName.startsWith("#") && tagName.includes("/");
+        })
         .map(tagJson => this.fromTagJson(tagJson))
     );
 
