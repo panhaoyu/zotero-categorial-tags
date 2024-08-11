@@ -1,7 +1,6 @@
 import { Category } from "./category";
 import { CategorialTag } from "./categorialTag";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
-import ZoteroPane = _ZoteroTypes.ZoteroPane;
 
 export class Manager {
   private categories: Category[] | null = null;
