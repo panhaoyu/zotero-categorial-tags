@@ -6,8 +6,11 @@ export class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
   uiFactory: ColumnManager;
 
+  static instance: ShortcutManager;
+
   constructor(uiFactory: ColumnManager) {
     this.uiFactory = uiFactory;
+    ShortcutManager.instance = this;
   }
 
   init() {

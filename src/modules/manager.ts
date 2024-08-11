@@ -12,12 +12,15 @@ export class Manager {
   // Initialize the Manager by updating the cache
   async init() {
     await this.updateCache();
-  }
-
-  // Update and cache all CategorialTag instances and categories
+  }// Update and cache all CategorialTag instances and categories
   async updateCache(): Promise<void> {
-    const tags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()) as TagJson[];
+    let libraryId = ZoteroPane.getSelectedLibraryID();
+    while (libraryId === undefined) {
+      await new Promise(resolve => setTimeout(resolve, 100)); // wait 0.1 seconds
+      libraryId = ZoteroPane.getSelectedLibraryID();
+    }
 
+    const tags = await Zotero.Tags.getAll(libraryId) as TagJson[];
     const categorialTags = await Promise.all(
       tags
         .filter(tagJson => {
@@ -26,7 +29,7 @@ export class Manager {
         })
         .map(async tagJson => {
           const tagId = Zotero.Tags.getID(tagJson.tag);
-          const items = tagId === false ? [] : await Zotero.Tags.getTagItems(ZoteroPane.getSelectedLibraryID(), tagId) as Zotero.Item[];
+          const items = tagId === false ? [] : await Zotero.Tags.getTagItems(libraryId, tagId) as Zotero.Item[];
           return new CategorialTag(tagJson, items);
         })
     );

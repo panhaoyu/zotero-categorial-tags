@@ -104,7 +104,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 function onShortcuts(type: string) {
   switch (type) {
     case "open-tag-tab":
-      ShortcutManager.openTagsTabCallback().then();
+      ShortcutManager.instance.openTagsTabCallback().then();
       break;
     default:
       break;
