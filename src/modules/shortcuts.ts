@@ -14,11 +14,8 @@ export class ShortcutManager {
   }
 
   init() {
-    ztoolkit.log("Shortcuts registered");
     ztoolkit.Keyboard.register((ev, keyOptions) => {
-      ztoolkit.log("Key pressed");
       if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
-        ztoolkit.log("Ctrl+T Pressed");
         addon.hooks.onShortcuts("open-tag-tab");
       }
     });
