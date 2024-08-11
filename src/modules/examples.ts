@@ -1,8 +1,8 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
-import { Manager } from "./categorialTag";
-import TagJson = _ZoteroTypes.Tags.TagJson;
+import { Manager } from "./manager";
+import type TagJson = _ZoteroTypes.Tags.TagJson;
 
 function example(
   target: any,
@@ -89,11 +89,15 @@ export class BasicExampleFactory {
 export class KeyExampleFactory {
 
   static currentDialog: DialogHelper | undefined = undefined;
+  static uiFactory: UIExampleFactory;
 
   @example
   static registerShortcuts() {
+    ztoolkit.log("Shortcuts registered");
     ztoolkit.Keyboard.register((ev, keyOptions) => {
+      ztoolkit.log("Key pressed");
       if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
+        ztoolkit.log("Ctrl+T Pressed");
         addon.hooks.onShortcuts("open-tag-tab");
       }
     });
@@ -109,13 +113,15 @@ export class KeyExampleFactory {
     }
   }
 
-  static async exampleShortcutOpenTagsTabCallback() {
+  static async openTagsTabCallback() {
     await KeyExampleFactory.closeCurrentDialog();
+
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length !== 1) {
       new ztoolkit.ProgressWindow("Tags manager only supports exactly 1 item").show();
       return;
     }
+
     const selection = selections[0];
     const mapping: {
       [key: string]: {
@@ -127,8 +133,11 @@ export class KeyExampleFactory {
         tagIndex: number
       }[]
     } = {};
-    const allTags = (await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID()));
-    UIExampleFactory.getCategorialTagsOfList(allTags).forEach((tagData, tagIndex) => {
+
+    const allTags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID());
+    const categorialTagsList = KeyExampleFactory.uiFactory.getCategorialTagsOfList(allTags as TagJson[]);
+
+    categorialTagsList.forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
       mapping[tagData.categoryName].push({
         categoryName: tagData.categoryName,
@@ -139,9 +148,12 @@ export class KeyExampleFactory {
         elementId: `tags-dialog-item-${selection.id}-tag-${tagIndex}`
       });
     });
-    UIExampleFactory.getCategorialTagsOfItem(selection).forEach(tagData => {
+
+    const categorialTagsOfItem = KeyExampleFactory.uiFactory.getCategorialTagsOfItem(selection);
+    categorialTagsOfItem.forEach(tagData => {
       mapping[tagData.categoryName].find(v2 => v2.tagName === tagData.tagName)!.activated = true;
     });
+
     const tagsToChange: { [key in string]: boolean } = {};
 
     if (KeyExampleFactory.currentDialog !== undefined) {
@@ -173,13 +185,12 @@ export class KeyExampleFactory {
                   tag: "span",
                   id: tagData.elementId,
                   properties: { innerText: tagData.tagName },
-                  styles:
-                    {
-                      marginLeft: "8px",
-                      background: tagData.activated ? "#e5beff" : "#00000000",
-                      whiteSpace: "nowrap",
-                      cursor: "pointer"
-                    },
+                  styles: {
+                    marginLeft: "8px",
+                    background: tagData.activated ? "#e5beff" : "#00000000",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer"
+                  },
                   listeners: [{
                     type: "click", listener: (evt: MouseEvent) => {
                       const tagString = tagData.tagName;
@@ -196,9 +207,10 @@ export class KeyExampleFactory {
         }]
       }]
     });
+
     dialog.addButton("Save and close", "save-button", {
       noClose: false, callback(ev) {
-        Object.entries(tagsToChange).map(([tagName, activation]) => {
+        Object.entries(tagsToChange).forEach(([tagName, activation]) => {
           if (activation) {
             selection.addTag(tagName);
           } else {
@@ -208,15 +220,17 @@ export class KeyExampleFactory {
         });
       }
     });
+
     dialog.addButton("Cancel", "close-button", { noClose: false });
+
     dialog.open("Tags", { centerscreen: true, fitContent: true });
     KeyExampleFactory.currentDialog = dialog;
+
     dialog.window.addEventListener("keyup", (event) => {
       if (event.key.toLowerCase() === "escape") {
         KeyExampleFactory.closeCurrentDialog();
       }
     });
-
   }
 }
 

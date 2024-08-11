@@ -21,7 +21,9 @@ async function onStartup() {
   const ui_factory = new UIExampleFactory();
   await ui_factory.init();
   await BasicExampleFactory.registerPrefs();
+  KeyExampleFactory.uiFactory = ui_factory;
   KeyExampleFactory.registerShortcuts();
+  ztoolkit.log("registered");
 }
 
 async function onStartupBak() {
@@ -155,14 +157,8 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 
 function onShortcuts(type: string) {
   switch (type) {
-    // case "larger":
-    //   KeyExampleFactory.exampleShortcutLargerCallback();
-    //   break;
-    // case "smaller":
-    //   KeyExampleFactory.exampleShortcutSmallerCallback();
-    //   break;
     case "open-tag-tab":
-      KeyExampleFactory.exampleShortcutOpenTagsTabCallback().then();
+      KeyExampleFactory.openTagsTabCallback().then();
       break;
     default:
       break;
