@@ -18,7 +18,9 @@ async function onStartup() {
   ]);
   initLocale();
 
-  await UIExampleFactory.registerExtraColumn();
+  const ui_factory = new UIExampleFactory();
+  await ui_factory.init();
+  await ui_factory.registerExtraColumn();
   await BasicExampleFactory.registerPrefs();
   KeyExampleFactory.registerShortcuts();
 }

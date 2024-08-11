@@ -1,6 +1,7 @@
 import { config } from "../../package.json";
 import { getLocaleID, getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
+import { Manager } from "./categorialTag";
 import TagJson = _ZoteroTypes.Tags.TagJson;
 
 function example(
@@ -220,6 +221,17 @@ export class KeyExampleFactory {
 }
 
 export class UIExampleFactory {
+  private readonly tagManager: Manager;
+
+  constructor() {
+    this.tagManager = new Manager();
+  }
+
+  async init() {
+    // Initialize the Manager by updating its cache
+    await this.tagManager.updateCache();
+  }
+
   @example
   static registerStyleSheet() {
     const styles = ztoolkit.UI.createElement(document, "link", {
@@ -238,7 +250,6 @@ export class UIExampleFactory {
   @example
   static registerRightClickMenuItem() {
     const menuIcon = `chrome://${config.addonRef}/content/icons/favicon@0.5x.png`;
-    // item menuitem with icon
     ztoolkit.Menu.register("item", {
       tag: "menuitem",
       id: "zotero-itemmenu-addontemplate-test",
@@ -275,7 +286,6 @@ export class UIExampleFactory {
     ztoolkit.Menu.register("menuFile", {
       tag: "menuseparator"
     });
-    // menu->File menuitem
     ztoolkit.Menu.register("menuFile", {
       tag: "menuitem",
       label: getString("menuitem-filemenulabel"),
@@ -283,44 +293,42 @@ export class UIExampleFactory {
     });
   }
 
-
-  static getCategorialTagsOfList(tags: TagJson[]) {
+  getCategorialTagsOfList(tags: TagJson[]): { categoryName: string, tagName: string, tagJson: TagJson }[] {
     return tags
       .filter(tagJson => tagJson.tag.startsWith("#") && tagJson.tag.includes("/"))
       .map(tagJson => {
         const tagName = tagJson.tag;
         const removePrefix = tagName.slice(1);
-        const [part1, part2] = removePrefix.split("/", 2);
+        const [categoryName, tagNamePart] = removePrefix.split("/", 2);
         return {
-          categoryName: part1,
-          tagName: part2,
-          tagJson: tagJson
+          categoryName,
+          tagName: tagNamePart,
+          tagJson
         };
       })
-      .sort((v1, v2) => v1?.tagJson.tag > v2?.tagJson.tag ? 1 : -1);
+      .sort((v1, v2) => v1.tagJson.tag > v2.tagJson.tag ? 1 : -1);
   }
 
-  static getCategorialTagsOfItem(item: Zotero.Item) {
-    return UIExampleFactory.getCategorialTagsOfList(item.getTags() as TagJson[]);
+  getCategorialTagsOfItem(item: Zotero.Item): { categoryName: string, tagName: string, tagJson: TagJson }[] {
+    const tags = item.getTags() as TagJson[];
+    return this.getCategorialTagsOfList(tags);
   }
 
-  static getCategorialTagsColumn(item: Zotero.Item): string {
-    return UIExampleFactory.getCategorialTagsOfItem(item).map(i => i.tagName).join(" ");
+  getCategorialTagsColumn(item: Zotero.Item): string {
+    const categorialTags = this.getCategorialTagsOfItem(item);
+    return categorialTags.map(i => i.tagName).join(" ");
   }
 
-
-  @example
-  static async registerExtraColumn() {
-    await Zotero.ItemTreeManager.registerColumns({
+  registerExtraColumn() {
+    Zotero.ItemTreeManager.registerColumns({
       pluginID: config.addonID,
       dataKey: "categorial-tags",
       label: getString("categorial-tags-column-name"),
       dataProvider: (item: Zotero.Item, dataKey: string) => {
-        return UIExampleFactory.getCategorialTagsColumn(item);
+        return this.getCategorialTagsColumn(item);
       }
     });
   }
-
 
   @example
   static async registerExtraColumnWithCustomCell() {
