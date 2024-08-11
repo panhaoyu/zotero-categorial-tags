@@ -1,8 +1,10 @@
-import { BasicExampleFactory, HelperExampleFactory, KeyExampleFactory, UIExampleFactory } from "./modules/examples";
+import { BasicExampleFactory, HelperExampleFactory } from "./modules/examples";
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
 import { createZToolkit } from "./utils/ztoolkit";
+import { UIExampleFactory } from "./modules/column";
+import { KeyExampleFactory } from "./modules/shortcuts";
 
 async function onStartup() {
   await Promise.all([
