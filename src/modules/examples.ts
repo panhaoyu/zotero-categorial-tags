@@ -230,6 +230,7 @@ export class UIExampleFactory {
   async init() {
     // Initialize the Manager by updating its cache
     await this.tagManager.updateCache();
+    this.registerExtraColumn();
   }
 
   @example
