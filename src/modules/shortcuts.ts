@@ -2,7 +2,7 @@ import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { tagManager } from "./manager";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
-export class ShortcutManager {
+class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
 
 
@@ -48,8 +48,7 @@ export class ShortcutManager {
       }[]
     } = {};
 
-    const allTags = await Zotero.Tags.getAll(ZoteroPane.getSelectedLibraryID());
-    const categorialTagsList = tagManager.getCategorialTagsOfList(allTags as TagJson[]);
+    const categorialTagsList = tagManager.getTags();
 
     categorialTagsList.forEach((tagData, tagIndex) => {
       mapping[tagData.categoryName] ??= [];
@@ -81,49 +80,68 @@ export class ShortcutManager {
       styles: {
         userSelect: "none"
       },
-      children: [{
-        tag: "table", children: [{
-          tag: "tbody", children: Object.entries(mapping).map(([categoryName, tagsData]) => ({
-            tag: "tr",
-            styles: {
-              marginBottom: "6px"
-            },
-            children: [
-              { tag: "th", properties: { innerText: categoryName } },
-              {
-                tag: "td",
-                styles: {
-                  maxWidth: "800px"
-                },
-                children: tagsData.map(tagData => ({
-                  tag: "span",
-                  id: tagData.elementId,
-                  properties: { innerText: tagData.tagName },
+      children: [
+        {
+          tag: "table",
+          children: [
+            {
+              tag: "tbody",
+              children: Object.entries(mapping).map(
+                ([categoryName, tagsData]) => ({
+                  tag: "tr",
                   styles: {
-                    marginLeft: "8px",
-                    background: tagData.activated ? "#e5beff" : "#00000000",
-                    whiteSpace: "nowrap",
-                    cursor: "pointer"
+                    marginBottom: "6px"
                   },
-                  listeners: [{
-                    type: "click", listener: (evt: MouseEvent) => {
-                      const tagString = tagData.tagName;
-                      tagData.activated = !tagData.activated;
-                      const element: HTMLSpanElement = dialog.window.document.querySelector(`#${tagData.elementId}`);
-                      element.style.background = tagData.activated ? "#e5beff" : "#00000000";
-                      tagsToChange[tagData.tagJson.tag] = tagData.activated;
+                  children: [
+                    { tag: "th", properties: { innerText: categoryName } },
+                    {
+                      tag: "td",
+                      styles: {
+                        maxWidth: "800px"
+                      },
+                      children: tagsData.map((tagData) => ({
+                        tag: "span",
+                        id: tagData.elementId,
+                        properties: { innerText: tagData.tagName },
+                        styles: {
+                          marginLeft: "8px",
+                          background: tagData.activated
+                            ? "#e5beff"
+                            : "#00000000",
+                          whiteSpace: "nowrap",
+                          cursor: "pointer"
+                        },
+                        listeners: [
+                          {
+                            type: "click",
+                            listener: (evt: MouseEvent) => {
+                              tagData.activated = !tagData.activated;
+                              const element: HTMLSpanElement =
+                                dialog.window.document.querySelector(
+                                  `#${tagData.elementId}`
+                                );
+                              element.style.background = tagData.activated
+                                ? "#e5beff"
+                                : "#00000000";
+                              tagsToChange[tagData.tagJson.tag] =
+                                tagData.activated;
+                            }
+                          }
+                        ]
+                      }))
                     }
-                  }]
-                }))
-              }
-            ]
-          }))
-        }]
-      }]
+                  ]
+                })
+              )
+            }
+          ]
+        }
+      ]
     });
 
     dialog.addButton("Save and close", "save-button", {
-      noClose: false, callback: (ev) => {
+      noClose: false,
+      callback: (ev) => {
         Object.entries(tagsToChange).forEach(([tagName, activation]) => {
           if (activation) {
             selection.addTag(tagName);

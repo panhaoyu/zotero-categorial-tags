@@ -2,10 +2,9 @@ import { Category } from "./category";
 import { CategorialTag } from "./categorialTag";
 import type TagJson = _ZoteroTypes.Tags.TagJson;
 
-export class Manager {
-  private categories: Category[] | null = null;
-  private cache: CategorialTag[] | null = null;
-
+class Manager {
+  private categories: Category[] = [];
+  private tagMappingByName: { [key: string]: CategorialTag } = {};
 
   // Initialize the Manager by updating the cache
   async init() {
@@ -34,11 +33,15 @@ export class Manager {
         })
     );
 
-    this.cache = categorialTags;
-
     const categoryMap = new Map<string, CategorialTag[]>();
+    this.tagMappingByName = {};
 
     categorialTags.forEach(tag => {
+      // Update tagMappingByName
+      const key = `#${tag.categoryName}/${tag.tagName}`;
+      this.tagMappingByName[key] = tag;
+
+      // Update categoryMap
       if (!categoryMap.has(tag.categoryName)) {
         categoryMap.set(tag.categoryName, []);
       }
@@ -57,10 +60,12 @@ export class Manager {
         const tagName = tagJson.tag;
         const removePrefix = tagName.slice(1);
         const [categoryName, tagNamePart] = removePrefix.split("/", 2);
+        const key = `#${categoryName}/${tagNamePart}`;
+        const tag = this.tagMappingByName[key];
         return {
-          categoryName,
-          tagName: tagNamePart,
-          tagJson
+          categoryName: tag.categoryName,
+          tagName: tag.tagName,
+          tagJson: tag.tagJson
         };
       })
       .sort((v1, v2) => v1.tagJson.tag > v2.tagJson.tag ? 1 : -1);
@@ -71,22 +76,12 @@ export class Manager {
     return this.getCategorialTagsOfList(tags);
   }
 
-  // Get a specific category by name
-  async getByName(name: string): Promise<Category | undefined> {
-    if (!this.categories) await this.updateCache();
-    return this.categories?.find(category => category.name === name);
+  getTags(): CategorialTag[] {
+    return Object.values(this.tagMappingByName);
   }
 
-  // Get all categories
-  async all(): Promise<Category[]> {
-    if (!this.categories) await this.updateCache();
-    return this.categories!;
-  }
-
-  // Get all cached CategorialTag instances
-  async allCategorialTags(): Promise<CategorialTag[]> {
-    if (!this.cache) await this.updateCache();
-    return this.cache!;
+  getCategories(): Category[] {
+    return this.categories;
   }
 }
 

@@ -1,7 +1,7 @@
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
-export class PreferencesManager {
+class PreferencesManager {
   async init() {
     const prefOptions = {
       pluginID: config.addonID,
