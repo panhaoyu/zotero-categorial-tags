@@ -9,7 +9,7 @@ class ShortcutManager {
   constructor() {
   }
 
-  async init() {
+  async register() {
     ztoolkit.Keyboard.register((ev, keyOptions) => {
       if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
         addon.hooks.onShortcuts("open-tag-tab");

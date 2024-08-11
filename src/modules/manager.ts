@@ -7,7 +7,7 @@ class Manager {
   private tagMappingByName: { [key: string]: CategorialTag } = {};
 
   // Initialize the Manager by updating the cache
-  async init() {
+  async register() {
     await this.updateCache();
   }
 

@@ -2,7 +2,7 @@ import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
 class PreferencesManager {
-  async init() {
+  async register() {
     const prefOptions = {
       pluginID: config.addonID,
       src: rootURI + "chrome/content/preferences.xhtml",

@@ -5,7 +5,7 @@ import { getString } from "../utils/locale";
 export class ColumnManager {
 
 
-  async init() {
+  async register() {
     // Initialize the Manager by updating its cache
     Zotero.ItemTreeManager.registerColumns({
       pluginID: config.addonID,

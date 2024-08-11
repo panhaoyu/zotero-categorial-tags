@@ -16,10 +16,10 @@ async function onStartup() {
   ]);
   initLocale();
 
-  await tagManager.init();
-  await columnManager.init();
-  await preferenceManager.init();
-  await shortcutsManager.init();
+  await tagManager.register();
+  await columnManager.register();
+  await preferenceManager.register();
+  await shortcutsManager.register();
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
