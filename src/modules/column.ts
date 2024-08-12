@@ -12,13 +12,12 @@ export class ColumnManager {
       dataKey: "categorial-tags",
       label: getString("categorial-tags-column-name"),
       dataProvider: (item: Zotero.Item, dataKey: string) => {
-        return this.getCategorialTagsColumn(item);
+        return tagManager
+          .getTagsOfItem(item)
+          .map(i => i.tagName)
+          .join(" ");
       }
     });
-  }
-
-  getCategorialTagsColumn(item: Zotero.Item): string {
-    return tagManager.getTagsOfItem(item).map(i => i.tagName).join(" ");
   }
 }
 
