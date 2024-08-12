@@ -7,29 +7,37 @@ class Manager {
   private tagQueryMapping: { [key: string]: CategorialTag } = {};
 
   async register() {
-    await this.updateCache();
-    const hook = this.onTagChanged;
-    const hookLater = () => (new Promise(resolve => setTimeout(resolve, 500))).then(hook);
+    const self: Manager = this;
+    await self.updateCache();
+
+    async function hook() {
+      await self.onTagChanged();
+    }
+
+    async function hookLater() {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      await hook.call(self);
+    }
 
     // 添加 hooks，在变动的时候，触发 onTagChanged
     const originalCreate = Zotero.Tags.create;
     Zotero.Tags.create = async (...args) => {
       const result = await originalCreate.apply(Zotero.Tags, args);
-      await hook();
+      await hook.call(self);
       return result;
     };
 
     const originalRemoveFromLibrary = Zotero.Tags.removeFromLibrary;
     Zotero.Tags.removeFromLibrary = async (...args) => {
       const result = await originalRemoveFromLibrary.apply(Zotero.Tags, args);
-      await hook();
+      await hook.call(self);
       return result;
     };
 
     const originalRename = Zotero.Tags.rename;
     Zotero.Tags.rename = async (...args) => {
       const result = await originalRename.apply(Zotero.Tags, args);
-      await hook();
+      await hook.call(self);
       return result;
     };
 
@@ -37,34 +45,34 @@ class Manager {
     const originalAddTag = Zotero.Item.prototype.addTag;
     Zotero.Item.prototype.addTag = function(...args) {
       const result = originalAddTag.apply(this, args);
-      hookLater().then();
+      hookLater.call(self).then();
       return result;
     };
 
     const originalRemoveTag = Zotero.Item.prototype.removeTag;
     Zotero.Item.prototype.removeTag = function(...args) {
       const result = originalRemoveTag.apply(this, args);
-      hookLater().then();
+      hookLater.call(self).then();
       return result;
     };
 
     const originalReplaceTag = Zotero.Item.prototype.replaceTag;
     Zotero.Item.prototype.replaceTag = function(...args) {
       const result = originalReplaceTag.apply(this, args);
-      hookLater().then();
+      hookLater.call(self).then();
       return result;
     };
 
     const originalRemoveAllTags = Zotero.Item.prototype.removeAllTags;
     Zotero.Item.prototype.removeAllTags = function(...args) {
       originalRemoveAllTags.apply(this, args);
-      hookLater().then();
+      hookLater.call(self).then();
     };
 
     const originalSetTags = Zotero.Item.prototype.setTags;
     Zotero.Item.prototype.setTags = function(...args) {
       originalSetTags.apply(this, args);
-      hookLater().then();
+      hookLater.call(self).then();
     };
   }
 
