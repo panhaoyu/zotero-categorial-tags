@@ -30,13 +30,15 @@ class ShortcutManager {
     await this.closeCurrentDialog();
 
     const selections = ZoteroPane.getSelectedItems();
-    if (selections.length !== 1) {
-      new ztoolkit.ProgressWindow("Tags manager only supports exactly 1 item").show();
+    if (selections.length === 0) {
       return;
     }
 
-    const selection = selections[0];
-    const itemTagNames: string[] = selection.getTags().map(i => i.tag);
+    // 获取所有选中的文献的标签交集
+    const itemTagNames = selections
+      .map(selection => selection.getTags().map(i => i.tag))
+      .reduce((acc, tags) => acc.filter(tag => tags.includes(tag)), selections[0].getTags().map(i => i.tag));
+
     const itemTags: {
       [key: number]: {
         changed: boolean
@@ -126,12 +128,14 @@ class ShortcutManager {
           if (!activeData.changed) return;
           const tag = tagManager.getTag(tagId);
           if (tag === undefined) return;
-          if (activeData.active) {
-            selection.addTag(tag.fullName);
-          } else {
-            selection.removeTag(tag.fullName);
-          }
-          selection.save();
+          selections.forEach(selection => {
+            if (activeData.active) {
+              selection.addTag(tag.fullName);
+            } else {
+              selection.removeTag(tag.fullName);
+            }
+            selection.save();
+          });
         });
       }
     });
