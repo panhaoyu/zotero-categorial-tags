@@ -10,3 +10,9 @@ prefs-table-detail = Detail
 tabpanel-lib-tab-label = Lib Tab
 tabpanel-reader-tab-label = Reader Tab
 categorial-tags-column-name = Categorial Tags
+categorial-tags-selection-titles =
+    { $length ->
+        [1] Selected one item
+       *[other] Selected { $length } items
+    }
+categorial-tags-dialog-title = Change item tags: { $selectionTitles }

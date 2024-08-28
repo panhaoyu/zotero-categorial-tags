@@ -10,3 +10,9 @@ prefs-table-detail = 详情
 tabpanel-lib-tab-label = 库标签
 tabpanel-reader-tab-label = 阅读器标签
 categorial-tags-column-name = 分级标签
+categorial-tags-selection-titles =
+    { $length ->
+        [1] 选中的 1 个条目
+       *[other] 选中的 { $length } 个条目
+    }
+categorial-tags-dialog-title = 调整条目标签：{ $selectionTitles }

@@ -1,5 +1,6 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { tagManager } from "./manager";
+import { getString } from "../utils/locale";
 
 class ShortcutManager {
   currentDialog: DialogHelper | undefined = undefined;
@@ -38,6 +39,12 @@ class ShortcutManager {
     const itemTagNames = selections
       .map(selection => selection.getTags().map(i => i.tag))
       .reduce((acc, tags) => acc.filter(tag => tags.includes(tag)), selections[0].getTags().map(i => i.tag));
+
+
+    const selectionItemsTitle = selections.length === 1
+      ? selections[0].getDisplayTitle()
+      : getString(`categorial-tags-selection-titles`, { args: { length: selections.length } });
+    const dialogTitle = getString("categorial-tags-dialog-title", { args: { selectionTitles: selectionItemsTitle } });
 
     const itemTags: {
       [key: number]: {
@@ -142,7 +149,7 @@ class ShortcutManager {
 
     dialog.addButton("Cancel", "close-button", { noClose: false });
 
-    dialog.open("Tags", { centerscreen: true, fitContent: true });
+    dialog.open(dialogTitle, { centerscreen: true, fitContent: true });
     this.currentDialog = dialog;
 
     dialog.window.addEventListener("keyup", (event) => {
