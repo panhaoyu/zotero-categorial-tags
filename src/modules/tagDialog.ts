@@ -3,17 +3,15 @@ import { getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { CategorialTag } from "./categorialTag";
 
-
 interface TagState {
   changed: boolean;
   active: boolean;
+  isFiltered: boolean;
 }
-
 
 interface DialogData {
   itemTags: { [key: number]: TagState };
 }
-
 
 export class TagDialog {
   private dialog?: DialogHelper;
@@ -26,25 +24,20 @@ export class TagDialog {
     this.itemTags = {};
     this.dialogTitle = "";
 
-
     this.initialize();
   }
 
   private initialize() {
-
     if (this.selections.length === 0) {
       throw new Error("No selections provided");
     }
 
-
     const initialTags = this.selections[0].getTags().map(tagObj => tagObj.tag);
-
 
     const commonTags = this.selections.slice(1).reduce((acc, selection) => {
       const selectionTags = selection.getTags().map(tagObj => tagObj.tag);
       return acc.filter(tag => selectionTags.includes(tag));
     }, initialTags);
-
 
     const selectionItemsTitle =
       this.selections.length === 1
@@ -52,31 +45,27 @@ export class TagDialog {
         : getString(`categorial-tags-selection-titles`, { args: { length: this.selections.length } });
     this.dialogTitle = getString("categorial-tags-dialog-title", { args: { selectionTitles: selectionItemsTitle } });
 
-
     this.itemTags = Object.fromEntries(
       tagManager.getAllTags().map(i => [
         i.tagId,
         {
           changed: false,
-          active: commonTags.includes(i.fullName)
+          active: commonTags.includes(i.fullName),
+          isFiltered: true
         }
       ])
     );
   }
 
   public open() {
-
     if (this.dialog !== undefined) return;
 
-
     this.dialog = new DialogHelper(3, 1);
-
 
     const dialogData: DialogData = {
       itemTags: { ...this.itemTags }
     };
     this.dialog.setDialogData(dialogData);
-
 
     this.dialog.addCell(0, 0, {
       tag: "input",
@@ -86,13 +75,12 @@ export class TagDialog {
         oninput: (e: Event) => {
           const filterValue = (e.target as HTMLInputElement).value.toLowerCase();
 
-
           tagManager.getAllTags().forEach(tagData => {
+            const tagState = dialogData.itemTags[tagData.tagId];
             const element = this.dialog!.window.document.querySelector(`#${tagData.uniqueElementId}`) as HTMLSpanElement;
-            if (element) {
-              const isVisible = tagData.tagName.toLowerCase().includes(filterValue);
-              element.style.display = isVisible ? "inline-block" : "none";
-              element.style.color = isVisible ? "inherit" : "gray";
+            if (element && tagState) {
+              tagState.isFiltered = tagData.tagName.toLowerCase().includes(filterValue);
+              element.style.color = tagState.isFiltered ? "inherit" : "gray";
             }
           });
         }
@@ -104,12 +92,12 @@ export class TagDialog {
       }
     });
 
-
     this.dialog.addCell(1, 0, {
       tag: "div",
       styles: {
         userSelect: "none",
-        maxHeight: "800px",
+        maxHeight: "80vh",
+        maxWidth: "80vw",
         overflowY: "auto"
       },
       children: [
@@ -136,14 +124,13 @@ export class TagDialog {
                       properties: { innerText: tagData.tagName },
                       styles: {
                         marginLeft: "8px",
-                        background: dialogData.itemTags[tagData.tagId].active
-                          ? "#e5beff"
-                          : "transparent",
+                        background: dialogData.itemTags[tagData.tagId].active ? "#e5beff" : "transparent",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                         padding: "4px",
                         borderRadius: "4px",
-                        display: "inline-block"
+                        display: "inline-block",
+                        color: dialogData.itemTags[tagData.tagId].isFiltered ? "inherit" : "gray"
                       },
                       listeners: [
                         {
@@ -163,7 +150,6 @@ export class TagDialog {
       ]
     });
 
-
     this.dialog.addButton("Save and close", "save-button", {
       noClose: false,
       callback: () => {
@@ -172,18 +158,15 @@ export class TagDialog {
       }
     });
 
-
     this.dialog.addButton("Cancel", "close-button", {
       noClose: false,
       callback: () => this.close()
     });
 
-
     this.dialog.open(this.dialogTitle, {
       centerscreen: true,
       fitContent: true
     });
-
 
     this.dialog.window.addEventListener("keyup", event => {
       if (event.key.toLowerCase() === "escape") {
@@ -205,7 +188,6 @@ export class TagDialog {
     if (tagState) {
       tagState.active = !tagState.active;
       tagState.changed = true;
-
 
       const element: HTMLSpanElement | null = this.dialog.window.document.querySelector(`#${elementId}`);
       if (element) {
