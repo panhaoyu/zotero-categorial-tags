@@ -118,11 +118,11 @@ export class TagDialog {
                       id: tagData.uniqueElementId,
                       properties: { innerText: tagData.tagName },
                       styles: {
-                        marginLeft: "8px",
+                        marginLeft: "4px",
                         background: dialogData.itemTags[tagData.tagId].active ? "#e5beff" : "transparent",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
-                        padding: "4px",
+                        padding: "2px",
                         borderRadius: "4px",
                         display: "inline-block",
                         color: dialogData.itemTags[tagData.tagId].isFiltered ? "inherit" : "gray"
