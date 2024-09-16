@@ -4,8 +4,6 @@ import { getString } from "../utils/locale"; // 导入本地化字符串获取�
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog"; // 导入 DialogHelper 类，用于创建和管理对话框
 import { CategorialTag } from "./categorialTag"; // 导入 CategorialTag 类型，用于表示分类标签
 
-// 定义 Selection 类型为 Zotero.Item，用于表示被选中的项
-type Selection = Zotero.Item;
 
 // 定义 TagState 接口，表示每个标签的状态
 interface TagState {
@@ -22,14 +20,14 @@ interface DialogData {
 export class TagDialog {
   private dialog?: DialogHelper; // 对话框实例，可选
   private itemTags: { [key: number]: TagState }; // 存储所有标签的状态
-  private selections: Selection[]; // 被选中的项数组
+  private selections: Zotero.Item[]; // 被选中的项数组
   private dialogTitle: string; // 对话框标题
 
   /**
    * 构造函数
    * @param selections 被选中的项数组
    */
-  constructor(selections: Selection[]) {
+  constructor(selections: Zotero.Item[]) {
     this.selections = selections; // 初始化被选中的项
     this.itemTags = {}; // 初始化标签状态为空对象
     this.dialogTitle = ""; // 初始化对话框标题为空字符串
