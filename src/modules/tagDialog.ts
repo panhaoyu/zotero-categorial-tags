@@ -96,8 +96,6 @@ export class TagDialog {
       tag: "div",
       styles: {
         userSelect: "none",
-        maxHeight: "80vh",
-        maxWidth: "80vw",
         overflowY: "auto"
       },
       children: [
@@ -115,9 +113,6 @@ export class TagDialog {
                   { tag: "th", properties: { innerText: category.name } },
                   {
                     tag: "td",
-                    styles: {
-                      maxWidth: "800px"
-                    },
                     children: category.tags.map((tagData: CategorialTag) => ({
                       tag: "span",
                       id: tagData.uniqueElementId,
@@ -163,9 +158,19 @@ export class TagDialog {
       callback: () => this.close()
     });
 
-    this.dialog.open(this.dialogTitle, {
+    const mainWindow = Zotero.getMainWindow();
+    const screenWidth = mainWindow.screen.width;
+    const screenHeight = mainWindow.screen.height;
+
+    const title = this.dialogTitle;
+    const height = screenHeight * 0.8;
+    const width = screenWidth * 0.8;
+
+    this.dialog.open(title, {
       centerscreen: true,
-      fitContent: true
+      resizable: false,
+      height: height,
+      width: width
     });
 
     this.dialog.window.addEventListener("keyup", event => {
