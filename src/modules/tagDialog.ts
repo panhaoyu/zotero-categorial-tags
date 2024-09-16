@@ -1,15 +1,11 @@
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
+import { CategorialTag } from "./categorialTag";
 
 export class TagDialog {
   private dialog?: DialogHelper;
-  private itemTags: {
-    [key: number]: {
-      changed: boolean;
-      active: boolean;
-    };
-  };
+  private itemTags: { [key: number]: { changed: boolean; active: boolean } };
   private selections: any[]; // 根据实际类型调整
   private dialogTitle: string;
 
@@ -42,9 +38,7 @@ export class TagDialog {
   }
 
   public open() {
-    if (this.dialog !== undefined) {
-      return;
-    }
+    if (this.dialog !== undefined) return;
 
     this.dialog = new ztoolkit.Dialog(2, 1);
 
@@ -74,7 +68,7 @@ export class TagDialog {
                       styles: {
                         maxWidth: "800px"
                       },
-                      children: category.tags.map((tagData) => ({
+                      children: category.tags.map((tagData: CategorialTag) => ({
                         tag: "span",
                         id: tagData.uniqueElementId,
                         properties: { innerText: tagData.tagName },
@@ -89,7 +83,7 @@ export class TagDialog {
                         listeners: [
                           {
                             type: "click",
-                            listener: (evt: MouseEvent) => {
+                            listener: () => {
                               this.toggleTag(tagData.tagId, tagData.uniqueElementId);
                             }
                           }
@@ -117,7 +111,7 @@ export class TagDialog {
 
     this.dialog.open(this.dialogTitle, { centerscreen: true, fitContent: true });
 
-    this.dialog.window.addEventListener("keyup", (event) => {
+    this.dialog.window.addEventListener("keyup", event => {
       if (event.key.toLowerCase() === "escape") {
         this.close();
       }
