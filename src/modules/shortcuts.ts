@@ -1,4 +1,4 @@
-import { TagDialog } from "./tagDialog"; // 引入新的 TagDialog 类
+import { TagDialogUI } from "./tagDialogUI"; // 引入新的 TagDialog 类
 
 class ShortcutManager {
   constructor() {
@@ -19,7 +19,7 @@ class ShortcutManager {
     }
 
     // 创建并打开 TagDialog
-    const tagDialog = new TagDialog(selections);
+    const tagDialog = new TagDialogUI(selections);
     tagDialog.open();
   }
 }

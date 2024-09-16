@@ -1,4 +1,5 @@
 import pinyin from "pinyin"; // 使用拼音库
+// noinspection TypeScriptCheckImport
 import FuzzySearch from "fuzzy-search"; // 使用模糊搜索库
 
 export class TagFilter {
@@ -9,6 +10,7 @@ export class TagFilter {
   constructor(tags: string[]) {
     this.tags = tags;
     this.lowerCaseTags = tags.map(tag => tag.toLowerCase()); // 预处理成小写
+    // noinspection JSAnnotator
     this.pinyinTags = tags.map(tag => pinyin(tag, { style: pinyin.STYLE_NORMAL }).flat()); // 转换为拼音
   }
 
@@ -20,6 +22,7 @@ export class TagFilter {
     const resultFromOriginal = searcher.search(filterValue).map(tag => this.lowerCaseTags.indexOf(tag));
 
     // 输入汉字时，也将其转换为拼音并进行拼音检索
+    // noinspection JSAnnotator
     const pinyinInput = pinyin(filterValue, { style: pinyin.STYLE_NORMAL }).flat().join("");
     const pinyinSearcher = new FuzzySearch(this.pinyinTags, [], { caseSensitive: false });
     const resultFromPinyin = pinyinSearcher.search(pinyinInput).map(tag => this.pinyinTags.indexOf(tag));
