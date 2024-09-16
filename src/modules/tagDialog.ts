@@ -1,9 +1,8 @@
-// TagDialog.ts
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
 
 export class TagDialog {
-  private dialog: ztoolkit.Dialog | undefined = undefined;
+  private dialog;
   private itemTags: {
     [key: number]: {
       changed: boolean;
