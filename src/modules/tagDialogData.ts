@@ -8,11 +8,7 @@ interface TagState {
   isFiltered: boolean;
 }
 
-export interface TagDialogData {
-  itemTags: { [key: number]: TagState };
-}
-
-export class TagDialogBackend {
+export class TagDialogData {
   public itemTags: { [key: number]: TagState };
   public dialogTitle: string;
   public tagFilter: TagFilter;
@@ -59,27 +55,26 @@ export class TagDialogBackend {
     );
   }
 
-  public filterTags(filterValue: string, dialogData: TagDialogData) {
+  public filterTags(filterValue: string) {
     const filterResults = this.tagFilter.filterTags(filterValue);
     tagManager.getAllTags().forEach((tagData, index) => {
-      const tagState = dialogData.itemTags[tagData.tagId];
+      const tagState = this.itemTags[tagData.tagId];
       if (tagState) {
         tagState.isFiltered = filterResults[index];
       }
     });
   }
 
-  public toggleTag(tagId: number, dialogData: TagDialogData) {
-    const tagState = dialogData.itemTags[tagId];
+  public toggleTag(tagId: number) {
+    const tagState = this.itemTags[tagId];
     if (tagState) {
       tagState.active = !tagState.active;
       tagState.changed = true;
     }
   }
 
-  public saveChanges(dialogData: TagDialogData) {
-    const itemTags: { [key: number]: TagState } = dialogData.itemTags;
-    Object.entries(itemTags).forEach(([tagId, activeData]) => {
+  public saveChanges() {
+    Object.entries(this.itemTags).forEach(([tagId, activeData]) => {
       if (!activeData.changed) return;
       const tag = tagManager.getTag(Number(tagId));
       if (tag === undefined) return;

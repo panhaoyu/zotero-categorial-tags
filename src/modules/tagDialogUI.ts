@@ -1,14 +1,14 @@
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
-import { TagDialogBackend, TagDialogData } from "./tagDialogBackend";
+import { TagDialogData } from "./tagDialogData";
 import { CategorialTag } from "./categorialTag";
 import { tagManager } from "./manager";
 
 export class TagDialogUI {
   private dialog?: DialogHelper;
-  private logic: TagDialogBackend;
+  private logic: TagDialogData;
 
   constructor(selections: Zotero.Item[]) {
-    this.logic = new TagDialogBackend(selections);
+    this.logic = new TagDialogData(selections);
   }
 
   public open() {
@@ -16,10 +16,7 @@ export class TagDialogUI {
 
     this.dialog = new DialogHelper(3, 1);
 
-    const dialogData: TagDialogData = {
-      itemTags: { ...this.logic.itemTags }
-    };
-    this.dialog.setDialogData(dialogData);
+    this.dialog.setDialogData({ itemTags: { ...this.logic.itemTags } });
 
     this.dialog.addCell(0, 0, {
       tag: "input",
@@ -28,8 +25,8 @@ export class TagDialogUI {
         placeholder: "Filter tags...",
         oninput: (e: Event) => {
           const filterValue = (e.target as HTMLInputElement).value;
-          this.logic.filterTags(filterValue, dialogData);
-          this.updateTagStyles(dialogData);
+          this.logic.filterTags(filterValue);
+          this.updateTagStyles();
         }
       },
       styles: {
@@ -64,20 +61,20 @@ export class TagDialogUI {
                       properties: { innerText: tagData.tagName },
                       styles: {
                         marginLeft: "4px",
-                        background: dialogData.itemTags[tagData.tagId].active ? "#e5beff" : "transparent",
+                        background: this.logic.itemTags[tagData.tagId].active ? "#e5beff" : "transparent",
                         whiteSpace: "nowrap",
                         cursor: "pointer",
                         padding: "2px",
                         borderRadius: "4px",
                         display: "inline-block",
-                        color: dialogData.itemTags[tagData.tagId].isFiltered ? "inherit" : "gray"
+                        color: this.logic.itemTags[tagData.tagId].isFiltered ? "inherit" : "gray"
                       },
                       listeners: [
                         {
                           type: "click",
                           listener: () => {
-                            this.logic.toggleTag(tagData.tagId, dialogData);
-                            this.updateTagStyles(dialogData);
+                            this.logic.toggleTag(tagData.tagId);
+                            this.updateTagStyles();
                           }
                         }
                       ]
@@ -94,7 +91,7 @@ export class TagDialogUI {
     this.dialog.addButton("Save and close", "save-button", {
       noClose: false,
       callback: () => {
-        this.logic.saveChanges(dialogData);
+        this.logic.saveChanges();
         this.close();
       }
     });
@@ -132,10 +129,10 @@ export class TagDialogUI {
     this.dialog = undefined;
   }
 
-  private updateTagStyles(dialogData: TagDialogData) {
+  private updateTagStyles() {
     tagManager.getAllTags().forEach(tagData => {
       const element = this.dialog!.window.document.querySelector(`#${tagData.uniqueElementId}`) as HTMLSpanElement;
-      const tagState = dialogData.itemTags[tagData.tagId];
+      const tagState = this.logic.itemTags[tagData.tagId];
       if (element && tagState) {
         element.style.color = tagState.isFiltered ? "inherit" : "gray";
         element.style.background = tagState.active ? "#e5beff" : "transparent";
