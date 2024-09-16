@@ -13,16 +13,39 @@ interface DialogData {
   itemTags: { [key: number]: TagState };
 }
 
+class TagFilter {
+  private tags: string[];
+  private lowerCaseTags: string[];
+
+  constructor(tags: string[]) {
+    this.tags = tags;
+    this.lowerCaseTags = tags.map(tag => tag.toLowerCase()); // 预处理成小写
+  }
+
+  public filterTags(input: string): boolean[] {
+    const filterValue = input.toLowerCase();
+    return this.lowerCaseTags.map(tag => tag.includes(filterValue));
+  }
+
+  public getOriginalTags(): string[] {
+    return this.tags;
+  }
+}
+
 export class TagDialog {
   private dialog?: DialogHelper;
   private itemTags: { [key: number]: TagState };
   private selections: Zotero.Item[];
   private dialogTitle: string;
+  private tagFilter: TagFilter;
 
   constructor(selections: Zotero.Item[]) {
     this.selections = selections;
     this.itemTags = {};
     this.dialogTitle = "";
+
+    const allTags = tagManager.getAllTags().map(tagData => tagData.tagName);
+    this.tagFilter = new TagFilter(allTags);
 
     this.initialize();
   }
@@ -73,13 +96,14 @@ export class TagDialog {
         type: "text",
         placeholder: "Filter tags...",
         oninput: (e: Event) => {
-          const filterValue = (e.target as HTMLInputElement).value.toLowerCase();
+          const filterValue = (e.target as HTMLInputElement).value;
+          const filterResults = this.tagFilter.filterTags(filterValue);
 
-          tagManager.getAllTags().forEach(tagData => {
+          tagManager.getAllTags().forEach((tagData, index) => {
             const tagState = dialogData.itemTags[tagData.tagId];
             const element = this.dialog!.window.document.querySelector(`#${tagData.uniqueElementId}`) as HTMLSpanElement;
             if (element && tagState) {
-              tagState.isFiltered = tagData.tagName.toLowerCase().includes(filterValue);
+              tagState.isFiltered = filterResults[index];
               element.style.color = tagState.isFiltered ? "inherit" : "gray";
             }
           });
