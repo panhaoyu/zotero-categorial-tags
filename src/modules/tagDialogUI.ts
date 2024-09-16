@@ -7,11 +7,13 @@ export class TagDialogUI {
   private dialog?: DialogHelper;
   private logic: TagDialogData;
 
+  private readonly filterInputElementId: string = "zotero-categorial-tags-filter-input";
+
   constructor(selections: Zotero.Item[]) {
     this.logic = new TagDialogData(selections);
   }
 
-  public open() {
+  public async open() {
     if (this.dialog !== undefined) return;
 
     this.dialog = new DialogHelper(3, 1);
@@ -20,6 +22,7 @@ export class TagDialogUI {
 
     this.dialog.addCell(0, 0, {
       tag: "input",
+      id: this.filterInputElementId,
       properties: {
         type: "text",
         placeholder: "Filter tags...",
@@ -116,11 +119,20 @@ export class TagDialogUI {
       width: width
     });
 
-    this.dialog.window.addEventListener("keyup", event => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+
+    this.document.getElementById(this.filterInputElementId).focus();
+
+    this.document.addEventListener("keyup", event => {
       if (event.key.toLowerCase() === "escape") {
         this.close();
       }
     });
+  }
+
+  get document(): Document {
+    return this.dialog?.window.document!;
   }
 
   public close() {
@@ -131,7 +143,7 @@ export class TagDialogUI {
 
   private updateTagStyles() {
     tagManager.getAllTags().forEach(tagData => {
-      const element = this.dialog!.window.document.querySelector(`#${tagData.uniqueElementId}`) as HTMLSpanElement;
+      const element = this.document.getElementById(tagData.uniqueElementId) as HTMLSpanElement;
       const tagState = this.logic.itemTags[tagData.tagId];
       if (element && tagState) {
         element.style.color = tagState.isFiltered ? "inherit" : "gray";

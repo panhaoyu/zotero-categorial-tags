@@ -20,7 +20,7 @@ class ShortcutManager {
 
     // 创建并打开 TagDialog
     const tagDialog = new TagDialogUI(selections);
-    tagDialog.open();
+    await tagDialog.open();
   }
 }
 
