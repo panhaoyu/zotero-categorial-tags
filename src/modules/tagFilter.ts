@@ -15,13 +15,14 @@ export class TagFilter {
   public filterTags(input: string): boolean[] {
     const filterValue = input.toLowerCase();
 
-    // 使用模糊搜索支持任意位置非连续字符检索
+    // 原始字符串的模糊搜索
     const searcher = new FuzzySearch(this.lowerCaseTags, [], { caseSensitive: false });
     const resultFromOriginal = searcher.search(filterValue).map(tag => this.lowerCaseTags.indexOf(tag));
 
-    // 支持拼音检索
+    // 输入汉字时，也将其转换为拼音并进行拼音检索
+    const pinyinInput = pinyin(filterValue, { style: pinyin.STYLE_NORMAL }).flat().join("");
     const pinyinSearcher = new FuzzySearch(this.pinyinTags, [], { caseSensitive: false });
-    const resultFromPinyin = pinyinSearcher.search(filterValue).map(tag => this.pinyinTags.indexOf(tag));
+    const resultFromPinyin = pinyinSearcher.search(pinyinInput).map(tag => this.pinyinTags.indexOf(tag));
 
     // 合并去重
     const resultIndexes = Array.from(new Set([...resultFromOriginal, ...resultFromPinyin]));
