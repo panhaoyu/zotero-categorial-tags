@@ -3,20 +3,8 @@ import { getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { CategorialTag } from "./categorialTag";
 
-// 定义 Selection 接口以提高类型安全性
-interface Selection {
-  getTags(): Array<{ tag: string }>;
+type Selection = Zotero.Item
 
-  getDisplayTitle(): string;
-
-  addTag(tagName: string): void;
-
-  removeTag(tagName: string): void;
-
-  save(): void;
-}
-
-// 定义 TagState 接口
 interface TagState {
   changed: boolean;
   active: boolean;
