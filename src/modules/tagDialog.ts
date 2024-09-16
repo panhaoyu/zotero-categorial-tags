@@ -3,13 +3,32 @@ import { getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 import { CategorialTag } from "./categorialTag";
 
+// 定义 Selection 接口以提高类型安全性
+interface Selection {
+  getTags(): Array<{ tag: string }>;
+
+  getDisplayTitle(): string;
+
+  addTag(tagName: string): void;
+
+  removeTag(tagName: string): void;
+
+  save(): void;
+}
+
+// 定义 TagState 接口
+interface TagState {
+  changed: boolean;
+  active: boolean;
+}
+
 export class TagDialog {
   private dialog?: DialogHelper;
-  private itemTags: { [key: number]: { changed: boolean; active: boolean } };
-  private selections: any[]; // 根据实际类型调整
+  private itemTags: { [key: number]: TagState };
+  private selections: Selection[]; // 已调整为具体类型
   private dialogTitle: string;
 
-  constructor(selections: any[]) { // 根据实际类型调整
+  constructor(selections: Selection[]) { // 已调整为具体类型
     this.selections = selections;
     this.itemTags = {};
     this.dialogTitle = "";
@@ -19,9 +38,11 @@ export class TagDialog {
   }
 
   private initialize() {
-    const itemTagNames = this.selections
-      .map(selection => selection.getTags().map((i: any) => i.tag))
-      .reduce((acc: string[], tags: string[]) => acc.filter(tag => tags.includes(tag)), this.selections[0].getTags().map((i: any) => i.tag));
+    const initialTags = this.selections[0].getTags().map(tagObj => tagObj.tag);
+    const commonTags = this.selections.slice(1).reduce((acc, selection) => {
+      const selectionTags = selection.getTags().map(tagObj => tagObj.tag);
+      return acc.filter(tag => selectionTags.includes(tag));
+    }, initialTags);
 
     const selectionItemsTitle = this.selections.length === 1
       ? this.selections[0].getDisplayTitle()
@@ -32,7 +53,7 @@ export class TagDialog {
       tagManager.getAllTags()
         .map(i => [i.tagId, {
           changed: false,
-          active: itemTagNames.includes(i.fullName)
+          active: commonTags.includes(i.fullName)
         }])
     );
   }
@@ -40,7 +61,7 @@ export class TagDialog {
   public open() {
     if (this.dialog !== undefined) return;
 
-    this.dialog = new ztoolkit.Dialog(2, 1);
+    this.dialog = new DialogHelper(2, 1); // 替换为 DialogHelper
 
     this.dialog.addCell(0, 0, {
       tag: "div",
@@ -76,7 +97,7 @@ export class TagDialog {
                           marginLeft: "8px",
                           background: this.itemTags[tagData.tagId].active
                             ? "#e5beff"
-                            : "#00000000",
+                            : "transparent", // 替换透明颜色
                           whiteSpace: "nowrap",
                           cursor: "pointer"
                         },
@@ -131,7 +152,7 @@ export class TagDialog {
     if (element) {
       element.style.background = this.itemTags[tagId].active
         ? "#e5beff"
-        : "#00000000";
+        : "transparent"; // 替换透明颜色
     }
   }
 
