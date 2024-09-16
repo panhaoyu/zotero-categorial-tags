@@ -1,8 +1,9 @@
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
+import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
 
 export class TagDialog {
-  private dialog;
+  private dialog?: DialogHelper;
   private itemTags: {
     [key: number]: {
       changed: boolean;
@@ -50,7 +51,9 @@ export class TagDialog {
     this.dialog.addCell(0, 0, {
       tag: "div",
       styles: {
-        userSelect: "none"
+        userSelect: "none",
+        maxHeight: "800px",
+        overflowY: "auto"
       },
       children: [
         {
