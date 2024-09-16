@@ -86,9 +86,7 @@ export class TagDialog {
         }
       },
       styles: {
-        marginBottom: "10px",
-        padding: "5px",
-        width: "98%"
+        marginBottom: "10px"
       }
     });
 
