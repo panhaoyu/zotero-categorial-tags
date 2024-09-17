@@ -121,17 +121,28 @@ export class TagDialogUI {
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
-
     this.document.getElementById(this.filterInputElementId).focus();
 
+    this.addGlobalKeyListeners();
+  }
+
+  private addGlobalKeyListeners() {
     this.document.addEventListener("keyup", event => {
       if (event.key.toLowerCase() === "escape") {
-        this.close();
+        this.handleCloseShortcut();
       } else if (event.key.toLowerCase() === "enter") {
-        this.logic.saveChanges();
-        this.close();
+        this.handleSaveShortcut();
       }
     });
+  }
+
+  private handleCloseShortcut() {
+    this.close();
+  }
+
+  private handleSaveShortcut() {
+    this.logic.saveChanges();
+    this.close();
   }
 
   get document(): Document {
