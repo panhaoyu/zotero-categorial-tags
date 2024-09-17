@@ -127,6 +127,9 @@ export class TagDialogUI {
     this.document.addEventListener("keyup", event => {
       if (event.key.toLowerCase() === "escape") {
         this.close();
+      } else if (event.key.toLowerCase() === "enter") {
+        this.logic.saveChanges();
+        this.close();
       }
     });
   }
