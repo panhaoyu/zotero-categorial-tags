@@ -109,12 +109,12 @@ export class TagDialogUI {
     const screenHeight = mainWindow.screen.height;
 
     const title = this.logic.dialogTitle;
-    const height = screenHeight * 0.8;
-    const width = screenWidth * 0.8;
+    const height = Math.min(screenHeight * 0.8, 600); // Limit height to 600px or 80% of screen height
+    const width = Math.min(screenWidth * 0.8, 800);   // Limit width to 800px or 80% of screen width
 
     this.dialog.open(title, {
       centerscreen: true,
-      resizable: false,
+      resizable: true,
       height: height,
       width: width
     });
