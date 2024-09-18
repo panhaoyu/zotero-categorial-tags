@@ -1,5 +1,9 @@
 # Zotero Categorial Tags 插件
 
+![](Pane.png)
+
+![](Dialog.png)
+
 ## 简介
 
 **Zotero Categorial Tags** 是一款专为 Zotero 用户设计的插件，旨在提升标签管理的效率和便捷性。通过引入 **分类标签**

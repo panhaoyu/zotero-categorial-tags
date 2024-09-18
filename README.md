@@ -1,5 +1,10 @@
 # Zotero Categorial Tags Plugin
 
+![](doc/Pane.png)
+
+![](doc/Dialog.png)
+
+
 ## Introduction
 
 **Zotero Categorial Tags** is a plugin designed specifically for Zotero users to improve the efficiency and convenience
