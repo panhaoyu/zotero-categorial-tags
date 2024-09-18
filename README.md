@@ -1,9 +1,13 @@
 # Zotero Categorial Tags Plugin
 
+[![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
+
+
 ![](doc/Pane.png)
 
 ![](doc/Dialog.png)
 
+Documentation | [中文文档](doc/README-zhCN.md)
 
 ## Introduction
 
@@ -121,6 +125,8 @@ create tags in Zotero before using this plugin to manage and apply them.
 
 ## Acknowledgements
 
-- **zotero-plugin-template**: Special thanks to this project for providing the initial template, which greatly improved development efficiency.
-- **zotero-style**: Thank you to this project for exploring the `#Tags` feature, which provided valuable inspiration for the development of this plugin.
+- **zotero-plugin-template**: Special thanks to this project for providing the initial template, which greatly improved
+  development efficiency.
+- **zotero-style**: Thank you to this project for exploring the `#Tags` feature, which provided valuable inspiration for
+  the development of this plugin.
 
