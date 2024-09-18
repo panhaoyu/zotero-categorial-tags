@@ -100,7 +100,7 @@ create tags in Zotero before using this plugin to manage and apply them.
 
 ## Changelog
 
-### v1.0.0
+### v0.1.0
 
 - Initial release.
 - Support for adding and removing categorial tags.
