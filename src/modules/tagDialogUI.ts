@@ -55,7 +55,13 @@ export class TagDialogUI {
                   marginBottom: "6px"
                 },
                 children: [
-                  { tag: "th", properties: { innerText: category.name } },
+                  {
+                    tag: "th",
+                    properties: { innerText: category.name },
+                    styles: {
+                      whiteSpace: "nowrap"  // Ensure text does not wrap
+                    }
+                  },
                   {
                     tag: "td",
                     children: category.tags.map((tagData: CategorialTag) => ({
