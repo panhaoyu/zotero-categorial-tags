@@ -2,7 +2,8 @@
 
 ## 简介
 
-**Zotero Categorial Tags** 是一款专为 Zotero 用户设计的插件，旨在提升标签管理的效率和便捷性。通过引入 **分类标签** 的概念，用户可以更有条理地组织、检索和管理文献资料，从而优化研究和学习过程。
+**Zotero Categorial Tags** 是一款专为 Zotero 用户设计的插件，旨在提升标签管理的效率和便捷性。通过引入 **分类标签**
+的概念，用户可以更有条理地组织、检索和管理文献资料，从而优化研究和学习过程。
 
 ## 功能特性
 
@@ -69,7 +70,8 @@
 ## 贡献与支持
 
 - **问题反馈**：
-    - 如果在使用过程中遇到问题，欢迎在 [GitHub 问题页面](https://github.com/panhaoyu/zotero-categorial-tags/issues) 提交 Issue。
+    - 如果在使用过程中遇到问题，欢迎在 [GitHub 问题页面](https://github.com/panhaoyu/zotero-categorial-tags/issues) 提交
+      Issue。
 
 - **功能建议**：
     - 对插件有任何改进建议，欢迎提出，我们将积极考虑。
@@ -97,3 +99,9 @@
 
 - 本项目采用 [MIT 许可证](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE) 开源。
 - 遵守 AGPL 协议。
+
+## 鸣谢
+
+- **zotero-plugin-template**: 感谢该项目提供的初始模板，极大地提高了开发效率。
+- **zotero-style**: 感谢该项目关于 `#Tags` 功能的探索，为本插件的开发提供了重要启发。
+

@@ -113,3 +113,9 @@ create tags in Zotero before using this plugin to manage and apply them.
 - This project is open source under
   the [MIT License](./LICENSE).
 - Complies with the AGPL agreement.
+
+## Acknowledgements
+
+- **zotero-plugin-template**: Special thanks to this project for providing the initial template, which greatly improved development efficiency.
+- **zotero-style**: Thank you to this project for exploring the `#Tags` feature, which provided valuable inspiration for the development of this plugin.
+
