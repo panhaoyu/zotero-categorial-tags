@@ -31,7 +31,7 @@
     "fuzzy-search": "^3.2.1",
     "pinyin": "^4.0.0-alpha.2",
     "segmentit": "^2.0.3",
-    "zotero-plugin-toolkit": "^2.3.37"
+    "zotero-plugin-toolkit": "^3.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
