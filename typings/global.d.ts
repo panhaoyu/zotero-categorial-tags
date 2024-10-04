@@ -1,25 +1,31 @@
-declare const _globalThis: {
-  [key: string]: any;
-  Zotero: _ZoteroTypes.Zotero;
-  ZoteroPane: _ZoteroTypes.ZoteroPane;
-  Zotero_Tabs: typeof Zotero_Tabs;
-  window: Window;
-  document: Document;
-  ztoolkit: ZToolkit;
-  addon: typeof addon;
-};
+import { ZoteroToolkit } from "zotero-plugin-toolkit";
+import Addon from "../src/addon";
 
-declare type ZToolkit = ReturnType<
-  typeof import("../src/utils/ztoolkit").createZToolkit
->;
+declare global {
+  const _globalThis: {
+    [key: string]: any;
+    Zotero: _ZoteroTypes.Zotero;
+    ZoteroPane: _ZoteroTypes.ZoteroPane;
+    Zotero_Tabs: typeof Zotero_Tabs;
+    window: Window;
+    document: Document;
+    ztoolkit: ZToolkit;
+    addon: Addon;
+  };
 
-declare const ztoolkit: ZToolkit;
 
-declare const rootURI: string;
+  class ZToolkit extends ZoteroToolkit {
+    log(...message: string[]);
+  }
 
-declare const addon: import("../src/addon").default;
+  const ztoolkit: ZToolkit;
 
-declare const __env__: "production" | "development";
+  const rootURI: string;
 
-declare class Localization {
+  const addon: Addon;
+
+  const __env__: "production" | "development";
+
+  class Localization {
+  }
 }

@@ -28,7 +28,7 @@ class Addon {
     this.data = {
       alive: true,
       env: __env__,
-      ztoolkit: createZToolkit(),
+      ztoolkit: createZToolkit()
     };
     this.hooks = hooks;
     this.api = {};

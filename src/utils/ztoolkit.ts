@@ -1,8 +1,9 @@
 import { config } from "../../package.json";
 import { ZoteroToolkit } from "zotero-plugin-toolkit";
 
+export { createZToolkit };
 
-export function createZToolkit() {
+function createZToolkit() {
   const _ztoolkit = new ZoteroToolkit();
   /**
    * Alternatively, import toolkit modules you use to minify the plugin size.

@@ -8,28 +8,31 @@ import { preferenceManager } from "./modules/prefs";
 import { tagManager } from "./modules/manager";
 
 async function onStartup() {
+  ztoolkit.log("onStartup started");
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
     Zotero.uiReadyPromise
   ]);
+  ztoolkit.log("Zotero initialization completed");
   initLocale();
-
+  ztoolkit.log("Initializing managers");
   await tagManager.register();
   await columnManager.register();
   await preferenceManager.register();
   await shortcutsManager.register();
+  ztoolkit.log("Managers initialized");
 }
 
-async function onMainWindowLoad(win: Window): Promise<void> {
-  // Create ztoolkit for every window
+async function onMainWindowLoad(win: Window): Promise<void> {  // Create ztoolkit for every window
   addon.data.ztoolkit = createZToolkit();
-
-  // @ts-ignore This is a moz feature
+  ztoolkit.log("onMainWindowLoad executed");  // @ts-ignore This is a moz feature
   window.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 }
 
 async function onMainWindowUnload(win: Window): Promise<void> {
+
+  ztoolkit.log("onMainWindowUnload executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
 }
@@ -44,11 +47,12 @@ function onShutdown(): void {
 
 /**
  * This function is just an example of dispatcher for Preference UI events.
- * Any operations should be placed in a function to keep this funcion clear.
+ * Any operations should be placed in a function to keep this function clear.
  * @param type event type
  * @param data event data
  */
 async function onPrefsEvent(type: string, data: { [key: string]: any }) {
+  ztoolkit.log(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
       registerPrefsScripts(data.window);
@@ -59,6 +63,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 }
 
 function onShortcuts(type: string) {
+  ztoolkit.log(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case "open-tag-tab":
       shortcutsManager.openTagsTabCallback().then();
