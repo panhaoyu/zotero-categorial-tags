@@ -4,7 +4,7 @@ export default class Message {
   static info(message: string) {
     const dialog = new ztoolkit.Dialog(1, 1);
     dialog.addCell(0, 0, {
-      tag: "p",
+      tag: "span",
       properties: {
         "innerText": message
       }
