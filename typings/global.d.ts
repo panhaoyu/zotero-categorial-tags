@@ -1,5 +1,5 @@
 import { ZoteroToolkit } from "zotero-plugin-toolkit";
-import Addon from "../src/addon";
+import AddonClass from "../src/addon";
 
 declare global {
   const _globalThis: {
@@ -10,9 +10,10 @@ declare global {
     window: Window;
     document: Document;
     ztoolkit: CustomZoteroToolkit;
-    addon: Addon;
+    addon: AddonClass;
   };
 
+  const addon: AddonClass;
 
   class CustomZoteroToolkit extends ZoteroToolkit {
     log(...message: string[]);
