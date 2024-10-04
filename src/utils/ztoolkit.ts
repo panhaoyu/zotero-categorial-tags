@@ -3,8 +3,8 @@ import { ZoteroToolkit } from "zotero-plugin-toolkit";
 
 export { createZToolkit };
 
-function createZToolkit() {
-  const _ztoolkit = new ZoteroToolkit();
+function createZToolkit(): CustomZoteroToolkit {
+  const _ztoolkit = new ZoteroToolkit() as CustomZoteroToolkit;
   /**
    * Alternatively, import toolkit modules you use to minify the plugin size.
    * You can add the modules under the `MyToolkit` class below and uncomment the following line.

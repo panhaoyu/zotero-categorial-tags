@@ -8,7 +8,7 @@ export default class Addon {
     alive: boolean;
     // Env type, see build.js
     env: "development" | "production";
-    ztoolkit: ZToolkit;
+    ztoolkit: CustomZoteroToolkit;
     locale?: {
       current: any;
     };

@@ -9,16 +9,16 @@ declare global {
     Zotero_Tabs: typeof Zotero_Tabs;
     window: Window;
     document: Document;
-    ztoolkit: ZToolkit;
+    ztoolkit: CustomZoteroToolkit;
     addon: Addon;
   };
 
 
-  class ZToolkit extends ZoteroToolkit {
+  class CustomZoteroToolkit extends ZoteroToolkit {
     log(...message: string[]);
   }
 
-  const ztoolkit: ZToolkit;
+  const ztoolkit: CustomZoteroToolkit;
 
   const rootURI: string;
 
