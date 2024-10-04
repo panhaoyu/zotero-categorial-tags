@@ -14,25 +14,25 @@ async function onStartup() {
     Zotero.unlockPromise,
     Zotero.uiReadyPromise
   ]);
-  ztoolkit.log("Zotero initialization completed");
+  Zotero.log("Zotero initialization completed");
   initLocale();
-  ztoolkit.log("Initializing managers");
+  Zotero.log("Initializing managers");
   await tagManager.register();
   await columnManager.register();
   await preferenceManager.register();
   await shortcutsManager.register();
-  ztoolkit.log("Managers initialized");
+  Zotero.log("Managers initialized");
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {  // Create ztoolkit for every window
   addon.data.ztoolkit = createZToolkit();
-  ztoolkit.log("onMainWindowLoad executed");  // @ts-ignore This is a moz feature
+  Zotero.log("onMainWindowLoad executed");  // @ts-ignore This is a moz feature
   window.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 }
 
 async function onMainWindowUnload(win: Window): Promise<void> {
 
-  ztoolkit.log("onMainWindowUnload executed");
+  Zotero.log("onMainWindowUnload executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
 }
@@ -52,7 +52,7 @@ function onShutdown(): void {
  * @param data event data
  */
 async function onPrefsEvent(type: string, data: { [key: string]: any }) {
-  ztoolkit.log(`onPrefsEvent triggered with type: ${type}`);
+  Zotero.log(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
       registerPrefsScripts(data.window);
@@ -63,7 +63,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 }
 
 function onShortcuts(type: string) {
-  ztoolkit.log(`onShortcuts triggered with type: ${type}`);
+  Zotero.log(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case "open-tag-tab":
       shortcutsManager.openTagsTabCallback().then();
