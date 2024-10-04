@@ -16,7 +16,7 @@ declare global {
   const addon: AddonClass;
 
   class CustomZoteroToolkit extends ZoteroToolkit {
-    log(...message: string[]);
+    log(...message: any[]);
   }
 
   const ztoolkit: CustomZoteroToolkit;
