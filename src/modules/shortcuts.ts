@@ -1,4 +1,6 @@
-import { TagDialogUI } from "./tagDialogUI"; // 引入新的 TagDialog 类
+import { TagDialogUI } from "./tagDialogUI";
+import { getString } from "../utils/locale";
+import Message from "./message"; // 引入新的 TagDialog 类
 
 class ShortcutManager {
   constructor() {
@@ -15,6 +17,8 @@ class ShortcutManager {
   async openTagsTabCallback() {
     const selections = ZoteroPane.getSelectedItems();
     if (selections.length === 0) {
+      const hint = getString("categorial-tags-no-selection-hint");
+      Message.info(hint);
       return;
     }
 

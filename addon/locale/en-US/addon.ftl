@@ -16,3 +16,5 @@ categorial-tags-selection-titles =
        *[other] Selected { $length } items
     }
 categorial-tags-dialog-title = Change item tags: { $selectionTitles }
+categorial-tags-no-selection-hint = No items selected. Please select at least one item to modify tags.
+categorial-tags-message-dialog-title = Categorial Tags
