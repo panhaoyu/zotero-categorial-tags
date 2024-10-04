@@ -1,4 +1,4 @@
-import { BasicTool } from "zotero-plugin-toolkit/dist/basic";
+import { BasicTool } from "zotero-plugin-toolkit";
 import Addon from "./addon";
 import { config } from "../package.json";
 
@@ -22,6 +22,6 @@ function defineGlobal(name: string, getter?: () => any) {
   Object.defineProperty(_globalThis, name, {
     get() {
       return getter ? getter() : basicTool.getGlobal(name);
-    },
+    }
   });
 }

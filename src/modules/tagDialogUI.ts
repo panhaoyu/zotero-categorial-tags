@@ -1,4 +1,4 @@
-import { DialogHelper } from "zotero-plugin-toolkit/dist/helpers/dialog";
+import { DialogHelper } from "zotero-plugin-toolkit";
 import { TagDialogData } from "./tagDialogData";
 import { CategorialTag } from "./categorialTag";
 import { tagManager } from "./manager";
