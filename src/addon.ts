@@ -5,13 +5,13 @@ import { createZToolkit } from "./utils/ztoolkit";
 type Environment = "development" | "production";
 
 interface Locale {
-  current: any;
+  current: Localization;
 }
 
 interface Prefs {
   window: Window;
   columns: Array<ColumnOptions>;
-  rows: Array<Record<string, string>>;
+  rows?: Array<Record<string, string>>;
 }
 
 interface Data {
