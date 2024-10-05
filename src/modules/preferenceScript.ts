@@ -1,5 +1,5 @@
 import { getPref, setPref } from "../utils/prefs";
-import { ElementID, PrefKey } from "./constants";
+import { ElementID, PrefDefault, PrefKey } from "./constants";
 
 export async function registerPrefsScripts(_window: Window) {
   addon.data.prefs.window = _window;
@@ -16,7 +16,7 @@ function getElement<T extends Element>(elementId: string): T {
 }
 
 async function updatePrefsUI() {
-  getElement<HTMLInputElement>(ElementID.shortcutKeyInput).value = getPref<string>(PrefKey.shortcut);
+  getElement<HTMLInputElement>(ElementID.shortcutKeyInput).value = getPref<string>(PrefKey.shortcut) ?? PrefDefault.shortcut;
 }
 
 function bindPrefEvents() {

@@ -1,6 +1,6 @@
 import { config } from "../../package.json";
 
-export const Constants = {
+export const PrefDefault = {
   shortcut: "Ctrl+T"
 };
 export const PrefKey = {

@@ -1,4 +1,4 @@
-import { CommandKey, PrefKey } from "./constants";
+import { CommandKey, PrefDefault, PrefKey } from "./constants";
 import Message from "./message";
 import { getString } from "../utils/locale";
 import { TagDialogUI } from "./tagDialogUI";
@@ -9,7 +9,7 @@ class ShortcutManager {
   }
 
   // Method to parse the shortcut string
-  parseShortcut(shortcut) {
+  parseShortcut(shortcut: string) {
     // Convert the shortcut to lower case and split by '+'
     const keys = shortcut.toLowerCase().split("+").map(k => k.trim());
 
@@ -41,7 +41,8 @@ class ShortcutManager {
   }
 
   async register() {
-    const shortcut = getPref(PrefKey.shortcut);
+    const shortcut = getPref<string>(PrefKey.shortcut) ?? PrefDefault.shortcut;
+    ztoolkit.log(`Registering shortcut: ${shortcut}`);
     const keyOptions = this.parseShortcut(shortcut);
 
     // Register the keyboard event
