@@ -28,7 +28,9 @@
     "update-deps": "npm update --save"
   },
   "dependencies": {
+    "clipboardy": "^4.0.0",
     "fuzzy-search": "^3.2.1",
+    "glob": "^11.0.0",
     "pinyin": "^4.0.0-alpha.2",
     "segmentit": "^2.0.3",
     "zotero-plugin-toolkit": "^4.0.3"
