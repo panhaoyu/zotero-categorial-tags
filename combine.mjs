@@ -21,7 +21,8 @@ const projectRoot = "F:/projects/zotero-categorial-tags";
 const patterns = [
   "**/*.ts",
   "**/*.css",
-  "**/*.xhtml"
+  "**/*.xhtml",
+  "**/*.ftl"
 ];
 
 // 要排除的目录
