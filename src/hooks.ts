@@ -8,6 +8,7 @@ import { preferenceManager } from "./modules/prefs";
 import { tagManager } from "./modules/manager";
 import { CommandKey } from "./modules/constants";
 
+
 async function onStartup() {
   ztoolkit.log("onStartup started");
   await Promise.all([
@@ -15,25 +16,25 @@ async function onStartup() {
     Zotero.unlockPromise,
     Zotero.uiReadyPromise
   ]);
-  console.info("Zotero initialization completed");
+  ztoolkit.log("Zotero initialization completed");
   initLocale();
-  console.info("Initializing managers");
+  ztoolkit.log("Initializing managers");
   await tagManager.register();
   await columnManager.register();
   await preferenceManager.register();
   await shortcutsManager.register();
-  console.info("Managers initialized");
+  ztoolkit.log("Managers initialized");
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
   addon.data.ztoolkit = createZToolkit();
-  console.info("onMainWindowLoad executed");
+  ztoolkit.log("onMainWindowLoad executed");
   window.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 }
 
 async function onMainWindowUnload(win: Window): Promise<void> {
 
-  console.info("onMainWindowUnload executed");
+  ztoolkit.log("onMainWindowUnload executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
 }
@@ -53,7 +54,7 @@ function onShutdown(): void {
  * @param data event data
  */
 async function onPrefsEvent(type: string, data: { [key: string]: any }) {
-  console.info(`onPrefsEvent triggered with type: ${type}`);
+  ztoolkit.log(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
       registerPrefsScripts(data.window).then();
@@ -64,7 +65,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 }
 
 function onShortcuts(type: string) {
-  console.info(`onShortcuts triggered with type: ${type}`);
+  ztoolkit.log(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case CommandKey.openTagTab:
       shortcutsManager.openTagsTabCallback().then();
