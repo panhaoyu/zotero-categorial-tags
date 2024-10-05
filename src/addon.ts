@@ -1,4 +1,4 @@
-import { ColumnOptions, DialogHelper } from "zotero-plugin-toolkit";
+import { DialogHelper } from "zotero-plugin-toolkit";
 import hooks from "./hooks";
 import { createZToolkit } from "./utils/ztoolkit";
 
@@ -9,9 +9,7 @@ interface Locale {
 }
 
 interface Prefs {
-  window: Window;
-  columns: Array<ColumnOptions>;
-  rows?: Array<Record<string, string>>;
+  window?: Window;
 }
 
 interface Data {
@@ -19,7 +17,7 @@ interface Data {
   env: Environment;
   ztoolkit: CustomZoteroToolkit;
   locale?: Locale;
-  prefs?: Prefs;
+  prefs: Prefs;
   dialog?: DialogHelper;
 }
 
@@ -38,7 +36,8 @@ export default class Addon {
     return {
       alive: true,
       env: __env__,
-      ztoolkit: createZToolkit()
+      ztoolkit: createZToolkit(),
+      prefs: {}
     };
   }
 }

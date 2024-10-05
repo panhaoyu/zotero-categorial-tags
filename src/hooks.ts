@@ -6,6 +6,7 @@ import { columnManager } from "./modules/column";
 import { shortcutsManager } from "./modules/shortcuts";
 import { preferenceManager } from "./modules/prefs";
 import { tagManager } from "./modules/manager";
+import { CommandKey } from "./modules/constants";
 
 async function onStartup() {
   ztoolkit.log("onStartup started");
@@ -55,7 +56,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
   console.info(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
-      registerPrefsScripts(data.window);
+      registerPrefsScripts(data.window).then();
       break;
     default:
       return;
@@ -65,7 +66,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 function onShortcuts(type: string) {
   console.info(`onShortcuts triggered with type: ${type}`);
   switch (type) {
-    case "open-tag-tab":
+    case CommandKey.openTagTab:
       shortcutsManager.openTagsTabCallback().then();
       break;
     default:

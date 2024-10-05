@@ -5,8 +5,8 @@ import { config } from "../../package.json";
  * Wrapper of `Zotero.Prefs.get`.
  * @param key
  */
-export function getPref(key: string) {
-  return Zotero.Prefs.get(`${config.prefsPrefix}.${key}`, true);
+export function getPref<T extends (boolean | string | number | undefined)>(key: string) {
+  return Zotero.Prefs.get(`${config.prefsPrefix}.${key}`, true) as T;
 }
 
 /**

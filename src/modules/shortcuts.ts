@@ -1,15 +1,60 @@
-import { TagDialogUI } from "./tagDialogUI";
+import { CommandKey, PrefKey } from "./constants";
+import Message from "./message";
 import { getString } from "../utils/locale";
-import Message from "./message"; // 引入新的 TagDialog 类
+import { TagDialogUI } from "./tagDialogUI";
+import { getPref } from "../utils/prefs";
 
 class ShortcutManager {
   constructor() {
   }
 
+  // Method to parse the shortcut string
+  parseShortcut(shortcut) {
+    // Convert the shortcut to lower case and split by '+'
+    const keys = shortcut.toLowerCase().split("+").map(k => k.trim());
+
+    // Initialize the modifiers and key
+    const keyOptions = {
+      ctrl: false,
+      shift: false,
+      alt: false,
+      meta: false,
+      key: null
+    };
+
+    // Map the modifier keys
+    keys.forEach(k => {
+      if (k === "ctrl" || k === "control") {
+        keyOptions.ctrl = true;
+      } else if (k === "shift") {
+        keyOptions.shift = true;
+      } else if (k === "alt") {
+        keyOptions.alt = true;
+      } else if (k === "meta" || k === "command" || k === "cmd") {
+        keyOptions.meta = true;
+      } else {
+        keyOptions.key = k;
+      }
+    });
+
+    return keyOptions;
+  }
+
   async register() {
-    ztoolkit.Keyboard.register((ev, keyOptions) => {
-      if (ev.type === "keyup" && ev.ctrlKey && (ev.key as string).toLowerCase() === "t") {
-        addon.hooks.onShortcuts("open-tag-tab");
+    const shortcut = getPref(PrefKey.shortcut);
+    const keyOptions = this.parseShortcut(shortcut);
+
+    // Register the keyboard event
+    ztoolkit.Keyboard.register((ev) => {
+      if (
+        ev.type === "keyup" &&
+        ev.ctrlKey === keyOptions.ctrl &&
+        ev.shiftKey === keyOptions.shift &&
+        ev.altKey === keyOptions.alt &&
+        ev.metaKey === keyOptions.meta &&
+        (ev.key ?? "").toLowerCase() == keyOptions.key
+      ) {
+        addon.hooks.onShortcuts(CommandKey.openTagTab);
       }
     });
   }
@@ -22,7 +67,7 @@ class ShortcutManager {
       return;
     }
 
-    // 创建并打开 TagDialog
+    // Create and open TagDialog
     const tagDialog = new TagDialogUI(selections);
     await tagDialog.open();
   }

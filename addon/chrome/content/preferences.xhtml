@@ -1,18 +1,19 @@
+<linkset>
+    <html:link rel="localization" href="__addonRef__-preferences.ftl" />
+</linkset>
+<vbox id="zotero-prefpane-__addonRef__"
+      onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', {window})">
+    <hbox>
+        <html:label data-l10n-id="pref-dialog-open-shortcut-key-label" />
+        <html:input id="zotero-prefpane-__addonRef__-open-shortcut-key-input" type="text" />
+    </hbox>
+    <hbox>
+        <html:label data-l10n-id="pref-dialog-open-shortcut-key-description" />
+    </hbox>
+</vbox>
 <vbox>
-    <linkset>
-        <html:link rel="localization" href="__addonRef__-preferences.ftl" />
-    </linkset>
-    <vbox id="zotero-prefpane-__addonRef__"
-          onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', {window})">
-        <hbox>
-            <html:label data-l10n-id="pref-dialog-open-shortcut-key" />
-            <html:input id="shortcut-key-input" type="text" />
-        </hbox>
-    </vbox>
-    <vbox>
-        <html:label
-                data-l10n-id="pref-help"
-                data-l10n-args='{"time": "__buildTime__","name": "__addonName__","version":"__buildVersion__"}'
-        ></html:label>
-    </vbox>
+    <html:label
+            data-l10n-id="pref-help"
+            data-l10n-args='{"time": "__buildTime__","name": "__addonName__","version":"__buildVersion__"}'
+    ></html:label>
 </vbox>

@@ -1,44 +1,29 @@
-import { config } from "../../package.json";
-import { getString } from "../utils/locale";
-import { setPref } from "../utils/prefs";
+import { getPref, setPref } from "../utils/prefs";
+import { ElementID, PrefKey } from "./constants";
 
 export async function registerPrefsScripts(_window: Window) {
-  if (!addon.data.prefs) {
-    addon.data.prefs = {
-      window: _window,
-      columns: [
-        {
-          dataKey: "title",
-          label: getString("prefs-table-title"),
-          fixedWidth: true,
-          width: 100
-        },
-        {
-          dataKey: "detail",
-          label: getString("prefs-table-detail")
-        }
-      ]
-    };
-  } else {
-    addon.data.prefs.window = _window;
-  }
-  updatePrefsUI();
+  addon.data.prefs.window = _window;
+  updatePrefsUI().then();
   bindPrefEvents();
 }
 
+function getElement<T extends Element>(elementId: string): T {
+  const window = addon.data.prefs.window;
+  if (window === undefined) throw "Window not found";
+  const result = window.document.querySelector(elementId);
+  if (!result) throw `Element not found: ${elementId}`;
+  return result as T;
+}
+
 async function updatePrefsUI() {
-  const renderLock = ztoolkit.getGlobal("Zotero").Promise.defer();
-  if (addon.data.prefs?.window == undefined) return;
-  await renderLock.promise;
-  ztoolkit.log("Preference table rendered!");
+  getElement<HTMLInputElement>(ElementID.shortcutKeyInput).value = getPref<string>(PrefKey.shortcut);
 }
 
 function bindPrefEvents() {
-  addon.data
-    .prefs!.window.document.querySelector(
-    `#zotero-prefpane-${config.addonRef}-enable`
-  )
-    ?.addEventListener("command", (e) => {
-      setPref("enable-title", (e.target as XUL.Checkbox).checked);
-    });
+  getElement<HTMLInputElement>(ElementID.shortcutKeyInput).addEventListener("change", e => {
+    const element = e.target as HTMLInputElement;
+    const newShortcut = element.value;
+    setPref(PrefKey.shortcut, newShortcut);
+    ztoolkit.log(`Shortcut key updated to: ${newShortcut}`);
+  });
 }
