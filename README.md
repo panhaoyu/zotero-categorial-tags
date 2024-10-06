@@ -2,129 +2,101 @@
 
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 
-
 ![](doc/Pane.jpg)
 
 Documentation | [中文文档](doc/README-zhCN.md)
 
 ## Introduction
 
-**Zotero Categorial Tags** is a plugin designed specifically for Zotero users to improve the efficiency and convenience
-of tag management. By introducing the concept of **categorial tags**, users can organize, retrieve, and manage their
-references more systematically, optimizing their research and study process.
+**Zotero Categorial Tags** is a plugin designed for Zotero users to enhance tag management efficiency. By using *
+*categorial tags**, users can systematically organize, retrieve, and manage references, optimizing their research and
+study processes.
 
 ## Features
 
-- **Categorial Tags Column in the Item List**: Adds a categorial tags column to Zotero’s item list, clearly displaying
-  the tags for each item.
-- **Support for Categorial Tags**: Supports the `#Category/TagName` format, allowing tags to be categorized for easier
-  management and retrieval.
-- **Shortcut Support**: Quickly open the tag management dialog with the `Ctrl + T` shortcut.
-- **Tag Management Dialog**: A user-friendly interface that allows for the addition and removal of existing categorial
-  tags.
-- **Fuzzy and Pinyin Search**: Powerful search functionality, supporting both fuzzy matching and pinyin input for quick
-  tag discovery.
+- **Categorial Tags Column**: Adds a categorial tags column in the item list, clearly showing each reference's tag
+  information.
+- **Categorial Tag Support**: Supports the `#Category/TagName` format to classify tags for easier management and
+  retrieval.
+- **Shortcut Key**: Press `Ctrl + T` (customizable) to quickly open the tag management dialog.
+- **Tag Management Dialog**: Provides a user-friendly interface to add and remove existing tags.
+- **Fuzzy and Pinyin Search**: Supports fuzzy matching and pinyin search to quickly locate tags.
 
 ## Installation
 
-1. **Download the plugin**:
-    - Visit the [GitHub repository](https://github.com/panhaoyu/zotero-categorial-tags) and download the latest `.xpi`
-      plugin file.
+### Method 1: Install from Add-on Store
 
-2. **Install the plugin**:
-    - Open Zotero, click on `Tools` in the menu, and select `Add-ons`.
-    - In the Add-ons Manager, click on the gear icon in the top right corner and choose `Install Add-on From File...`.
-    - Select the downloaded `.xpi` file and follow the prompts to complete the installation.
+- Go to the [Zotero Add-ons Store](https://github.com/syt2/zotero-addons) and find **Zotero Categorial Tags** to
+  install.
 
-3. **Restart Zotero**:
-    - After the installation is complete, restart Zotero to activate the plugin.
+### Method 2: Manual Installation
+
+1. Download the latest `.xpi` file from the [GitHub repository](https://github.com/panhaoyu/zotero-categorial-tags).
+2. Open Zotero, click `Tools` -> `Add-ons` -> Gear icon -> `Install Add-on From File...`, and select the `.xpi` file to
+   complete the installation.
+3. Restart Zotero to activate the plugin.
 
 ## Usage Guide
 
 ### Creating Categorial Tags
 
-**Note**: This plugin **does not support creating new tags**. It can only bind items to existing tags. You must manually
-create tags in Zotero before using this plugin to manage and apply them.
+**Note**: The plugin does not support creating new tags. It can only bind items to existing tags. Please manually create
+appropriate tags in Zotero before managing them with the plugin.
 
-1. **Format Requirements**:
-    - Tag names must start with `#` and use `/` to separate the category and tag name.
+1. **Format Requirements**: Tags must start with `#` and use `/` to separate the category and tag name.
 
 2. **Examples**:
+
     - `#Subject/Mathematics`
     - `#Topic/Machine Learning`
     - `#ReadingStatus/Read`
 
-### Recommended Tag Binding Process
+### Tag Binding Process
 
-1. **Select Items**:
-    - In Zotero's main interface, select one or more items.
-
-2. **Open the Tag Management Dialog**:
-    - Press the `Ctrl + T` shortcut to open the tag management window.
-
-3. **Search and Manage Tags**:
-    - In the dialog, use the search bar at the top to quickly find tags, with support for fuzzy matching and pinyin
-      search.
-    - Click on tags in the search results to select or deselect them.
-
-4. **Complete Tag Binding**:
-    - After selecting or deselecting the desired tags, press `Enter` to save and close the dialog. The changes will be
-      applied to the selected items.
+1. **Select Items**: In Zotero's main interface, select one or more items.
+2. **Open the Tag Management Dialog**: Press the custom shortcut key (default `Ctrl + T`) to open the tag management
+   window.
+3. **Search and Manage Tags**: Use the search bar to find tags quickly, supporting pinyin and fuzzy search. Click on
+   tags to select or deselect them.
+4. **Complete Binding**: Press `Enter` to save the changes.
 
 ### Viewing Categorial Tags
 
-- **Display Categorial Tags in the Item List**:
-
-    1. In Zotero's main interface, right-click on the column headers in the item list.
-    2. From the menu, check `Categorial Tags` (or similar).
-    3. The item list will now display the categorial tags for each reference, allowing for easy browsing and filtering.
-
-## Keyboard Shortcuts
-
-- **Open the Tag Management Dialog**: `Ctrl + T`
+1. In Zotero's main interface, right-click on the column headers in the item list.
+2. Check `Categorial Tags` to display categorial tags for each reference.
 
 ## Contribution and Support
 
-- **Bug Reports**:
-    - If you encounter any issues while using the plugin, feel free to submit an Issue on
-      the [GitHub Issues page](https://github.com/panhaoyu/zotero-categorial-tags/issues).
-
-- **Feature Requests**:
-    - If you have suggestions for improving the plugin, we welcome your feedback and will consider it for future
-      updates.
-
-- **Contributing Code**:
-    - Contributions are welcome! Submit a Pull Request to help us improve the plugin.
+- **Bug Reports**: If you encounter issues, submit an Issue on
+  the [GitHub Issues page](https://github.com/panhaoyu/zotero-categorial-tags/issues).
+- **Feature Suggestions**: Suggestions for improvement are welcome.
+- **Contributing Code**: Pull Requests are welcome to help improve the plugin.
 
 ## Known Issues
 
-- **macOS Support**: Currently, there is no support for macOS. Shortcuts and some features may not function correctly on
-  macOS.
-- **Tag Creation**: The plugin does not support creating new tags through the interface. Users must manually create
-  categorial tags in Zotero.
-- **Customization Options**: Future versions may include more customization options, such as different ways to display
-  tags.
+- **macOS Support**: There has been no testing on macOS due to the lack of test devices. macOS users are welcome to test
+  and provide feedback.
+- **Tag Creation**: The plugin does not support creating tags; they must be created manually. The implementation of this
+  feature is undecided, and users are encouraged to share ideas on the Issues page.
+- **Customization Options**: Future versions will include more customization options.
+- **Interface Design**: The current interface has not been aesthetically enhanced. Users with design experience are
+  encouraged to provide suggestions or submit PRs.
+
+Contributions to address the above issues are welcome via Pull Requests.
 
 ## Changelog
 
-### v0.1.0
-
-- Initial release.
-- Support for adding and removing categorial tags.
-- Fuzzy and pinyin search for tags.
-- Added a categorial tags column to the item list.
-- Shortcut support for opening the tag management dialog.
+- **v0.1.9**: Added customizable shortcut keys.
+- **v0.1.0**: Initial release with support for categorial tag management, fuzzy and pinyin search, and keyboard
+  shortcuts.
 
 ## License
 
 - This project is open source under
-  the [MIT License](./LICENSE).
-- Complies with the AGPL agreement.
+  the [MIT License](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE).
 
 ## Acknowledgements
 
-- **zotero-plugin-template**: Special thanks to this project for providing the initial template, which greatly improved
-  development efficiency.
-- **zotero-style**: Thank you to this project for exploring the `#Tags` feature, which provided valuable inspiration for
-  the development of this plugin.
-
+- **zotero-plugin-template**: Thanks for providing the initial template, which greatly improved development efficiency.
+- **zotero-style**: Thanks for exploring the `#Tags` feature, which provided valuable inspiration for this plugin's
+  development.
