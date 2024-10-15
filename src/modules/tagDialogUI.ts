@@ -99,8 +99,8 @@ export class TagDialogUI {
 
     this.dialog.addButton("Save and close", "save-button", {
       noClose: false,
-      callback: () => {
-        this.logic.saveChanges();
+      callback: async () => {
+        await this.logic.saveChanges();
         this.close();
       }
     });
@@ -133,11 +133,11 @@ export class TagDialogUI {
   }
 
   private addGlobalKeyListeners() {
-    this.document.addEventListener("keyup", event => {
+    this.document.addEventListener("keyup", async event => {
       if (event.key.toLowerCase() === "escape") {
         this.handleCloseShortcut();
       } else if (event.key.toLowerCase() === "enter") {
-        this.handleSaveShortcut();
+        await this.handleSaveShortcut();
       }
     });
   }
@@ -146,8 +146,8 @@ export class TagDialogUI {
     this.close();
   }
 
-  private handleSaveShortcut() {
-    this.logic.saveChanges();
+  private async handleSaveShortcut() {
+    await this.logic.saveChanges();
     this.close();
   }
 

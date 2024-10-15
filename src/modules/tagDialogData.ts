@@ -1,7 +1,6 @@
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
 import { TagFilter } from "./tagFilter";
-import { ZoteroToolkit } from "zotero-plugin-toolkit";
 
 interface TagState {
   changed: boolean;
@@ -74,19 +73,19 @@ export class TagDialogData {
     }
   }
 
-  public saveChanges() {
-    Object.entries(this.itemTags).forEach(([tagId, activeData]) => {
-      if (!activeData.changed) return;
+  public async saveChanges() {
+    for (const [tagId, activeData] of Object.entries(this.itemTags)) {
+      if (!activeData.changed) continue;
       const tag = tagManager.getTag(Number(tagId));
-      if (tag === undefined) return;
-      this.selections.forEach(selection => {
+      if (tag === undefined) continue;
+      for (const selection of this.selections) {
         if (activeData.active) {
           selection.addTag(tag.fullName);
         } else {
           selection.removeTag(tag.fullName);
         }
-        selection.saveTx();
-      });
-    });
+        await selection.saveTx();
+      }
+    }
   }
 }
