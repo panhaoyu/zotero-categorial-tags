@@ -1,6 +1,7 @@
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
 import { TagFilter } from "./tagFilter";
+import { ZoteroToolkit } from "zotero-plugin-toolkit";
 
 interface TagState {
   changed: boolean;
@@ -84,7 +85,7 @@ export class TagDialogData {
         } else {
           selection.removeTag(tag.fullName);
         }
-        selection.save();
+        selection.saveTx();
       });
     });
   }
