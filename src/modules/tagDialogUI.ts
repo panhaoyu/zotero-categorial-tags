@@ -127,7 +127,10 @@ export class TagDialogUI {
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    this.document.getElementById(this.filterInputElementId).focus();
+    const inputElement = this.document.getElementById(this.filterInputElementId) as HTMLInputElement | null;
+    if (inputElement) {
+      inputElement.focus();
+    }
 
     this.addGlobalKeyListeners();
   }
