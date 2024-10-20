@@ -6,6 +6,7 @@ import { getPref } from "../utils/prefs";
 import Item = Zotero.Item;
 import ReaderTab = _ZoteroTypes.ReaderTab;
 
+// Interface defining keyboard shortcut options
 interface KeyOptions {
   ctrl: boolean;
   shift: boolean;
@@ -16,14 +17,18 @@ interface KeyOptions {
 
 class ShortcutManager {
   constructor() {
+    // Initialize properties or events here if needed
   }
 
-  // Method to parse the shortcut string
-  parseShortcut(shortcut: string) {
-    // Convert the shortcut to lower case and split by '+'
+  /**
+   * Parses a shortcut string and returns the corresponding key options.
+   * @param shortcut - The shortcut string, e.g., "Ctrl+Shift+T".
+   * @returns The parsed keyboard options.
+   */
+  private parseShortcut(shortcut: string): KeyOptions {
     const keys = shortcut.toLowerCase().split("+").map(k => k.trim());
 
-    // Initialize the modifiers and key
+    // Initialize modifier keys and main key
     const keyOptions: KeyOptions = {
       ctrl: false,
       shift: false,
@@ -32,30 +37,41 @@ class ShortcutManager {
       key: null
     };
 
-    // Map the modifier keys
+    // Map modifier keys and main key
     keys.forEach(k => {
-      if (k === "ctrl" || k === "control") {
-        keyOptions.ctrl = true;
-      } else if (k === "shift") {
-        keyOptions.shift = true;
-      } else if (k === "alt") {
-        keyOptions.alt = true;
-      } else if (k === "meta" || k === "command" || k === "cmd") {
-        keyOptions.meta = true;
-      } else {
-        keyOptions.key = k;
+      switch (k) {
+        case "ctrl":
+        case "control":
+          keyOptions.ctrl = true;
+          break;
+        case "shift":
+          keyOptions.shift = true;
+          break;
+        case "alt":
+          keyOptions.alt = true;
+          break;
+        case "meta":
+        case "command":
+        case "cmd":
+          keyOptions.meta = true;
+          break;
+        default:
+          keyOptions.key = k;
       }
     });
 
     return keyOptions;
   }
 
-  async register() {
+  /**
+   * Registers the keyboard shortcut event listener.
+   */
+  public async register(): Promise<void> {
     const shortcut = getPref<string>(PrefKey.shortcut) ?? PrefDefault.shortcut;
     ztoolkit.log(`Registering shortcut: ${shortcut}`);
-    const keyOptions: KeyOptions = this.parseShortcut(shortcut);
+    const keyOptions = this.parseShortcut(shortcut);
 
-    // Register the keyboard event
+    // Register keyboard event listener
     ztoolkit.Keyboard.register((ev) => {
       if (
         ev.type === "keyup" &&
@@ -63,49 +79,60 @@ class ShortcutManager {
         ev.shiftKey === keyOptions.shift &&
         ev.altKey === keyOptions.alt &&
         ev.metaKey === keyOptions.meta &&
-        (ev.key ?? "").toLowerCase() == keyOptions.key
+        ev.key?.toLowerCase() === keyOptions.key
       ) {
         addon.hooks.onShortcuts(CommandKey.openTagTab);
       }
     });
   }
 
-  async openTagsTabCallback() {
+  /**
+   * Callback function triggered by the shortcut to open the tags dialog.
+   */
+  public async openTagsTabCallback(): Promise<void> {
     const currentPane = Zotero.getActiveZoteroPane();
-    const libraryId = currentPane.getSelectedLibraryID();
     const tabs = currentPane.getState().tabs;
-    const currentTab = tabs.find(i => i.selected);
+    const currentTab = tabs.find(tab => tab.selected);
+
     if (!currentTab) {
-      Message.error("Categorial tags cannot find the current selected tab.");
+      Message.error("Cannot find the currently selected tab to apply categorical tags.");
       return;
     }
-    let selections: Item[];
+
+    let selections: Item[] = [];
+
     switch (currentTab.type) {
       case "reader":
-        const tabData = currentTab.data as ReaderTab;
-        const selectedItemId = tabData.itemID;
+        const readerData = currentTab.data as ReaderTab;
+        const selectedItemId = readerData.itemID;
+
         if (!selectedItemId) {
-          Message.error(`Categorial tags cannot identify the current item id: "${selectedItemId}".`);
+          Message.error("Cannot identify the current item ID to apply categorical tags.");
           return;
         }
-        let selectedItem = Zotero.Items.get(selectedItemId);
-        selections = [selectedItem];
+
+        const selectedItem = Zotero.Items.get(selectedItemId);
+        if (selectedItem) {
+          selections.push(selectedItem);
+        }
         break;
+
       case "library":
         selections = currentPane.getSelectedItems();
         break;
+
       default:
-        Message.error(`Categorial tags cannot identify the current tab type: "${currentTab.type}".`);
+        Message.error(`Unsupported tab type: "${currentTab.type}".`);
         return;
     }
 
-    // Only the outer item is used for categorial tags.
-    // Tag for note or PDF file is not useful.
-    selections = selections.map(i => {
-      while (i.parentItem) {
-        i = i.parentItem;
+    // Retrieve the top-level parent for each selected item, ignoring notes or PDF files
+    selections = selections.map(item => {
+      let parent = item;
+      while (parent.parentItem) {
+        parent = parent.parentItem;
       }
-      return i;
+      return parent;
     });
 
     if (selections.length === 0) {
@@ -114,10 +141,11 @@ class ShortcutManager {
       return;
     }
 
-    // Create and open TagDialog
+    // Create and open the TagDialog
     const tagDialog = new TagDialogUI(selections);
     await tagDialog.open();
   }
 }
 
+// Instantiate and export the shortcut manager
 export const shortcutsManager = new ShortcutManager();
