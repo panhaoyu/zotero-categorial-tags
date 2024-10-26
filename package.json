@@ -37,7 +37,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
+    "@types/fuzzy-search": "^2.1.5",
     "@types/node": "^20.14.10",
+    "@types/pinyin": "^2.10.2",
     "eslint": "^9.3.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5",
