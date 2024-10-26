@@ -1,4 +1,4 @@
-import type TagJson = _ZoteroTypes.Tags.TagJson;
+type TagJson = _ZoteroTypes.Tags.TagJson;
 
 export class CategorialTag {
   readonly categoryName: string;

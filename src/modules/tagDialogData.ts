@@ -60,10 +60,11 @@ export class TagDialogData {
     tagManager.getAllTags().forEach((tagData, index) => {
       const tagState = this.itemTags[tagData.tagId];
       if (tagState) {
-        tagState.isFiltered = filterResults[index];
+        tagState.isFiltered = filterResults.includes(tagData.tagName);
       }
     });
   }
+
 
   public toggleTag(tagId: number) {
     const tagState = this.itemTags[tagId];
