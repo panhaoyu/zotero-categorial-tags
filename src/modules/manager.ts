@@ -1,6 +1,6 @@
 import { Category } from "./category";
 import { CategorialTag } from "./categorialTag";
-import type TagJson = _ZoteroTypes.Tags.TagJson;
+import TagJson = _ZoteroTypes.Tags.TagJson;
 
 class Manager {
   private categories: Category[] = [];
@@ -43,34 +43,34 @@ class Manager {
 
 
     const originalAddTag = Zotero.Item.prototype.addTag;
-    Zotero.Item.prototype.addTag = function(...args) {
+    Zotero.Item.prototype.addTag = function(...args: any) {
       const result = originalAddTag.apply(this, args);
       hookLater.call(self).then();
       return result;
     };
 
     const originalRemoveTag = Zotero.Item.prototype.removeTag;
-    Zotero.Item.prototype.removeTag = function(...args) {
+    Zotero.Item.prototype.removeTag = function(...args: any) {
       const result = originalRemoveTag.apply(this, args);
       hookLater.call(self).then();
       return result;
     };
 
     const originalReplaceTag = Zotero.Item.prototype.replaceTag;
-    Zotero.Item.prototype.replaceTag = function(...args) {
+    Zotero.Item.prototype.replaceTag = function(...args: any) {
       const result = originalReplaceTag.apply(this, args);
       hookLater.call(self).then();
       return result;
     };
 
     const originalRemoveAllTags = Zotero.Item.prototype.removeAllTags;
-    Zotero.Item.prototype.removeAllTags = function(...args) {
+    Zotero.Item.prototype.removeAllTags = function(...args: any) {
       originalRemoveAllTags.apply(this, args);
       hookLater.call(self).then();
     };
 
     const originalSetTags = Zotero.Item.prototype.setTags;
-    Zotero.Item.prototype.setTags = function(...args) {
+    Zotero.Item.prototype.setTags = function(...args: any) {
       originalSetTags.apply(this, args);
       hookLater.call(self).then();
     };
@@ -100,7 +100,8 @@ class Manager {
           if (tagId === false) {
             throw `Tag id not found: ${tagJson.tag}`;
           }
-          const items = await Zotero.Tags.getTagItems(libraryId, tagId) as Zotero.Item[];
+          const itemsIds = await Zotero.Tags.getTagItems(libraryId, tagId);
+          const items = itemsIds.map(i => Zotero.Items.get(i));
           return new CategorialTag(tagId, tagJson, items);
         })
     );
