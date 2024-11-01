@@ -1,5 +1,6 @@
 import { Category } from "./category";
 import { CategorialTag } from "./categorialTag";
+import { getItemTags } from "./zoteroUtils";
 import TagJson = _ZoteroTypes.Tags.TagJson;
 
 class Manager {

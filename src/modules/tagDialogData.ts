@@ -1,6 +1,7 @@
 import { tagManager } from "./manager";
 import { getString } from "../utils/locale";
 import { TagFilter } from "./tagFilter";
+import { getItemTags } from "./zoteroUtils";
 
 interface TagState {
   changed: boolean;
