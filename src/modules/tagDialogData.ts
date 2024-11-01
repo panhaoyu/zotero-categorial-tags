@@ -30,10 +30,10 @@ export class TagDialogData {
       throw new Error("No selections provided");
     }
 
-    const initialTags = this.selections[0].getTags().map(tagObj => tagObj.tag);
+    const initialTags = getItemTags(this.selections[0]).map(tagObj => tagObj.tag);
 
     const commonTags = this.selections.slice(1).reduce((acc, selection) => {
-      const selectionTags = selection.getTags().map(tagObj => tagObj.tag);
+      const selectionTags = getItemTags(selection).map(tagObj => tagObj.tag);
       return acc.filter(tag => selectionTags.includes(tag));
     }, initialTags);
 
