@@ -128,6 +128,10 @@ class Manager {
   }
 
   getTagsOfItem(item: Zotero.Item): CategorialTag[] {
+
+    // See https://github.com/panhaoyu/zotero-categorial-tags/issues/44
+    if (!item.getTags) return [];
+
     return item.getTags()
       .map(tag => this.getTag(tag.tag))
       .filter(i => i !== undefined)
