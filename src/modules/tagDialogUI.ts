@@ -136,7 +136,7 @@ export class TagDialogUI {
   }
 
   private addGlobalKeyListeners() {
-    this.document.addEventListener("keyup", async event => {
+    this.document.addEventListener("keydown", async event => {
       if (event.key.toLowerCase() === "escape") {
         this.handleCloseShortcut();
       } else if (event.key.toLowerCase() === "enter") {

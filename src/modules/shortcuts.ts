@@ -74,7 +74,7 @@ class ShortcutManager {
     // Register keyboard event listener
     ztoolkit.Keyboard.register((ev) => {
       if (
-        ev.type === "keyup" &&
+        ev.type === "keydown" &&
         ev.ctrlKey === keyOptions.ctrl &&
         ev.shiftKey === keyOptions.shift &&
         ev.altKey === keyOptions.alt &&
