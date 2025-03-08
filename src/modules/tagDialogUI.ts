@@ -3,6 +3,34 @@ import { TagDialogData } from "./tagDialogData";
 import { CategorialTag } from "./categorialTag";
 import { tagManager } from "./manager";
 
+interface Colors {
+  foreground: string;
+  background: string;
+  initialBackground: string;
+}
+
+const ACTIVE_ITEM_BG = "#efd2ff";
+const FILTERED_ITEM_BG = "#b5f1c4";
+
+function getColors({ tag, isActive, isFiltered }: {
+  tag: CategorialTag,
+  isActive: boolean,
+  isFiltered: boolean
+}): Colors {
+  let foreground = "inherit";
+  let background = "transparent";
+  let initialBackground = "transparent";
+
+  if (isActive) {
+    background = ACTIVE_ITEM_BG;
+    initialBackground = ACTIVE_ITEM_BG;
+  } else if (isFiltered) {
+    background = FILTERED_ITEM_BG;
+  }
+
+  return { foreground, background, initialBackground };
+}
+
 export class TagDialogUI {
   private dialog?: DialogHelper;
   private logic: TagDialogData;
@@ -64,30 +92,37 @@ export class TagDialogUI {
                   },
                   {
                     tag: "td",
-                    children: category.tags.map((tagData: CategorialTag) => ({
-                      tag: "span",
-                      id: tagData.uniqueElementId,
-                      properties: { innerText: tagData.tagName },
-                      styles: {
-                        marginLeft: "4px",
-                        background: this.logic.itemTags[tagData.tagId].active ? "#e5beff" : "transparent",
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                        padding: "2px",
-                        borderRadius: "4px",
-                        display: "inline-block",
-                        color: this.logic.itemTags[tagData.tagId].isFiltered ? "inherit" : "gray"
-                      },
-                      listeners: [
-                        {
-                          type: "click",
-                          listener: () => {
-                            this.logic.toggleTag(tagData.tagId);
-                            this.updateTagStyles();
+                    children: category.tags.map((tag: CategorialTag) => {
+                      const isFiltered = this.logic.itemTags[tag.tagId].isFiltered;
+                      const isActive = this.logic.itemTags[tag.tagId].active;
+                      const colors = getColors({
+                        tag: tag, isActive, isFiltered
+                      });
+                      return {
+                        tag: "span",
+                        id: tag.uniqueElementId,
+                        properties: { innerText: tag.tagName },
+                        styles: {
+                          marginLeft: "4px",
+                          background: colors.initialBackground,
+                          whiteSpace: "nowrap",
+                          cursor: "pointer",
+                          padding: "2px",
+                          borderRadius: "4px",
+                          display: "inline-block",
+                          color: colors.foreground
+                        },
+                        listeners: [
+                          {
+                            type: "click",
+                            listener: () => {
+                              this.logic.toggleTag(tag.tagId);
+                              this.updateTagStyles();
+                            }
                           }
-                        }
-                      ]
-                    }))
+                        ]
+                      };
+                    })
                   }
                 ]
               }))
@@ -165,12 +200,13 @@ export class TagDialogUI {
   }
 
   private updateTagStyles() {
-    tagManager.getAllTags().forEach(tagData => {
-      const element = this.document.getElementById(tagData.uniqueElementId) as HTMLSpanElement;
-      const tagState = this.logic.itemTags[tagData.tagId];
+    tagManager.getAllTags().forEach(tag => {
+      const element = this.document.getElementById(tag.uniqueElementId) as HTMLSpanElement;
+      const tagState = this.logic.itemTags[tag.tagId];
       if (element && tagState) {
-        element.style.color = tagState.isFiltered ? "inherit" : "gray";
-        element.style.background = tagState.active ? "#e5beff" : "transparent";
+        const colors = getColors({ tag: tag, isFiltered: tagState.isFiltered, isActive: tagState.active });
+        element.style.color = colors.foreground;
+        element.style.background = colors.background;
       }
     });
   }
