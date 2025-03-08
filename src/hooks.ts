@@ -64,7 +64,15 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
   }
 }
 
+const lastTriggeredTimes: Record<string, number> = {};
+
 function onShortcuts(type: string) {
+  const now = Date.now();
+  if (lastTriggeredTimes[type] && now - lastTriggeredTimes[type] < 100) {
+    return;
+  }
+  lastTriggeredTimes[type] = now;
+
   ztoolkit.log(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case CommandKey.openTagTab:
