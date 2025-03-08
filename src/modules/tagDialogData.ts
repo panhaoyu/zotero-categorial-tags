@@ -14,11 +14,13 @@ export class TagDialogData {
   public dialogTitle: string;
   public tagFilter: TagFilter;
   private selections: Zotero.Item[];
+  public filterValue: string;
 
   constructor(selections: Zotero.Item[]) {
     this.selections = selections;
     this.itemTags = {};
     this.dialogTitle = "";
+    this.filterValue = "";
 
     const allTags = tagManager.getAllTags().map(tagData => tagData.tagName);
     this.tagFilter = new TagFilter(allTags);
@@ -58,6 +60,7 @@ export class TagDialogData {
 
   public filterTags(filterValue: string) {
     const filterResults = this.tagFilter.filterTags(filterValue);
+    this.filterValue = filterValue;
     tagManager.getAllTags().forEach((tagData, index) => {
       const tagState = this.itemTags[tagData.tagId];
       if (tagState) {

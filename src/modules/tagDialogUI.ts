@@ -200,13 +200,14 @@ export class TagDialogUI {
   }
 
   private updateTagStyles() {
+    const useInitial = this.logic.filterValue.length == 0;
     tagManager.getAllTags().forEach(tag => {
       const element = this.document.getElementById(tag.uniqueElementId) as HTMLSpanElement;
       const tagState = this.logic.itemTags[tag.tagId];
       if (element && tagState) {
         const colors = getColors({ tag: tag, isFiltered: tagState.isFiltered, isActive: tagState.active });
         element.style.color = colors.foreground;
-        element.style.background = colors.background;
+        element.style.background = useInitial ? colors.initialBackground : colors.background;
       }
     });
   }
