@@ -134,10 +134,7 @@ export class TagDialogUI {
 
     this.dialog.addButton("Save and close", "save-button", {
       noClose: false,
-      callback: async () => {
-        await this.logic.saveChanges();
-        this.close();
-      }
+      callback: async () => await this.handleSaveShortcut()
     });
 
     this.dialog.addButton("Cancel", "close-button", {
@@ -185,8 +182,8 @@ export class TagDialogUI {
   }
 
   private async handleSaveShortcut() {
-    await this.logic.saveChanges();
     this.close();
+    await this.logic.saveChanges();
   }
 
   get document(): Document {
