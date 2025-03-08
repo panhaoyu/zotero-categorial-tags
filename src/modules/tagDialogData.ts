@@ -79,18 +79,20 @@ export class TagDialogData {
   }
 
   public async saveChanges() {
-    for (const [tagId, activeData] of Object.entries(this.itemTags)) {
-      if (!activeData.changed) continue;
-      const tag = tagManager.getTag(Number(tagId));
-      if (tag === undefined) continue;
-      for (const selection of this.selections) {
-        if (activeData.active) {
-          selection.addTag(tag.fullName);
-        } else {
-          selection.removeTag(tag.fullName);
+    await Zotero.DB.executeTransaction(async () => {
+      for (const [tagId, activeData] of Object.entries(this.itemTags)) {
+        if (!activeData.changed) continue;
+        const tag = tagManager.getTag(Number(tagId));
+        if (tag === undefined) continue;
+        for (const selection of this.selections) {
+          if (activeData.active) {
+            selection.addTag(tag.fullName);
+          } else {
+            selection.removeTag(tag.fullName);
+          }
+          await selection.save();
         }
-        await selection.saveTx();
       }
-    }
+    });
   }
 }
