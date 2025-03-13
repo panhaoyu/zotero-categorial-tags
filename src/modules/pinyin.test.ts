@@ -19,7 +19,7 @@ describe("TagFilter", () => {
   });
 
   test("应支持模糊搜索", () => {
-    expect(tagFilter.filterTags("chq")).toEqual(["重庆"]);
+    expect(tagFilter.filterTags("chq")).toEqual(["重庆", "朝阳区"]);
     expect(tagFilter.filterTags("cyq")).toEqual(["朝阳区"]);
   });
 
