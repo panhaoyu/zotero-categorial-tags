@@ -6,8 +6,16 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
-  "include": ["src", "typings", "node_modules/zotero-types"],
-  "exclude": ["build", "addon"]
+  "include": [
+    "src",
+    "typings",
+    "node_modules/zotero-types"
+  ],
+  "exclude": [
+    "build",
+    "addon"
+  ]
 }
