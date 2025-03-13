@@ -24,7 +24,7 @@
     "build": "zotero-plugin build",
     "lint": "prettier --write . && eslint . --fix",
     "release": "zotero-plugin release",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "update-deps": "npm update --save"
   },
   "dependencies": {
@@ -38,10 +38,13 @@
   "devDependencies": {
     "@eslint/js": "^9.7.0",
     "@types/fuzzy-search": "^2.1.5",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.14.10",
     "@types/pinyin": "^2.10.2",
     "eslint": "^9.3.0",
+    "jest": "^29.7.0",
     "prettier": "^3.2.5",
+    "ts-jest": "^29.2.6",
     "typescript": "^5.4.5",
     "typescript-eslint": "^8.0.0-alpha.41",
     "zotero-plugin-scaffold": "^0.0.26",
