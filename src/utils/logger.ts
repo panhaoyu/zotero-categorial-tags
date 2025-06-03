@@ -1,10 +1,16 @@
 class Logger {
+  private readonly console: Console;
+
+  constructor() {
+    this.console = Zotero.getMainWindow()?.console;
+  }
+
   debug(message: string) {
-    Zotero.debug(message);
+    this.console.debug(message);
   }
 
   info(message: string) {
-    Zotero.log(message);
+    this.console.info(message);
   }
 }
 
