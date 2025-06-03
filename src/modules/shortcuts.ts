@@ -81,7 +81,9 @@ class ShortcutManager {
         ev.metaKey === keyOptions.meta &&
         ev.key?.toLowerCase() === keyOptions.key
       ) {
+        ztoolkit.log("Shortcut triggered: opening tags tab");
         addon.hooks.onShortcuts(CommandKey.openTagTab);
+
       }
     });
   }
@@ -90,23 +92,28 @@ class ShortcutManager {
    * Callback function triggered by the shortcut to open the tags dialog.
    */
   public async openTagsTabCallback(): Promise<void> {
+    ztoolkit.log("Opening tags tab callback started");
     const currentPane = Zotero.getActiveZoteroPane();
     const tabs = currentPane.getState().tabs;
     const currentTab = tabs.find(tab => tab.selected);
 
     if (!currentTab) {
+      ztoolkit.log("No active tab found");
       Message.error("Cannot find the currently selected tab to apply categorical tags.");
       return;
     }
 
     let selections: Item[] = [];
+    ztoolkit.log(`Current tab type: ${currentTab.type}`);
 
     switch (currentTab.type) {
       case "reader":
         const readerData = currentTab.data as ReaderTab;
         const selectedItemId = readerData.itemID;
+        ztoolkit.log(`Reader tab itemID: ${selectedItemId}`);
 
         if (!selectedItemId) {
+          ztoolkit.log("No item ID in reader tab");
           Message.error("Cannot identify the current item ID to apply categorical tags.");
           return;
         }
@@ -119,9 +126,11 @@ class ShortcutManager {
 
       case "library":
         selections = currentPane.getSelectedItems();
+        ztoolkit.log(`Library tab selections: ${selections.length} items`);
         break;
 
       default:
+        ztoolkit.log(`Unsupported tab type: ${currentTab.type}`);
         Message.error(`Unsupported tab type: "${currentTab.type}".`);
         return;
     }
@@ -135,13 +144,15 @@ class ShortcutManager {
       return parent;
     });
 
+    ztoolkit.log(`Processed selections: ${selections.length} items`);
     if (selections.length === 0) {
+      ztoolkit.log("No valid selections after processing");
       const hint = getString("categorial-tags-no-selection-hint");
       Message.info(hint);
       return;
     }
 
-    // Create and open the TagDialog
+    ztoolkit.log("Opening tag dialog");
     const tagDialog = new TagDialogUI(selections);
     await tagDialog.open();
   }
