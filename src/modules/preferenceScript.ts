@@ -1,5 +1,6 @@
 import { getPref, setPref } from "../utils/prefs";
 import { ElementID, PrefDefault, PrefKey } from "./constants";
+import { logger } from "../utils/logger";
 
 export async function registerPrefsScripts(_window: Window) {
   addon.data.prefs.window = _window;
@@ -24,6 +25,6 @@ function bindPrefEvents() {
     const element = e.target as HTMLInputElement;
     const newShortcut = element.value;
     setPref(PrefKey.shortcut, newShortcut);
-    ztoolkit.log(`Shortcut key updated to: ${newShortcut}`);
+    logger.info(`Shortcut key updated to: ${newShortcut}`);
   });
 }

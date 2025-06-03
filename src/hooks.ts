@@ -7,34 +7,35 @@ import { shortcutsManager } from "./modules/shortcuts";
 import { preferenceManager } from "./modules/prefs";
 import { tagManager } from "./modules/manager";
 import { CommandKey } from "./modules/constants";
+import { logger } from "./utils/logger";
 
 
 async function onStartup() {
-  ztoolkit.log("onStartup started");
+  logger.info("onStartup started");
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
     Zotero.uiReadyPromise
   ]);
-  ztoolkit.log("Zotero initialization completed");
+  logger.info("Zotero initialization completed");
   initLocale();
-  ztoolkit.log("Initializing managers");
+  logger.info("Initializing managers");
   await tagManager.register();
   await columnManager.register();
   await preferenceManager.register();
   await shortcutsManager.register();
-  ztoolkit.log("Managers initialized");
+  logger.info("Managers initialized");
 }
 
 async function onMainWindowLoad(win: Window): Promise<void> {
   addon.data.ztoolkit = createZToolkit();
-  ztoolkit.log("onMainWindowLoad executed");
+  logger.info("onMainWindowLoad executed");
   window.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 }
 
 async function onMainWindowUnload(win: Window): Promise<void> {
 
-  ztoolkit.log("onMainWindowUnload executed");
+  logger.info("onMainWindowUnload executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
 }
@@ -54,7 +55,7 @@ function onShutdown(): void {
  * @param data event data
  */
 async function onPrefsEvent(type: string, data: { [key: string]: any }) {
-  ztoolkit.log(`onPrefsEvent triggered with type: ${type}`);
+  logger.info(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
       registerPrefsScripts(data.window).then();
@@ -73,7 +74,7 @@ function onShortcuts(type: string) {
   }
   lastTriggeredTimes[type] = now;
 
-  ztoolkit.log(`onShortcuts triggered with type: ${type}`);
+  logger.info(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case CommandKey.openTagTab:
       shortcutsManager.openTagsTabCallback().then();
