@@ -1,6 +1,6 @@
 {
   "name": "zotero-cateogrial-tags",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "Manage tags better by categorizing the tags.",
   "config": {
     "addonName": "Zotero Categorial Tags",
