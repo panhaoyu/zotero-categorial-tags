@@ -69,7 +69,7 @@ class ShortcutManager {
   public async register(): Promise<void> {
     const shortcut = getPref<string>(PrefKey.shortcut) ?? PrefDefault.shortcut;
     const keyOptions = this.parseShortcut(shortcut);
-    ztoolkit.log(`Registering shortcut: ${shortcut}, parsed: ${keyOptions}`);
+    ztoolkit.log(`Registering shortcut: ${shortcut}, parsed: ${JSON.stringify(keyOptions)}`);
 
     // Register keyboard event listener
     ztoolkit.Keyboard.register((ev) => {
