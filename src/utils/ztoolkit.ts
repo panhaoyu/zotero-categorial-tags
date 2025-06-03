@@ -1,5 +1,10 @@
 import { config } from "../../package.json";
-import { ZoteroToolkit } from "zotero-plugin-toolkit";
+import { PatchHelper, UITool, ZoteroToolkit } from "zotero-plugin-toolkit";
+
+PatchHelper.prototype.log = (...message: any[]) => {
+};
+UITool.prototype.log = (...message: any[]) => {
+};
 
 export { createZToolkit };
 
