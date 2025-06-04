@@ -94,6 +94,9 @@ async function showShortcutCaptureDialog() {
     height: 200
   });
 
+  // Wait for dialog to fully load before accessing elements
+  await dialog.dialogData.loadLock;
+
   const dialogWindow = dialog.window;
   const inputElement = dialogWindow.document.getElementById(inputId) as HTMLInputElement;
 
