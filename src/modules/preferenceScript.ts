@@ -87,50 +87,53 @@ async function showShortcutCaptureDialog() {
     }
   });
 
+  // Set dialog data with load callback
+  dialog.setDialogData({
+    loadCallback: () => {
+      const inputElement = dialog.window.document.getElementById(inputId) as HTMLInputElement;
+      if (!inputElement) {
+        logger.error("Input element not found in dialog");
+        return;
+      }
+      inputElement.focus();
+
+      dialog.window.addEventListener("keydown", (e: KeyboardEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (e.key === "Escape") {
+          logger.info("Escape pressed, closing dialog");
+          dialog.window.close();
+          return;
+        }
+
+        // Skip Tab and Enter keys
+        if (e.key === "Tab" || e.key === "Enter") return;
+
+        const keys = [];
+        if (e.ctrlKey) keys.push("Ctrl");
+        if (e.altKey) keys.push("Alt");
+        if (e.shiftKey) keys.push("Shift");
+        if (e.metaKey) keys.push("Meta");
+
+        // Exclude modifier keys when pressed alone
+        if (!["Control", "Alt", "Shift", "Meta"].includes(e.key)) {
+          keys.push(e.key);
+        }
+
+        if (keys.length > 0) {
+          const newShortcut = keys.join("+");
+          inputElement.value = newShortcut;
+          logger.debug(`Key combination captured: ${newShortcut}`);
+        }
+      });
+    }
+  });
+
   dialog.open("Capture Shortcut", {
     centerscreen: true,
     resizable: false,
     width: 400,
     height: 200
-  });
-
-  // Wait for dialog to fully load before accessing elements
-  await dialog.dialogData.loadLock;
-
-  const dialogWindow = dialog.window;
-  const inputElement = dialogWindow.document.getElementById(inputId) as HTMLInputElement;
-
-  // Focus the dialog to capture keys
-  inputElement.focus();
-
-  dialogWindow.addEventListener("keydown", (e: KeyboardEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (e.key === "Escape") {
-      logger.info("Escape pressed, closing dialog");
-      dialogWindow.close();
-      return;
-    }
-
-    // Ignore Tab and Enter keys
-    if (e.key === "Tab" || e.key === "Enter") return;
-
-    const keys = [];
-    if (e.ctrlKey) keys.push("Ctrl");
-    if (e.altKey) keys.push("Alt");
-    if (e.shiftKey) keys.push("Shift");
-    if (e.metaKey) keys.push("Meta");
-
-    // Exclude modifier keys when pressed alone
-    if (!["Control", "Alt", "Shift", "Meta"].includes(e.key)) {
-      keys.push(e.key);
-    }
-
-    if (keys.length > 0) {
-      const newShortcut = keys.join("+");
-      inputElement.value = newShortcut;
-      logger.debug(`Key combination captured: ${newShortcut}`);
-    }
   });
 }

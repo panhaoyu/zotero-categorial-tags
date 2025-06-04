@@ -12,6 +12,18 @@ class Logger {
   info(message: string) {
     this.console.info(message);
   }
+
+  warn(message: string) {
+    this.console.warn(message);
+  }
+
+  error(message: string) {
+    this.console.error(message);
+  }
+
+  log(message: string) {
+    this.console.log(message);
+  }
 }
 
 export const logger = new Logger();
