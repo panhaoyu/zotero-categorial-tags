@@ -74,6 +74,7 @@ async function showShortcutCaptureDialog() {
       const inputElement = dialog.window.document.getElementById(inputId) as HTMLInputElement;
       if (inputElement && inputElement.value) {
         setPref(PrefKey.shortcut, inputElement.value);
+        logger.info(`Dialog accepted new shortcut: ${inputElement.value}`);
         updatePrefsUI();
       }
     }
@@ -82,6 +83,7 @@ async function showShortcutCaptureDialog() {
   dialog.addButton("Cancel", "cancel-button", {
     noClose: false,
     callback: () => {
+      logger.info("Shortcut capture canceled by user");
     }
   });
 
@@ -103,6 +105,7 @@ async function showShortcutCaptureDialog() {
     e.stopPropagation();
 
     if (e.key === "Escape") {
+      logger.info("Escape pressed, closing dialog");
       dialogWindow.close();
       return;
     }
@@ -122,7 +125,9 @@ async function showShortcutCaptureDialog() {
     }
 
     if (keys.length > 0) {
-      inputElement.value = keys.join("+");
+      const newShortcut = keys.join("+");
+      inputElement.value = newShortcut;
+      logger.debug(`Key combination captured: ${newShortcut}`);
     }
   });
 }
