@@ -16,3 +16,6 @@ pref-dialog-open-shortcut-key-description = Provides a keyboard shortcut to open
     Note: Currently, only shortcuts using the Ctrl modifier have been tested.<br/>
     Other modifiers (such as Alt, Shift, Meta) have not been thoroughly tested and may not work as expected.<br/>
     Please restart Zotero after configuration to ensure changes take effect.
+
+pref-dialog-capture-shortcut-label = Identify Shortcut:
+pref-dialog-capture-shortcut-button = Identify Shortcut
