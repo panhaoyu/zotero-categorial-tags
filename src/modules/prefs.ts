@@ -10,7 +10,7 @@ class PreferencesManager {
       image: `chrome://${config.addonRef}/content/icons/favicon.png`,
       defaultXUL: true
     };
-    Zotero.PreferencePanes.register(prefOptions);
+    await Zotero.PreferencePanes.register(prefOptions);
   }
 }
 
