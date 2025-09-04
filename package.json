@@ -33,7 +33,7 @@
     "glob": "^11.0.0",
     "pinyin": "^4.0.0-alpha.2",
     "segmentit": "^2.0.3",
-    "zotero-plugin-toolkit": "^4.0.3"
+    "zotero-plugin-toolkit": "^4.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
@@ -48,7 +48,7 @@
     "typescript": "^5.4.5",
     "typescript-eslint": "^8.0.0-alpha.41",
     "zotero-plugin-scaffold": "^0.0.26",
-    "zotero-types": "^3.1.7"
+    "zotero-types": "^3.1.0"
   },
   "prettier": {
     "printWidth": 80,
