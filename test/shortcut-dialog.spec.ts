@@ -8,6 +8,7 @@ import {
   FILTER_INPUT_ID,
   findDialogWindow,
   getDialogSpans,
+  makeKeyEvent,
   pressKeyOnDocument,
   pressShortcut,
   selectItem,
@@ -85,5 +86,22 @@ describe("标签对话框集成测试", () => {
       cancelable: true,
     });
     await waitUntil(() => !findDialogWindow(), "对话框关闭", 3000);
+  });
+
+  it("快捷键触发时应阻止默认行为（避免与内置快捷键冲突）", async () => {
+    await closeAllDialogs();
+    const win = Zotero.getMainWindow();
+    const event = makeKeyEvent(win, {
+      key: "t",
+      code: "KeyT",
+      ctrlKey: true,
+      bubbles: true,
+      cancelable: true,
+    });
+    win.dispatchEvent(event);
+    expect(
+      event.defaultPrevented,
+      "快捷键回调应调用 preventDefault 阻止默认行为",
+    ).to.equal(true);
   });
 });
