@@ -1,4 +1,4 @@
-import pinyin from "pinyin";
+import { pinyin } from "pinyin";
 import FuzzySearch from "fuzzy-search";
 
 /**
