@@ -9,13 +9,19 @@ import { tagManager } from "./modules/manager";
 import { CommandKey } from "./modules/constants";
 import { logger } from "./utils/logger";
 
+/**
+ * Data passed to `onPrefsEvent` from the preference pane XHTML.
+ */
+export interface PrefsEventData {
+  window: Window;
+}
 
-async function onStartup() {
+async function onStartup(): Promise<void> {
   logger.info("onStartup started");
   await Promise.all([
     Zotero.initializationPromise,
     Zotero.unlockPromise,
-    Zotero.uiReadyPromise
+    Zotero.uiReadyPromise,
   ]);
   logger.info("Zotero initialization completed");
   initLocale();
@@ -27,25 +33,24 @@ async function onStartup() {
   logger.info("Managers initialized");
 }
 
-async function onMainWindowLoad(win: Window): Promise<void> {
+async function onMainWindowLoad(_win: Window): Promise<void> {
   addon.data.ztoolkit = createZToolkit();
   logger.info("onMainWindowLoad executed");
-  window.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 }
 
-async function onMainWindowUnload(win: Window): Promise<void> {
-
+async function onMainWindowUnload(_win: Window): Promise<void> {
   logger.info("onMainWindowUnload executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
 }
 
 function onShutdown(): void {
+  logger.info("onShutdown executed");
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
   // Remove addon object
   addon.data.alive = false;
-  delete Zotero[config.addonInstance];
+  delete (Zotero as unknown as Record<string, unknown>)[config.addonInstance];
 }
 
 /**
@@ -54,11 +59,11 @@ function onShutdown(): void {
  * @param type event type
  * @param data event data
  */
-async function onPrefsEvent(type: string, data: { [key: string]: any }) {
+async function onPrefsEvent(type: string, data: PrefsEventData): Promise<void> {
   logger.info(`onPrefsEvent triggered with type: ${type}`);
   switch (type) {
     case "load":
-      registerPrefsScripts(data.window).then();
+      await registerPrefsScripts(data.window);
       break;
     default:
       return;
@@ -67,7 +72,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 
 const lastTriggeredTimes: Record<string, number> = {};
 
-function onShortcuts(type: string) {
+function onShortcuts(type: string): void {
   const now = Date.now();
   if (lastTriggeredTimes[type] && now - lastTriggeredTimes[type] < 100) {
     return;
@@ -77,7 +82,7 @@ function onShortcuts(type: string) {
   logger.info(`onShortcuts triggered with type: ${type}`);
   switch (type) {
     case CommandKey.openTagTab:
-      shortcutsManager.openTagsTabCallback().then();
+      void shortcutsManager.openTagsTabCallback();
       break;
     default:
       break;
@@ -90,5 +95,5 @@ export default {
   onMainWindowLoad,
   onMainWindowUnload,
   onPrefsEvent,
-  onShortcuts
+  onShortcuts,
 };

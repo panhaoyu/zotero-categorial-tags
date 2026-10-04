@@ -18,21 +18,10 @@ import clipboardy from "clipboardy";
 const projectRoot = "F:/projects/zotero-categorial-tags";
 
 // 要包含的文件模式
-const patterns = [
-  "**/*.ts",
-  "**/*.css",
-  "**/*.xhtml",
-  "**/*.ftl"
-];
+const patterns = ["**/*.ts", "**/*.css", "**/*.xhtml", "**/*.ftl"];
 
 // 要排除的目录
-const excludeDirs = [
-  "node_modules",
-  "build",
-  "data",
-  "doc",
-  ".github"
-];
+const excludeDirs = ["node_modules", "build", "data", "doc", ".github"];
 
 // 根据模式获取所有相关文件
 function getAllFiles() {
@@ -41,7 +30,7 @@ function getAllFiles() {
     const options = {
       cwd: projectRoot,
       absolute: true,
-      ignore: excludeDirs.map((dir) => `${dir}/**`)
+      ignore: excludeDirs.map((dir) => `${dir}/**`),
     };
     files = files.concat(globSync(pattern, options));
   });

@@ -3,18 +3,24 @@ import { getString } from "../utils/locale";
 import { TagFilter } from "./tagFilter";
 import { getItemTags } from "./zoteroUtils";
 
-interface TagState {
+/**
+ * UI state of a single tag inside the dialog.
+ */
+export interface TagState {
   changed: boolean;
   active: boolean;
   isFiltered: boolean;
 }
 
+/**
+ * Business logic of the categorial tag dialog.
+ */
 export class TagDialogData {
-  public itemTags: { [key: number]: TagState };
+  public itemTags: Record<number, TagState>;
   public dialogTitle: string;
   public tagFilter: TagFilter;
-  private selections: Zotero.Item[];
   public filterValue: string;
+  private selections: Zotero.Item[];
 
   constructor(selections: Zotero.Item[]) {
     this.selections = selections;
@@ -22,46 +28,56 @@ export class TagDialogData {
     this.dialogTitle = "";
     this.filterValue = "";
 
-    const allTags = tagManager.getAllTags().map(tagData => tagData.tagName);
-    this.tagFilter = new TagFilter(allTags);
+    this.tagFilter = new TagFilter(
+      tagManager.getAllTags().map((tag) => tag.tagName),
+    );
 
     this.initialize();
   }
 
-  private initialize() {
+  private initialize(): void {
     if (this.selections.length === 0) {
       throw new Error("No selections provided");
     }
 
-    const initialTags = getItemTags(this.selections[0]).map(tagObj => tagObj.tag);
+    const initialTags = this.getTagNames(this.selections[0]!);
 
-    const commonTags = this.selections.slice(1).reduce((acc, selection) => {
-      const selectionTags = getItemTags(selection).map(tagObj => tagObj.tag);
-      return acc.filter(tag => selectionTags.includes(tag));
-    }, initialTags);
+    const commonTags = this.selections
+      .slice(1)
+      .reduce<string[]>((acc, selection) => {
+        const selectionTags = this.getTagNames(selection);
+        return acc.filter((tag) => selectionTags.includes(tag));
+      }, initialTags);
 
     const selectionItemsTitle =
       this.selections.length === 1
-        ? this.selections[0].getDisplayTitle()
-        : getString(`categorial-tags-selection-titles`, { args: { length: this.selections.length } });
-    this.dialogTitle = getString("categorial-tags-dialog-title", { args: { selectionTitles: selectionItemsTitle } });
+        ? this.selections[0]!.getDisplayTitle()
+        : getString("categorial-tags-selection-titles", {
+            args: { length: this.selections.length },
+          });
+    this.dialogTitle = getString("categorial-tags-dialog-title", {
+      args: { selectionTitles: selectionItemsTitle },
+    });
 
-    this.itemTags = Object.fromEntries(
-      tagManager.getAllTags().map(i => [
-        i.tagId,
-        {
-          changed: false,
-          active: commonTags.includes(i.fullName),
-          isFiltered: true
-        }
-      ])
-    );
+    const itemTags: Record<number, TagState> = {};
+    for (const tag of tagManager.getAllTags()) {
+      itemTags[tag.tagId] = {
+        changed: false,
+        active: commonTags.includes(tag.fullName),
+        isFiltered: true,
+      };
+    }
+    this.itemTags = itemTags;
   }
 
-  public filterTags(filterValue: string) {
+  private getTagNames(item: Zotero.Item): string[] {
+    return getItemTags(item).map((tag) => tag.tag);
+  }
+
+  public filterTags(filterValue: string): void {
     const filterResults = this.tagFilter.filterTags(filterValue);
     this.filterValue = filterValue;
-    tagManager.getAllTags().forEach((tagData, index) => {
+    tagManager.getAllTags().forEach((tagData) => {
       const tagState = this.itemTags[tagData.tagId];
       if (tagState) {
         tagState.isFiltered = filterResults.includes(tagData.tagName);
@@ -69,8 +85,7 @@ export class TagDialogData {
     });
   }
 
-
-  public toggleTag(tagId: number) {
+  public toggleTag(tagId: number): void {
     const tagState = this.itemTags[tagId];
     if (tagState) {
       tagState.active = !tagState.active;
@@ -78,7 +93,7 @@ export class TagDialogData {
     }
   }
 
-  public async saveChanges() {
+  public async saveChanges(): Promise<void> {
     await Zotero.DB.executeTransaction(async () => {
       for (const [tagId, activeData] of Object.entries(this.itemTags)) {
         if (!activeData.changed) continue;

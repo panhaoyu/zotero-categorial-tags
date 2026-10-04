@@ -1,41 +1,52 @@
 import pinyin from "pinyin";
 import FuzzySearch from "fuzzy-search";
 
-interface TagWithPinyin {
+/**
+ * A tag together with its pinyin representation, used as search index entry.
+ */
+export interface TagWithPinyin {
   tag: string;
   pinyin: string;
 }
 
+interface PinyinCombination {
+  full: string;
+  initials: string;
+}
+
+/**
+ * Fuzzy and pinyin based tag filter.
+ */
 export class TagFilter {
   private readonly tagsWithPinyin: TagWithPinyin[];
   private readonly searcher: FuzzySearch<TagWithPinyin>;
 
   constructor(tags: string[]) {
-    this.tagsWithPinyin = tags.flatMap(tag => {
+    this.tagsWithPinyin = tags.flatMap((tag) => {
       const pinyinArrays = pinyin(tag, {
         style: pinyin.STYLE_NORMAL,
-        heteronym: true
+        heteronym: true,
       });
-      return this.generateCombinations(pinyinArrays).map(p => ({
+      return this.generateCombinations(pinyinArrays).map((combination) => ({
         tag,
-        pinyin: `${p.full} ${p.initials}`
+        pinyin: `${combination.full} ${combination.initials}`,
       }));
     });
     this.searcher = new FuzzySearch(this.tagsWithPinyin, ["pinyin", "tag"], {
       caseSensitive: false,
-      sort: true
+      sort: true,
     });
   }
 
-  private generateCombinations(pinyinArrays: string[][]): Array<{ full: string, initials: string }> {
-    let combinations = [{ full: "", initials: "" }];
+  private generateCombinations(pinyinArrays: string[][]): PinyinCombination[] {
+    let combinations: PinyinCombination[] = [{ full: "", initials: "" }];
     for (const chars of pinyinArrays) {
-      const newCombinations = [];
-      for (const combo of combinations) {
+      const newCombinations: PinyinCombination[] = [];
+      for (const combination of combinations) {
         for (const char of chars) {
           newCombinations.push({
-            full: combo.full + char,
-            initials: combo.initials + char[0]
+            full: combination.full + char,
+            initials: combination.initials + (char[0] ?? ""),
           });
         }
       }
@@ -44,6 +55,10 @@ export class TagFilter {
     return combinations;
   }
 
+  /**
+   * Return the names of all tags matching the given input,
+   * keeping the search result order and removing duplicates.
+   */
   public filterTags(input: string): string[] {
     if (!input) return [];
     const seen = new Set<string>();

@@ -1,21 +1,16 @@
 {
+  "extends": "zotero-types/entries/mainWindow/",
+  "include": ["src", "typings"],
+  "exclude": ["build", "addon", "node_modules"],
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "module": "commonjs",
-    "target": "ES2016",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  },
-  "include": [
-    "src",
-    "typings",
-    "node_modules/zotero-types"
-  ],
-  "exclude": [
-    "build",
-    "addon"
-  ]
+    "composite": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["zotero-types/entries/mainWindow", "jest"],
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
 }

@@ -5,4 +5,8 @@ node_modules
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+data
+tmp
+.opencode
+doc
 # zotero-cmd.json

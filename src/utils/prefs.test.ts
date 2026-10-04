@@ -38,12 +38,12 @@ describe("prefs", () => {
 
   test("getPref 应读取带前缀的完整键", () => {
     store.set(FULL_KEY, "Ctrl+K");
-    expect(getPref<string>("shortcut")).toBe("Ctrl+K");
+    expect(getPref("shortcut")).toBe("Ctrl+K");
     expect(prefsMock.get).toHaveBeenCalledWith(FULL_KEY, true);
   });
 
   test("getPref 未设置时应返回 undefined", () => {
-    expect(getPref<string>("shortcut")).toBeUndefined();
+    expect(getPref("shortcut")).toBeUndefined();
   });
 
   test("clearPref 应删除带前缀的完整键", () => {

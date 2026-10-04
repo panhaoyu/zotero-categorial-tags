@@ -1,3 +1,5 @@
+import type { TagJson } from "../modules/types";
+
 /**
  * Test-only helpers to build mocked Zotero globals.
  */
@@ -67,7 +69,7 @@ export function createMockZotero(
 
   const mock: MockZotero = {
     Tags: {
-      getAll: jest.fn(async () =>
+      getAll: jest.fn(async (): Promise<TagJson[]> =>
         fixtures.map((fixture) => ({ tag: fixture.name })),
       ),
       getID: jest.fn(

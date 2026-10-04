@@ -4,5 +4,14 @@
     "zotero-dev": {
       "enabled": true
     }
+  },
+  "permission": {
+    "bash": {
+      "npm install": "allow",
+      "npm install *": "allow",
+      "npm ci": "allow",
+      "npm ci *": "allow",
+      "npm run *": "allow"
+    }
   }
 }

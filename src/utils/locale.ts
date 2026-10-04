@@ -3,9 +3,22 @@ import { config } from "../../package.json";
 export { initLocale, getString, getLocaleID };
 
 /**
+ * Arguments accepted by fluent messages.
+ */
+export type LocalizationArgs = Record<string, string | number>;
+
+/**
+ * Options of `getString`.
+ */
+export interface GetStringOptions {
+  branch?: string;
+  args?: LocalizationArgs;
+}
+
+/**
  * Initialize locale data
  */
-function initLocale() {
+function initLocale(): void {
   const l10n = new (
     typeof Localization === "undefined"
       ? ztoolkit.getGlobal("Localization")
@@ -41,48 +54,45 @@ function initLocale() {
  */
 function getString(localString: string): string;
 function getString(localString: string, branch: string): string;
+function getString(localeString: string, options: GetStringOptions): string;
 function getString(
-  localeString: string,
-  options: { branch?: string | undefined; args?: Record<string, unknown> },
-): string;
-function getString(...inputs: any[]) {
+  ...inputs: [string] | [string, string | GetStringOptions]
+): string {
   if (inputs.length === 1) {
     return _getString(inputs[0]);
-  } else if (inputs.length === 2) {
-    if (typeof inputs[1] === "string") {
-      return _getString(inputs[0], { branch: inputs[1] });
-    } else {
-      return _getString(inputs[0], inputs[1]);
-    }
-  } else {
-    throw new Error("Invalid arguments");
   }
+  const option = inputs[1];
+  if (typeof option === "string") {
+    return _getString(inputs[0], { branch: option });
+  }
+  return _getString(inputs[0], option);
 }
 
 function _getString(
   localeString: string,
-  options: { branch?: string | undefined; args?: Record<string, unknown> } = {},
+  options: GetStringOptions = {},
 ): string {
   const localStringWithPrefix = `${config.addonRef}-${localeString}`;
   const { branch, args } = options;
-  const pattern = addon.data.locale?.current.formatMessagesSync([
+  const locale = addon.data.locale?.current;
+  if (!locale) {
+    return localStringWithPrefix;
+  }
+  const pattern = locale.formatMessagesSync([
     { id: localStringWithPrefix, args },
   ])[0];
   if (!pattern) {
     return localStringWithPrefix;
   }
   if (branch && pattern.attributes) {
-    for (const attr of pattern.attributes) {
-      if (attr.name === branch) {
-        return attr.value;
-      }
+    const attribute = pattern.attributes.find((attr) => attr.name === branch);
+    if (attribute) {
+      return attribute.value;
     }
-    return pattern.attributes[branch] || localStringWithPrefix;
-  } else {
-    return pattern.value || localStringWithPrefix;
   }
+  return pattern.value ?? localStringWithPrefix;
 }
 
-function getLocaleID(id: string) {
+function getLocaleID(id: string): string {
   return `${config.addonRef}-${id}`;
 }

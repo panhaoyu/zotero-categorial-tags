@@ -1,5 +1,8 @@
-type TagJson = _ZoteroTypes.Tags.TagJson;
+import type { TagJson } from "./types";
 
+/**
+ * A tag following the `#<category>/<tagName>` naming convention.
+ */
 export class CategorialTag {
   readonly categoryName: string;
   readonly fullName: string;
@@ -28,7 +31,7 @@ export class CategorialTag {
     const removePrefix = tagName.slice(1);
     const [categoryName, tagNamePart] = removePrefix.split("/", 2);
 
-    this.categoryName = categoryName;
-    this.tagName = tagNamePart;
+    this.categoryName = categoryName ?? "";
+    this.tagName = tagNamePart ?? "";
   }
 }

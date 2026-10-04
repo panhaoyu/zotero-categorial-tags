@@ -5,7 +5,15 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["build/**", "dist/**", "node_modules/**", "scripts/"],
+    ignores: [
+      "build/**",
+      "dist/**",
+      "node_modules/**",
+      "scripts/",
+      "data/**",
+      "tmp/**",
+      ".opencode/**",
+    ],
   },
   {
     extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
@@ -27,6 +35,18 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/no-non-null-assertion": "off",
+    },
+  },
+  {
+    files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+    languageOptions: {
+      globals: {
+        module: "writable",
+        require: "readonly",
+        process: "readonly",
+        console: "readonly",
+        __dirname: "readonly",
+      },
     },
   },
 );

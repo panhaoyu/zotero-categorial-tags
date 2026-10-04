@@ -8,8 +8,8 @@ Documentation | [中文文档](doc/README-zhCN.md)
 
 ## Introduction
 
-**Zotero Categorial Tags** is a plugin designed for Zotero users to enhance tag management efficiency. By using *
-*categorial tags**, users can systematically organize, retrieve, and manage references, optimizing their research and
+**Zotero Categorial Tags** is a plugin designed for Zotero users to enhance tag management efficiency. By using
+**categorial tags**, users can systematically organize, retrieve, and manage references, optimizing their research and
 study processes.
 
 ## Features
@@ -21,6 +21,10 @@ study processes.
 - **Shortcut Key**: Press `Ctrl + T` (customizable) to quickly open the tag management dialog.
 - **Tag Management Dialog**: Provides a user-friendly interface to add and remove existing tags.
 - **Fuzzy and Pinyin Search**: Supports fuzzy matching and pinyin search to quickly locate tags.
+
+## Compatibility
+
+- Supports Zotero 7 and later (tested with Zotero 10).
 
 ## Installation
 
@@ -47,9 +51,9 @@ appropriate tags in Zotero before managing them with the plugin.
 
 2. **Examples**:
 
-    - `#Subject/Mathematics`
-    - `#Topic/Machine Learning`
-    - `#ReadingStatus/Read`
+   - `#Subject/Mathematics`
+   - `#Topic/Machine Learning`
+   - `#ReadingStatus/Read`
 
 ### Tag Binding Process
 
@@ -64,6 +68,25 @@ appropriate tags in Zotero before managing them with the plugin.
 
 1. In Zotero's main interface, right-click on the column headers in the item list.
 2. Check `Categorial Tags` to display categorial tags for each reference.
+
+## Development
+
+Prerequisites: Node.js >= 22.8 and npm.
+
+```bash
+npm install        # install dependencies
+npm run start      # start a development Zotero instance with hot reload
+npm run typecheck  # strict TypeScript check (tsc --noEmit)
+npm run test       # run the unit tests (Jest)
+npm run lint       # prettier + eslint
+npm run build      # build the XPI into build/
+```
+
+> **Note**: `@swc/core` is pinned to `1.16.2` via `overrides`. Versions
+> `>=1.16.10` use a compressed native carrier whose cache check rejects
+> directories (or their ancestors) where other accounts have replacement
+> rights, which breaks the build on machines with permissive ACLs. Remove the
+> pin once the upstream check is relaxed.
 
 ## Contribution and Support
 
@@ -86,14 +109,17 @@ Contributions to address the above issues are welcome via Pull Requests.
 
 ## Changelog
 
+- **v0.5.0**: Support Zotero 10; stricter TypeScript types; unit test suite; internal refactoring.
+- **v0.4.0**: Support Zotero 9.
+- **v0.3.0**: Support Zotero 8.
 - **v0.1.9**: Added customizable shortcut keys.
 - **v0.1.0**: Initial release with support for categorial tag management, fuzzy and pinyin search, and keyboard
   shortcuts.
 
 ## License
 
-- This project is open source under
-  the [MIT License](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE).
+- This project is open source under the
+  [AGPL-3.0 License](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE).
 
 ## Acknowledgements
 

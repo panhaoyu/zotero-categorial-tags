@@ -1,43 +1,40 @@
-import { DialogHelper } from "zotero-plugin-toolkit";
+import type { DialogHelper } from "zotero-plugin-toolkit";
+import type { ZoteroToolkit } from "zotero-plugin-toolkit/ztoolkit";
 import hooks from "./hooks";
 import { createZToolkit } from "./utils/ztoolkit";
 
-type Environment = "development" | "production";
+export type AddonEnvironment = "development" | "production";
 
-interface Locale {
+export interface LocaleData {
   current: Localization;
 }
 
-interface Prefs {
+export interface PrefsData {
   window?: Window;
 }
 
-interface Data {
+export interface AddonData {
   alive: boolean;
-  env: Environment;
-  ztoolkit: CustomZoteroToolkit;
-  locale?: Locale;
-  prefs: Prefs;
+  env: AddonEnvironment;
+  ztoolkit: ZoteroToolkit;
+  locale?: LocaleData;
+  prefs: PrefsData;
   dialog?: DialogHelper;
 }
 
 export default class Addon {
-  public data: Data;
+  public data: AddonData;
   public hooks: typeof hooks;
   public api: Record<string, unknown>;
 
   constructor() {
-    this.data = this.initializeData();
-    this.hooks = hooks;
-    this.api = {};
-  }
-
-  private initializeData(): Data {
-    return {
+    this.data = {
       alive: true,
       env: __env__,
       ztoolkit: createZToolkit(),
-      prefs: {}
+      prefs: {},
     };
+    this.hooks = hooks;
+    this.api = {};
   }
 }

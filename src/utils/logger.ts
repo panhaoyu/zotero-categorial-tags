@@ -1,28 +1,29 @@
+/**
+ * Log to the console of Zotero's main window.
+ */
 class Logger {
-  private readonly console: Console;
-
-  constructor() {
-    this.console = Zotero.getMainWindow()?.console;
+  private get target(): Console {
+    return Zotero.getMainWindow()?.console ?? globalThis.console;
   }
 
-  debug(message: string) {
-    this.console.debug(message);
+  debug(message: string): void {
+    this.target.debug(message);
   }
 
-  info(message: string) {
-    this.console.info(message);
+  info(message: string): void {
+    this.target.info(message);
   }
 
-  warn(message: string) {
-    this.console.warn(message);
+  warn(message: string): void {
+    this.target.warn(message);
   }
 
-  error(message: string) {
-    this.console.error(message);
+  error(message: string): void {
+    this.target.error(message);
   }
 
-  log(message: string) {
-    this.console.log(message);
+  log(message: string): void {
+    this.target.log(message);
   }
 }
 

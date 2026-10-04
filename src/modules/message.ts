@@ -3,54 +3,43 @@ import { getString } from "../utils/locale";
 enum MessageType {
   Info = "info",
   Warning = "warning",
-  Error = "error"
+  Error = "error",
 }
 
 export default class Message {
-  static info(message: string) {
+  static info(message: string): void {
     this.showMessage(message, MessageType.Info);
   }
 
-  static warning(message: string) {
+  static warning(message: string): void {
     this.showMessage(message, MessageType.Warning);
   }
 
-  static error(message: string) {
+  static error(message: string): void {
     this.showMessage(message, MessageType.Error);
   }
 
-  private static showMessage(message: string, type: MessageType) {
-    switch (type) {
-      case MessageType.Error:
-        message = `${message}<br/>Please open an issue on GitHub.`;
-        break;
-      default:
-        break;
+  private static showMessage(message: string, type: MessageType): void {
+    if (type === MessageType.Error) {
+      message = `${message}<br/>Please open an issue on GitHub.`;
     }
 
     const dialog = new ztoolkit.Dialog(1, 1);
     dialog.addCell(0, 0, {
       tag: "span",
       properties: {
-        innerHTML: message
-      }
+        innerHTML: message,
+      },
     });
 
-    let titleKey: string;
-    switch (type) {
-      case MessageType.Warning:
-        titleKey = "categorial-tags-dialog-title-warning";
-        break;
-      case MessageType.Error:
-        titleKey = "categorial-tags-dialog-title-error";
-        break;
-      default:
-        titleKey = "categorial-tags-dialog-title-info";
-        break;
-    }
+    const titleKey =
+      type === MessageType.Warning
+        ? "categorial-tags-dialog-title-warning"
+        : type === MessageType.Error
+          ? "categorial-tags-dialog-title-error"
+          : "categorial-tags-dialog-title-info";
 
-    const title = getString(titleKey);
-    dialog.open(title);
+    dialog.open(getString(titleKey));
     dialog.addButton("OK");
   }
 }

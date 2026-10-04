@@ -9,15 +9,15 @@ interface Colors {
   initialBackground: string;
 }
 
+interface ColorState {
+  isActive: boolean;
+  isFiltered: boolean;
+}
+
 const ACTIVE_ITEM_BG = "#efd2ff";
 const FILTERED_ITEM_BG = "#b5f1c4";
 
-function getColors({ tag, isActive, isFiltered }: {
-  tag: CategorialTag,
-  isActive: boolean,
-  isFiltered: boolean
-}): Colors {
-  let foreground = "inherit";
+function getColors({ isActive, isFiltered }: ColorState): Colors {
   let background = "transparent";
   let initialBackground = "transparent";
 
@@ -28,48 +28,51 @@ function getColors({ tag, isActive, isFiltered }: {
     background = FILTERED_ITEM_BG;
   }
 
-  return { foreground, background, initialBackground };
+  return { foreground: "inherit", background, initialBackground };
 }
 
+/**
+ * Dialog for adding and removing categorial tags on the selected items.
+ */
 export class TagDialogUI {
   private dialog?: DialogHelper;
-  private logic: TagDialogData;
-
-  private readonly filterInputElementId: string = "zotero-categorial-tags-filter-input";
+  private readonly logic: TagDialogData;
+  private readonly filterInputElementId = "zotero-categorial-tags-filter-input";
 
   constructor(selections: Zotero.Item[]) {
     this.logic = new TagDialogData(selections);
   }
 
-  public async open() {
+  public async open(): Promise<void> {
     if (this.dialog !== undefined) return;
 
-    this.dialog = new DialogHelper(3, 1);
+    const dialog = new DialogHelper(3, 1);
+    this.dialog = dialog;
 
-    this.dialog.setDialogData({ itemTags: { ...this.logic.itemTags } });
+    dialog.setDialogData({ itemTags: { ...this.logic.itemTags } });
 
-    this.dialog.addCell(0, 0, {
+    dialog.addCell(0, 0, {
       tag: "input",
       id: this.filterInputElementId,
       properties: {
         type: "text",
         placeholder: "Filter tags...",
-        oninput: (e: Event) => {
-          const filterValue = (e.target as HTMLInputElement).value;
+        oninput: (event: Event) => {
+          const filterValue = (event.target as HTMLInputElement).value;
           this.logic.filterTags(filterValue);
           this.updateTagStyles();
-        }
+        },
       },
       styles: {
-        marginBottom: "10px"
-      }
+        marginBottom: "10px",
+      },
     });
 
-    this.dialog.addCell(1, 0, {
+    dialog.addCell(1, 0, {
       tag: "div",
       styles: {
         userSelect: "none",
-        overflowY: "auto"
+        overflowY: "auto",
       },
       children: [
         {
@@ -77,26 +80,26 @@ export class TagDialogUI {
           children: [
             {
               tag: "tbody",
-              children: tagManager.getAllCategories().map(category => ({
+              children: tagManager.getAllCategories().map((category) => ({
                 tag: "tr",
                 styles: {
-                  marginBottom: "6px"
+                  marginBottom: "6px",
                 },
                 children: [
                   {
                     tag: "th",
                     properties: { innerText: category.name },
                     styles: {
-                      whiteSpace: "nowrap"  // Ensure text does not wrap
-                    }
+                      whiteSpace: "nowrap", // Ensure text does not wrap
+                    },
                   },
                   {
                     tag: "td",
                     children: category.tags.map((tag: CategorialTag) => {
-                      const isFiltered = this.logic.itemTags[tag.tagId].isFiltered;
-                      const isActive = this.logic.itemTags[tag.tagId].active;
+                      const tagState = this.logic.itemTags[tag.tagId];
                       const colors = getColors({
-                        tag: tag, isActive, isFiltered
+                        isActive: tagState?.active ?? false,
+                        isFiltered: tagState?.isFiltered ?? false,
                       });
                       return {
                         tag: "span",
@@ -110,7 +113,7 @@ export class TagDialogUI {
                           padding: "2px",
                           borderRadius: "4px",
                           display: "inline-block",
-                          color: colors.foreground
+                          color: colors.foreground,
                         },
                         listeners: [
                           {
@@ -118,28 +121,30 @@ export class TagDialogUI {
                             listener: () => {
                               this.logic.toggleTag(tag.tagId);
                               this.updateTagStyles();
-                            }
-                          }
-                        ]
+                            },
+                          },
+                        ],
                       };
-                    })
-                  }
-                ]
-              }))
-            }
-          ]
-        }
-      ]
+                    }),
+                  },
+                ],
+              })),
+            },
+          ],
+        },
+      ],
     });
 
-    this.dialog.addButton("Save and close", "save-button", {
+    dialog.addButton("Save and close", "save-button", {
       noClose: false,
-      callback: async () => await this.handleSaveShortcut()
+      callback: () => {
+        void this.handleSaveShortcut();
+      },
     });
 
-    this.dialog.addButton("Cancel", "close-button", {
+    dialog.addButton("Cancel", "close-button", {
       noClose: false,
-      callback: () => this.close()
+      callback: () => this.close(),
     });
 
     const mainWindow = Zotero.getMainWindow();
@@ -148,65 +153,69 @@ export class TagDialogUI {
 
     const title = this.logic.dialogTitle;
     const height = Math.min(screenHeight * 0.8, 600); // Limit height to 600px or 80% of screen height
-    const width = Math.min(screenWidth * 0.8, 800);   // Limit width to 800px or 80% of screen width
+    const width = Math.min(screenWidth * 0.8, 800); // Limit width to 800px or 80% of screen width
 
-    this.dialog.open(title, {
+    dialog.open(title, {
       centerscreen: true,
       resizable: true,
       height: height,
-      width: width
+      width: width,
     });
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const inputElement = this.document.getElementById(this.filterInputElementId) as HTMLInputElement | null;
-    if (inputElement) {
+    const inputElement = this.document.getElementById(
+      this.filterInputElementId,
+    );
+    if (inputElement instanceof HTMLInputElement) {
       inputElement.focus();
     }
 
     this.addGlobalKeyListeners();
   }
 
-  private addGlobalKeyListeners() {
-    this.document.addEventListener("keydown", async event => {
+  private addGlobalKeyListeners(): void {
+    this.document.addEventListener("keydown", (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (key === "escape") {
-        this.handleCloseShortcut();
+        this.close();
       } else if (key === "enter") {
-        await this.handleSaveShortcut();
+        void this.handleSaveShortcut();
       }
     });
   }
 
-  private handleCloseShortcut() {
-    this.close();
-  }
-
-  private async handleSaveShortcut() {
+  private async handleSaveShortcut(): Promise<void> {
     this.close();
     await this.logic.saveChanges();
   }
 
-  get document(): Document {
-    return this.dialog?.window.document!;
+  private get document(): Document {
+    if (!this.dialog) throw new Error("Dialog is not open");
+    return this.dialog.window.document;
   }
 
-  public close() {
+  public close(): void {
     if (this.dialog === undefined) return;
     this.dialog.window.close();
     this.dialog = undefined;
   }
 
-  private updateTagStyles() {
-    const useInitial = this.logic.filterValue.length == 0;
-    tagManager.getAllTags().forEach(tag => {
-      const element = this.document.getElementById(tag.uniqueElementId) as HTMLSpanElement;
+  private updateTagStyles(): void {
+    const useInitial = this.logic.filterValue.length === 0;
+    for (const tag of tagManager.getAllTags()) {
+      const element = this.document.getElementById(tag.uniqueElementId);
       const tagState = this.logic.itemTags[tag.tagId];
-      if (element && tagState) {
-        const colors = getColors({ tag: tag, isFiltered: tagState.isFiltered, isActive: tagState.active });
+      if (element instanceof HTMLElement && tagState) {
+        const colors = getColors({
+          isActive: tagState.active,
+          isFiltered: tagState.isFiltered,
+        });
         element.style.color = colors.foreground;
-        element.style.background = useInitial ? colors.initialBackground : colors.background;
+        element.style.background = useInitial
+          ? colors.initialBackground
+          : colors.background;
       }
-    });
+    }
   }
 }
