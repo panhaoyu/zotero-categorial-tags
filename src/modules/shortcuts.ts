@@ -10,6 +10,8 @@ import { logger } from "../utils/logger";
  * Handles the global shortcut that opens the tag dialog.
  */
 export class ShortcutManager {
+  private unregisterKeyboard?: () => void;
+
   /**
    * Registers the keyboard shortcut event listener.
    */
@@ -20,7 +22,7 @@ export class ShortcutManager {
       `Registering shortcut: ${shortcut}, parsed: ${JSON.stringify(keyOptions)}`,
     );
 
-    ztoolkit.Keyboard.register((event: KeyboardEvent) => {
+    const callback = (event: KeyboardEvent): void => {
       if (
         event.type === "keydown" &&
         event.ctrlKey === keyOptions.ctrl &&
@@ -32,7 +34,20 @@ export class ShortcutManager {
         logger.info("Shortcut triggered: opening tags tab");
         addon.hooks.onShortcuts(CommandKey.openTagTab);
       }
-    });
+    };
+
+    ztoolkit.Keyboard.register(callback);
+    this.unregisterKeyboard = () => {
+      ztoolkit.Keyboard.unregister(callback);
+    };
+  }
+
+  /**
+   * Removes the registered keyboard shortcut listener.
+   */
+  public unregister(): void {
+    this.unregisterKeyboard?.();
+    this.unregisterKeyboard = undefined;
   }
 
   /**
@@ -41,7 +56,15 @@ export class ShortcutManager {
   public async openTagsTabCallback(): Promise<void> {
     logger.info("Opening tags tab callback started");
     const currentPane = Zotero.getActiveZoteroPane();
-    const tabs = currentPane!.getState().tabs;
+    if (!currentPane) {
+      logger.info("No active Zotero pane found");
+      Message.error(
+        "Cannot find the currently selected tab to apply categorical tags.",
+      );
+      return;
+    }
+
+    const tabs = currentPane.getState().tabs;
     const currentTab = tabs.find((tab) => tab.selected);
 
     if (!currentTab) {
@@ -57,8 +80,9 @@ export class ShortcutManager {
 
     switch (currentTab.type) {
       case "reader": {
-        const readerData = currentTab.data as _ZoteroTypes.ReaderTab;
-        const selectedItemId = readerData.itemID;
+        const readerData = currentTab.data as
+          _ZoteroTypes.ReaderTab | undefined;
+        const selectedItemId = readerData?.itemID;
         logger.info(`Reader tab itemID: ${selectedItemId}`);
 
         if (!selectedItemId) {
@@ -70,14 +94,14 @@ export class ShortcutManager {
         }
 
         const selectedItem = Zotero.Items.get(selectedItemId);
-        if (selectedItem) {
+        if (selectedItem !== false) {
           selections.push(selectedItem);
         }
         break;
       }
 
       case "library":
-        selections = currentPane!.getSelectedItems();
+        selections = currentPane.getSelectedItems();
         logger.info(`Library tab selections: ${selections.length} items`);
         break;
 

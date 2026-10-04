@@ -102,6 +102,22 @@ describe("Manager", () => {
 
       expect(zotero.Tags.getAll).toHaveBeenCalledWith(3);
     });
+
+    test("等待库选择超时时应报错", async () => {
+      jest.useFakeTimers();
+      try {
+        createMockZotero(fixtures, { libraryId: undefined });
+        const manager = new Manager();
+        const promise = manager.updateCache();
+        const assertion = expect(promise).rejects.toThrow(
+          "Timed out waiting for a selected library",
+        );
+        await jest.advanceTimersByTimeAsync(10100);
+        await assertion;
+      } finally {
+        jest.useRealTimers();
+      }
+    });
   });
 
   describe("getTagsOfItem", () => {
@@ -129,8 +145,35 @@ describe("Manager", () => {
     });
   });
 
-  describe("条目标签变更", () => {
-    test("应防抖触发一次缓存刷新", async () => {
+  describe("register / unregister", () => {
+    test("register 应挂接 Zotero API，unregister 应恢复原始实现", async () => {
+      const zotero = createMockZotero(fixtures);
+      const originalCreate = zotero.Tags.create;
+      const originalAddTag = zotero.Item.prototype.addTag;
+      const manager = new Manager();
+
+      await manager.register();
+      expect(zotero.Tags.create).not.toBe(originalCreate);
+      expect(zotero.Item.prototype.addTag).not.toBe(originalAddTag);
+
+      manager.unregister();
+      expect(zotero.Tags.create).toBe(originalCreate);
+      expect(zotero.Item.prototype.addTag).toBe(originalAddTag);
+    });
+
+    test("通过 Zotero.Tags.create 创建标签应立即刷新缓存", async () => {
+      const zotero = createMockZotero(fixtures);
+      const manager = new Manager();
+      await manager.register();
+      const calls = zotero.Tags.getAll.mock.calls.length;
+
+      await zotero.Tags.create("#Subject/New");
+
+      expect(zotero.Tags.getAll.mock.calls.length).toBe(calls + 1);
+      manager.unregister();
+    });
+
+    test("条目标签变更应防抖触发一次缓存刷新", async () => {
       jest.useFakeTimers();
       try {
         const zotero = createMockZotero(fixtures);
@@ -150,9 +193,24 @@ describe("Manager", () => {
         await Promise.resolve();
         await Promise.resolve();
         expect(zotero.Tags.getAll.mock.calls.length).toBe(calls + 1);
+
+        manager.unregister();
+        await jest.advanceTimersByTimeAsync(1000);
+        expect(zotero.Tags.getAll.mock.calls.length).toBe(calls + 1);
       } finally {
         jest.useRealTimers();
       }
+    });
+
+    test("重复 register 不应重复挂接", async () => {
+      const zotero = createMockZotero(fixtures);
+      const manager = new Manager();
+      await manager.register();
+      const patched = zotero.Tags.create;
+
+      await manager.register();
+      expect(zotero.Tags.create).toBe(patched);
+      manager.unregister();
     });
   });
 });

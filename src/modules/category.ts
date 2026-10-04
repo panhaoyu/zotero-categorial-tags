@@ -9,11 +9,8 @@ export class Category {
   readonly itemCount: number;
 
   constructor(name: string, tags: CategorialTag[]) {
-    tags = tags.sort((i, j) => j.itemCount - i.itemCount);
     this.name = name;
-    this.tags = tags;
-    this.itemCount = this.tags
-      .map((tag) => tag.itemCount)
-      .reduce((i, j) => i + j, 0);
+    this.tags = [...tags].sort((a, b) => b.itemCount - a.itemCount);
+    this.itemCount = this.tags.reduce((total, tag) => total + tag.itemCount, 0);
   }
 }

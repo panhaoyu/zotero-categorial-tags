@@ -2,14 +2,18 @@ import { tagManager } from "./manager";
 import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
+const COLUMN_DATA_KEY = "categorial-tags";
+
 /**
  * Adds the categorial tags column to the item list.
  */
 export class ColumnManager {
+  private registeredDataKey?: string;
+
   async register(): Promise<void> {
-    await Zotero.ItemTreeManager.registerColumns({
+    const registeredDataKey = Zotero.ItemTreeManager.registerColumn({
       pluginID: config.addonID,
-      dataKey: "categorial-tags",
+      dataKey: COLUMN_DATA_KEY,
       label: getString("categorial-tags-column-name"),
       dataProvider: (item: Zotero.Item, _dataKey: string) => {
         return tagManager
@@ -18,6 +22,17 @@ export class ColumnManager {
           .join(" ");
       },
     });
+
+    if (registeredDataKey !== false) {
+      this.registeredDataKey = registeredDataKey;
+    }
+  }
+
+  unregister(): void {
+    if (this.registeredDataKey !== undefined) {
+      Zotero.ItemTreeManager.unregisterColumn(this.registeredDataKey);
+      this.registeredDataKey = undefined;
+    }
   }
 }
 

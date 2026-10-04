@@ -77,12 +77,12 @@ export class TagDialogData {
   public filterTags(filterValue: string): void {
     const filterResults = this.tagFilter.filterTags(filterValue);
     this.filterValue = filterValue;
-    tagManager.getAllTags().forEach((tagData) => {
-      const tagState = this.itemTags[tagData.tagId];
+    for (const tag of tagManager.getAllTags()) {
+      const tagState = this.itemTags[tag.tagId];
       if (tagState) {
-        tagState.isFiltered = filterResults.includes(tagData.tagName);
+        tagState.isFiltered = filterResults.includes(tag.tagName);
       }
-    });
+    }
   }
 
   public toggleTag(tagId: number): void {
@@ -95,12 +95,11 @@ export class TagDialogData {
 
   public async saveChanges(): Promise<void> {
     await Zotero.DB.executeTransaction(async () => {
-      for (const [tagId, activeData] of Object.entries(this.itemTags)) {
-        if (!activeData.changed) continue;
-        const tag = tagManager.getTag(Number(tagId));
-        if (tag === undefined) continue;
+      for (const tag of tagManager.getAllTags()) {
+        const tagState = this.itemTags[tag.tagId];
+        if (!tagState?.changed) continue;
         for (const selection of this.selections) {
-          if (activeData.active) {
+          if (tagState.active) {
             selection.addTag(tag.fullName);
           } else {
             selection.removeTag(tag.fullName);

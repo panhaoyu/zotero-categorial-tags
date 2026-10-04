@@ -46,6 +46,9 @@ async function onMainWindowUnload(_win: Window): Promise<void> {
 
 function onShutdown(): void {
   logger.info("onShutdown executed");
+  shortcutsManager.unregister();
+  tagManager.unregister();
+  columnManager.unregister();
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
   // Remove addon object

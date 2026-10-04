@@ -23,15 +23,19 @@ export class CategorialTag {
 
     // Validate that the tag name starts with "#"
     const tagName = tagJson.tag;
-    if (tagName[0] !== "#") {
-      throw new Error("Tag name must start with '#'");
+    if (!tagName.startsWith("#")) {
+      throw new Error(`Tag name must start with '#': ${tagName}`);
     }
 
     // Process tagName to extract categoryName and tagNamePart
-    const removePrefix = tagName.slice(1);
-    const [categoryName, tagNamePart] = removePrefix.split("/", 2);
+    const [categoryName, tagNamePart] = tagName.slice(1).split("/", 2);
+    if (categoryName === undefined || tagNamePart === undefined) {
+      throw new Error(
+        `Tag name must follow the '#category/name' format: ${tagName}`,
+      );
+    }
 
-    this.categoryName = categoryName ?? "";
-    this.tagName = tagNamePart ?? "";
+    this.categoryName = categoryName;
+    this.tagName = tagNamePart;
   }
 }
