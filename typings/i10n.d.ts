@@ -3,7 +3,11 @@
 /* eslint-disable */
 // @ts-nocheck
 export type FluentMessageId =
+  | 'categorial-tags-accept'
   | 'categorial-tags-cancel'
+  | 'categorial-tags-capture-dialog-description'
+  | 'categorial-tags-capture-dialog-label'
+  | 'categorial-tags-capture-dialog-title'
   | 'categorial-tags-column-name'
   | 'categorial-tags-dialog-title'
   | 'categorial-tags-dialog-title-error'

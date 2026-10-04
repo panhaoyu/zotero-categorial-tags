@@ -19,3 +19,7 @@ categorial-tags-error-github-hint = 本插件由 AIGC 开发。若问题持续�
 categorial-tags-error-no-active-tab = 无法找到当前选中的标签页来应用分类标签。
 categorial-tags-error-no-item-id = 无法识别当前条目的 ID 来应用分类标签。
 categorial-tags-error-unsupported-tab = 不支持的标签页类型："{ $type }"。
+categorial-tags-capture-dialog-title = 捕获快捷键
+categorial-tags-capture-dialog-label = 请按下任意组合键：
+categorial-tags-capture-dialog-description = 请按下任意组合键（例如 Ctrl+Shift+K），组合键会显示在上方输入框中。
+categorial-tags-accept = 接受

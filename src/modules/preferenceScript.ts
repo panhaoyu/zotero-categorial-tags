@@ -1,6 +1,7 @@
 import { getPref, setPref } from "../utils/prefs";
 import { ElementID, PrefDefault, PrefKey } from "./constants";
 import { logger } from "../utils/logger";
+import { getString } from "../utils/locale";
 import { DialogHelper } from "zotero-plugin-toolkit";
 
 const SHORTCUT_CAPTURE_INPUT_ID = "shortcut-capture-input";
@@ -57,7 +58,9 @@ async function showShortcutCaptureDialog(): Promise<void> {
     children: [
       {
         tag: "label",
-        properties: { value: "Press any key combination:" },
+        properties: {
+          value: getString("categorial-tags-capture-dialog-label"),
+        },
       },
       {
         tag: "input",
@@ -68,15 +71,14 @@ async function showShortcutCaptureDialog(): Promise<void> {
       {
         tag: "description",
         properties: {
-          textContent:
-            "Press any key combination (e.g. Ctrl+Shift+K). The combination will appear above.",
+          textContent: getString("categorial-tags-capture-dialog-description"),
         },
         styles: { maxWidth: "300px" },
       },
     ],
   });
 
-  dialog.addButton("Accept", "accept-button", {
+  dialog.addButton(getString("categorial-tags-accept"), "accept-button", {
     noClose: false,
     callback: () => {
       const inputElement = dialog.window.document.getElementById(
@@ -90,7 +92,7 @@ async function showShortcutCaptureDialog(): Promise<void> {
     },
   });
 
-  dialog.addButton("Cancel", "cancel-button", {
+  dialog.addButton(getString("categorial-tags-cancel"), "cancel-button", {
     noClose: false,
     callback: () => {
       logger.info("Shortcut capture canceled by user");
@@ -142,7 +144,7 @@ async function showShortcutCaptureDialog(): Promise<void> {
     },
   });
 
-  dialog.open("Capture Shortcut", {
+  dialog.open(getString("categorial-tags-capture-dialog-title"), {
     centerscreen: true,
     resizable: false,
     width: 400,

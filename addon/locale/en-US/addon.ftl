@@ -19,3 +19,7 @@ categorial-tags-error-github-hint = This plugin is developed with AIGC. If the p
 categorial-tags-error-no-active-tab = Cannot find the currently selected tab to apply categorical tags.
 categorial-tags-error-no-item-id = Cannot identify the current item ID to apply categorical tags.
 categorial-tags-error-unsupported-tab = Unsupported tab type: "{ $type }".
+categorial-tags-capture-dialog-title = Capture Shortcut
+categorial-tags-capture-dialog-label = Press any key combination:
+categorial-tags-capture-dialog-description = Press any key combination (e.g. Ctrl+Shift+K). The combination will appear above.
+categorial-tags-accept = Accept
