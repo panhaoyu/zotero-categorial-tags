@@ -9,6 +9,11 @@
 **Zotero Categorial Tags** 是一款为 Zotero 用户设计的插件，旨在提升标签管理效率。通过 **分类标签**
 ，用户可以更有条理地组织、检索和管理文献资料，优化研究和学习过程。
 
+## AIGC 说明
+
+本项目已完全采用 AIGC（AI 生成代码）方式开发，部分功能可能不够完善。如遇到问题，请及时在
+[GitHub Issues 页面](https://github.com/panhaoyu/zotero-categorial-tags/issues) 反馈，欢迎提出改进建议。
+
 ## 功能特性
 
 - **分类标签列**：在条目列表中添加分类标签列，直观显示每个文献的标签信息。
@@ -16,6 +21,10 @@
 - **快捷键操作**：按 `Ctrl + T`（可自定义）快速打开标签管理对话框。
 - **标签管理对话框**：提供用户友好的界面，支持对现有标签的添加和移除。
 - **模糊搜索与拼音搜索**：支持模糊匹配和拼音搜索，快速定位标签。
+
+## 兼容性
+
+- 支持 Zotero 7 及更高版本（已在 Zotero 10 上测试）。
 
 ## 安装方法
 
@@ -72,12 +81,16 @@
 
 ## 更新日志
 
+- **v0.5.0**: 支持 Zotero 10；更严格的 TypeScript 类型；补充单元测试；内部重构。
+- **v0.4.0**: 支持 Zotero 9。
+- **v0.3.0**: 支持 Zotero 8。
 - **v0.1.9**: 增加自定义快捷键功能。
 - **v0.1.0**: 初始发布，支持分类标签管理、模糊和拼音搜索、快捷键操作。
 
 ## 许可证
 
-- 本项目采用 [MIT 许可证](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE) 开源。
+- 本项目采用
+  [AGPL-3.0 许可证](https://github.com/panhaoyu/zotero-categorial-tags/blob/main/LICENSE) 开源。
 
 ## 鸣谢
 

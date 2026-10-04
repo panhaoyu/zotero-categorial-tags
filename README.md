@@ -12,6 +12,12 @@ Documentation | [中文文档](doc/README-zhCN.md)
 **categorial tags**, users can systematically organize, retrieve, and manage references, optimizing their research and
 study processes.
 
+## AIGC Notice
+
+This project is fully developed with AIGC (AI-generated code). Some features may not be as polished as those of a mature
+project. If you run into any problem, please report it promptly on the
+[GitHub Issues page](https://github.com/panhaoyu/zotero-categorial-tags/issues) — feedback is always welcome.
+
 ## Features
 
 - **Categorial Tags Column**: Adds a categorial tags column in the item list, clearly showing each reference's tag
