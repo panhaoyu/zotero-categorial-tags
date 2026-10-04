@@ -172,7 +172,7 @@ export class TagDialogUI {
     const inputElement = this.document.getElementById(
       this.filterInputElementId,
     );
-    if (inputElement instanceof HTMLInputElement) {
+    if (inputElement) {
       inputElement.focus();
     }
 
@@ -211,7 +211,7 @@ export class TagDialogUI {
     for (const tag of tagManager.getAllTags()) {
       const element = this.document.getElementById(tag.uniqueElementId);
       const tagState = this.logic.itemTags[tag.tagId];
-      if (element instanceof HTMLElement && tagState) {
+      if (element && tagState) {
         const colors = getColors({
           isActive: tagState.active,
           isFiltered: tagState.isFiltered,

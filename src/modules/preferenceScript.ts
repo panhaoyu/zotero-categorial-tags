@@ -83,8 +83,8 @@ async function showShortcutCaptureDialog(): Promise<void> {
     callback: () => {
       const inputElement = dialog.window.document.getElementById(
         SHORTCUT_CAPTURE_INPUT_ID,
-      );
-      if (inputElement instanceof HTMLInputElement && inputElement.value) {
+      ) as HTMLInputElement | null;
+      if (inputElement && inputElement.value) {
         setPref(PrefKey.shortcut, inputElement.value);
         logger.info(`Dialog accepted new shortcut: ${inputElement.value}`);
         void updatePrefsUI();
@@ -104,8 +104,8 @@ async function showShortcutCaptureDialog(): Promise<void> {
     loadCallback: () => {
       const inputElement = dialog.window.document.getElementById(
         SHORTCUT_CAPTURE_INPUT_ID,
-      );
-      if (!(inputElement instanceof HTMLInputElement)) {
+      ) as HTMLInputElement | null;
+      if (!inputElement) {
         logger.error("Input element not found in dialog");
         return;
       }
