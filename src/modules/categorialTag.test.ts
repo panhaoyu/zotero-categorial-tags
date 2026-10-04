@@ -38,10 +38,11 @@ describe("CategorialTag", () => {
     );
   });
 
-  test("多级斜杠只取前两段（与旧行为保持一致）", () => {
+  test("多级斜杠应完整保留标签名部分", () => {
     const tag = new CategorialTag(1, { tag: "#A/B/C" }, []);
     expect(tag.categoryName).toBe("A");
-    expect(tag.tagName).toBe("B");
+    expect(tag.tagName).toBe("B/C");
+    expect(tag.fullName).toBe("#A/B/C");
   });
 
   test("空分类名或空标签名不抛错（与旧行为保持一致）", () => {
