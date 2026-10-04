@@ -120,14 +120,21 @@ export function createMockZotero(
   (
     globalThis as unknown as {
       Zotero: MockZotero;
-      ZoteroPane: { getSelectedLibraryID: () => number | undefined };
+      ZoteroPane: {
+        getSelectedLibraryIDs: () => number[];
+        getSelectedLibraryID: () => number | undefined;
+      };
     }
   ).Zotero = mock;
   (
     globalThis as unknown as {
-      ZoteroPane: { getSelectedLibraryID: () => number | undefined };
+      ZoteroPane: {
+        getSelectedLibraryIDs: () => number[];
+        getSelectedLibraryID: () => number | undefined;
+      };
     }
   ).ZoteroPane = {
+    getSelectedLibraryIDs: () => (libraryId === undefined ? [] : [libraryId]),
     getSelectedLibraryID: () => libraryId,
   };
 

@@ -213,4 +213,37 @@ describe("Manager", () => {
       manager.unregister();
     });
   });
+
+  describe("getSelectedLibraryId 兼容性", () => {
+    test("应优先使用 Zotero 10 的 getSelectedLibraryIDs", async () => {
+      createMockZotero(fixtures);
+      const pane = (
+        globalThis as unknown as {
+          ZoteroPane: { getSelectedLibraryIDs: jest.Mock };
+        }
+      ).ZoteroPane;
+      const spy = jest.fn(() => [1]);
+      pane.getSelectedLibraryIDs = spy;
+
+      const manager = new Manager();
+      await manager.updateCache();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    test("缺少 getSelectedLibraryIDs 时应回退 getSelectedLibraryID", async () => {
+      createMockZotero(fixtures);
+      const pane = (
+        globalThis as unknown as {
+          ZoteroPane: Record<string, unknown>;
+        }
+      ).ZoteroPane;
+      delete pane.getSelectedLibraryIDs;
+
+      const manager = new Manager();
+      await manager.updateCache();
+
+      expect(manager.getAllTags().length).toBeGreaterThan(0);
+    });
+  });
 });

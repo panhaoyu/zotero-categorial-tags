@@ -144,7 +144,15 @@ export class Manager {
     if (typeof ZoteroPane === "undefined") {
       return undefined;
     }
-    return ZoteroPane.getSelectedLibraryID() || undefined;
+    // Zotero 10 移除了 getSelectedLibraryID，优先使用新 API
+    const pane = ZoteroPane as unknown as {
+      getSelectedLibraryIDs?: () => number[];
+      getSelectedLibraryID?: () => number | false;
+    };
+    if (typeof pane.getSelectedLibraryIDs === "function") {
+      return pane.getSelectedLibraryIDs()[0] || undefined;
+    }
+    return pane.getSelectedLibraryID?.() || undefined;
   }
 
   /**
