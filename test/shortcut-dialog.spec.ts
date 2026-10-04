@@ -9,6 +9,7 @@ import {
   findDialogWindow,
   getDialogSpans,
   pressKeyOnDocument,
+  pressShortcut,
   selectItem,
   waitForPlugin,
   waitUntil,
@@ -69,5 +70,20 @@ describe("标签对话框集成测试", () => {
     });
     await waitUntil(() => !findDialogWindow(), "对话框关闭");
     expect(findDialogWindow()).to.equal(null);
+  });
+
+  it("对话框打开后立即按 Esc 应能关闭（无需等待初始化）", async () => {
+    await closeAllDialogs();
+    pressShortcut();
+    await waitUntil(() => !!findDialogWindow(), "对话框打开", 3000);
+    const dialog = findDialogWindow()!;
+    // 不等待初始化，立即按 Esc
+    pressKeyOnDocument(dialog, {
+      key: "Escape",
+      code: "Escape",
+      bubbles: true,
+      cancelable: true,
+    });
+    await waitUntil(() => !findDialogWindow(), "对话框关闭", 3000);
   });
 });
