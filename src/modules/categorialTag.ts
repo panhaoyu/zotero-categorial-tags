@@ -27,15 +27,16 @@ export class CategorialTag {
       throw new Error(`Tag name must start with '#': ${tagName}`);
     }
 
-    // 从标签名中拆分出分类名与标签名部分
-    const [categoryName, tagNamePart] = tagName.slice(1).split("/", 2);
-    if (categoryName === undefined || tagNamePart === undefined) {
+    // 从标签名中拆分出分类名与标签名部分（标签名部分可包含斜杠）
+    const body = tagName.slice(1);
+    const separatorIndex = body.indexOf("/");
+    if (separatorIndex === -1) {
       throw new Error(
         `Tag name must follow the '#category/name' format: ${tagName}`,
       );
     }
 
-    this.categoryName = categoryName;
-    this.tagName = tagNamePart;
+    this.categoryName = body.slice(0, separatorIndex);
+    this.tagName = body.slice(separatorIndex + 1);
   }
 }
