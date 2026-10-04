@@ -21,7 +21,7 @@ export default class Message {
 
   private static showMessage(message: string, type: MessageType): void {
     if (type === MessageType.Error) {
-      message = `${message}<br/>Please open an issue on GitHub.`;
+      message = `${message}<br/>This plugin is developed with AIGC. If the problem persists, please open an issue on GitHub.`;
     }
 
     const dialog = new ztoolkit.Dialog(1, 1);
