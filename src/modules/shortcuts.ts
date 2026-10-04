@@ -7,13 +7,13 @@ import { parseShortcut } from "./shortcutParser";
 import { logger } from "../utils/logger";
 
 /**
- * Handles the global shortcut that opens the tag dialog.
+ * 处理打开标签对话框的全局快捷键。
  */
 export class ShortcutManager {
   private unregisterKeyboard?: () => void;
 
   /**
-   * Registers the keyboard shortcut event listener.
+   * 注册键盘快捷键事件监听。
    */
   public async register(): Promise<void> {
     const shortcut = getPref(PrefKey.shortcut) ?? PrefDefault.shortcut;
@@ -43,7 +43,7 @@ export class ShortcutManager {
   }
 
   /**
-   * Removes the registered keyboard shortcut listener.
+   * 移除已注册的键盘快捷键监听。
    */
   public unregister(): void {
     this.unregisterKeyboard?.();
@@ -51,16 +51,14 @@ export class ShortcutManager {
   }
 
   /**
-   * Callback function triggered by the shortcut to open the tags dialog.
+   * 快捷键触发时打开标签对话框的回调。
    */
   public async openTagsTabCallback(): Promise<void> {
     logger.info("Opening tags tab callback started");
     const currentPane = Zotero.getActiveZoteroPane();
     if (!currentPane) {
       logger.info("No active Zotero pane found");
-      Message.error(
-        "Cannot find the currently selected tab to apply categorical tags.",
-      );
+      Message.error(getString("categorial-tags-error-no-active-tab"));
       return;
     }
 
@@ -69,9 +67,7 @@ export class ShortcutManager {
 
     if (!currentTab) {
       logger.info("No active tab found");
-      Message.error(
-        "Cannot find the currently selected tab to apply categorical tags.",
-      );
+      Message.error(getString("categorial-tags-error-no-active-tab"));
       return;
     }
 
@@ -87,9 +83,7 @@ export class ShortcutManager {
 
         if (!selectedItemId) {
           logger.info("No item ID in reader tab");
-          Message.error(
-            "Cannot identify the current item ID to apply categorical tags.",
-          );
+          Message.error(getString("categorial-tags-error-no-item-id"));
           return;
         }
 
@@ -107,11 +101,15 @@ export class ShortcutManager {
 
       default:
         logger.info(`Unsupported tab type: ${currentTab.type}`);
-        Message.error(`Unsupported tab type: "${currentTab.type}".`);
+        Message.error(
+          getString("categorial-tags-error-unsupported-tab", {
+            args: { type: currentTab.type },
+          }),
+        );
         return;
     }
 
-    // Retrieve the top-level parent for each selected item, ignoring notes or PDF files
+    // 将每个选中条目归到其顶层父条目（忽略笔记或 PDF 附件）
     selections = selections.map((item) => {
       let parent = item;
       while (parent.parentItem) {
@@ -134,5 +132,5 @@ export class ShortcutManager {
   }
 }
 
-// Instantiate and export the shortcut manager
+// 导出快捷键管理器单例
 export const shortcutsManager = new ShortcutManager();

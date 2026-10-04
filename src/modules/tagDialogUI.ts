@@ -2,6 +2,7 @@ import { DialogHelper } from "zotero-plugin-toolkit";
 import { TagDialogData } from "./tagDialogData";
 import { CategorialTag } from "./categorialTag";
 import { tagManager } from "./manager";
+import { getString } from "../utils/locale";
 
 interface Colors {
   foreground: string;
@@ -32,7 +33,7 @@ function getColors({ isActive, isFiltered }: ColorState): Colors {
 }
 
 /**
- * Dialog for adding and removing categorial tags on the selected items.
+ * 用于为选中条目增删分类标签的对话框。
  */
 export class TagDialogUI {
   private dialog?: DialogHelper;
@@ -56,7 +57,7 @@ export class TagDialogUI {
       id: this.filterInputElementId,
       properties: {
         type: "text",
-        placeholder: "Filter tags...",
+        placeholder: getString("categorial-tags-filter-placeholder"),
         oninput: (event: Event) => {
           const filterValue = (event.target as HTMLInputElement).value;
           this.logic.filterTags(filterValue);
@@ -90,7 +91,7 @@ export class TagDialogUI {
                     tag: "th",
                     properties: { innerText: category.name },
                     styles: {
-                      whiteSpace: "nowrap", // Ensure text does not wrap
+                      whiteSpace: "nowrap", // 避免文字换行
                     },
                   },
                   {
@@ -135,14 +136,18 @@ export class TagDialogUI {
       ],
     });
 
-    dialog.addButton("Save and close", "save-button", {
-      noClose: false,
-      callback: () => {
-        void this.handleSaveShortcut();
+    dialog.addButton(
+      getString("categorial-tags-save-and-close"),
+      "save-button",
+      {
+        noClose: false,
+        callback: () => {
+          void this.handleSaveShortcut();
+        },
       },
-    });
+    );
 
-    dialog.addButton("Cancel", "close-button", {
+    dialog.addButton(getString("categorial-tags-cancel"), "close-button", {
       noClose: false,
       callback: () => this.close(),
     });
@@ -152,8 +157,8 @@ export class TagDialogUI {
     const screenHeight = mainWindow.screen.height;
 
     const title = this.logic.dialogTitle;
-    const height = Math.min(screenHeight * 0.8, 600); // Limit height to 600px or 80% of screen height
-    const width = Math.min(screenWidth * 0.8, 800); // Limit width to 800px or 80% of screen width
+    const height = Math.min(screenHeight * 0.8, 600); // 高度限制为 600px 或屏幕高度的 80%
+    const width = Math.min(screenWidth * 0.8, 800); // 宽度限制为 800px 或屏幕宽度的 80%
 
     dialog.open(title, {
       centerscreen: true,

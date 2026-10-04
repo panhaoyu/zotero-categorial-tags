@@ -3,12 +3,20 @@
 /* eslint-disable */
 // @ts-nocheck
 export type FluentMessageId =
+  | 'categorial-tags-cancel'
   | 'categorial-tags-column-name'
   | 'categorial-tags-dialog-title'
   | 'categorial-tags-dialog-title-error'
   | 'categorial-tags-dialog-title-info'
   | 'categorial-tags-dialog-title-warning'
+  | 'categorial-tags-error-github-hint'
+  | 'categorial-tags-error-no-active-tab'
+  | 'categorial-tags-error-no-item-id'
+  | 'categorial-tags-error-unsupported-tab'
+  | 'categorial-tags-filter-placeholder'
   | 'categorial-tags-no-selection-hint'
+  | 'categorial-tags-ok'
+  | 'categorial-tags-save-and-close'
   | 'categorial-tags-selection-titles'
   | 'pref-dialog-capture-shortcut-button'
   | 'pref-dialog-capture-shortcut-label'

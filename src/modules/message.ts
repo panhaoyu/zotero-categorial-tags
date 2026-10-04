@@ -21,7 +21,7 @@ export default class Message {
 
   private static showMessage(message: string, type: MessageType): void {
     if (type === MessageType.Error) {
-      message = `${message}<br/>This plugin is developed with AIGC. If the problem persists, please open an issue on GitHub.`;
+      message = `${message}<br/>${getString("categorial-tags-error-github-hint")}`;
     }
 
     const dialog = new ztoolkit.Dialog(1, 1);
@@ -40,6 +40,6 @@ export default class Message {
           : "categorial-tags-dialog-title-info";
 
     dialog.open(getString(titleKey));
-    dialog.addButton("OK");
+    dialog.addButton(getString("categorial-tags-ok"));
   }
 }
