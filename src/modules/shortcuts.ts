@@ -32,6 +32,8 @@ export class ShortcutManager {
         event.key?.toLowerCase() === keyOptions.key
       ) {
         logger.info("Shortcut triggered: opening tags tab");
+        // 阻止默认行为，避免快捷键与内置快捷键重叠时双重触发
+        event.preventDefault();
         addon.hooks.onShortcuts(CommandKey.openTagTab);
       }
     };
