@@ -167,6 +167,9 @@ export class TagDialogUI {
       width: width,
     });
 
+    // 立即注册键盘监听，确保打开后按 Esc/Enter 立即可用
+    this.addGlobalKeyListeners();
+
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     const inputElement = this.document.getElementById(
@@ -175,12 +178,12 @@ export class TagDialogUI {
     if (inputElement) {
       inputElement.focus();
     }
-
-    this.addGlobalKeyListeners();
   }
 
   private addGlobalKeyListeners(): void {
-    this.document.addEventListener("keydown", (event: KeyboardEvent) => {
+    // 绑定到 window 而非 document：窗口加载过程中 document 可能被替换，
+    // 而 window 在整个生命周期内稳定，可安全地提前注册
+    this.dialogWindow.addEventListener("keydown", (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
       if (key === "escape") {
         this.close();
@@ -188,6 +191,11 @@ export class TagDialogUI {
         void this.handleSaveShortcut();
       }
     });
+  }
+
+  private get dialogWindow(): Window {
+    if (!this.dialog) throw new Error("Dialog is not open");
+    return this.dialog.window;
   }
 
   private async handleSaveShortcut(): Promise<void> {
