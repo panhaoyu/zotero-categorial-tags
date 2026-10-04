@@ -42,6 +42,9 @@ export interface MockZotero {
   DB: {
     executeTransaction: jest.Mock;
   };
+  Promise: {
+    delay: jest.Mock;
+  };
   getMainWindow: jest.Mock;
 }
 
@@ -106,7 +109,16 @@ export function createMockZotero(
         return await callback();
       }),
     },
+    Promise: {
+      delay: jest.fn(
+        (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
+      ),
+    },
     getMainWindow: jest.fn(() => ({
+      // 模拟条目列表已挂载，使 ColumnManager.waitForItemTree 立即返回
+      ZoteroPane: {
+        itemsView: { tree: {} },
+      },
       console: {
         debug: jest.fn(),
         info: jest.fn(),
