@@ -17,7 +17,7 @@ if (!getPluginGlobal()) {
 }
 
 /**
- * Read the plugin instance from the global `Zotero` object.
+ * 从全局 `Zotero` 对象读取插件实例。
  */
 function getPluginGlobal(): Addon | undefined {
   const globals = Zotero as unknown as Record<string, unknown>;
@@ -25,7 +25,7 @@ function getPluginGlobal(): Addon | undefined {
 }
 
 /**
- * Attach the plugin instance to the global `Zotero` object.
+ * 将插件实例挂载到全局 `Zotero` 对象。
  */
 function setPluginGlobal(value: Addon): void {
   const globals = Zotero as unknown as Record<string, unknown>;

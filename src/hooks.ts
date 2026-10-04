@@ -10,7 +10,7 @@ import { CommandKey } from "./modules/constants";
 import { logger } from "./utils/logger";
 
 /**
- * Data passed to `onPrefsEvent` from the preference pane XHTML.
+ * 偏好设置面板 XHTML 传给 `onPrefsEvent` 的数据。
  */
 export interface PrefsEventData {
   window: Window;
@@ -51,16 +51,16 @@ function onShutdown(): void {
   columnManager.unregister();
   ztoolkit.unregisterAll();
   addon.data.dialog?.window?.close();
-  // Remove addon object
+  // 移除 addon 对象
   addon.data.alive = false;
   delete (Zotero as unknown as Record<string, unknown>)[config.addonInstance];
 }
 
 /**
- * This function is just an example of dispatcher for Preference UI events.
- * Any operations should be placed in a function to keep this function clear.
- * @param type event type
- * @param data event data
+ * 偏好设置界面事件的分发函数。
+ * 具体操作应放入独立函数，以保持本函数简洁清晰。
+ * @param type 事件类型
+ * @param data 事件数据
  */
 async function onPrefsEvent(type: string, data: PrefsEventData): Promise<void> {
   logger.info(`onPrefsEvent triggered with type: ${type}`);

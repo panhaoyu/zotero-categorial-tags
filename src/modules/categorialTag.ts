@@ -1,7 +1,7 @@
 import type { TagJson } from "./types";
 
 /**
- * A tag following the `#<category>/<tagName>` naming convention.
+ * 遵循 `#<分类>/<标签名>` 命名规范的分类标签。
  */
 export class CategorialTag {
   readonly categoryName: string;
@@ -21,13 +21,13 @@ export class CategorialTag {
     this.items = items;
     this.itemCount = items.length;
 
-    // Validate that the tag name starts with "#"
+    // 校验标签名以 "#" 开头
     const tagName = tagJson.tag;
     if (!tagName.startsWith("#")) {
       throw new Error(`Tag name must start with '#': ${tagName}`);
     }
 
-    // Process tagName to extract categoryName and tagNamePart
+    // 从标签名中拆分出分类名与标签名部分
     const [categoryName, tagNamePart] = tagName.slice(1).split("/", 2);
     if (categoryName === undefined || tagNamePart === undefined) {
       throw new Error(

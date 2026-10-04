@@ -1,5 +1,5 @@
 /**
- * A tag attached to an item.
+ * 条目上附带的一个标签。
  */
 export interface ItemTag {
   tag: string;
@@ -7,13 +7,12 @@ export interface ItemTag {
 }
 
 /**
- * Return the tags of an item.
+ * 返回条目的标签列表。
  *
- * Some item types (e.g. notes, see issue #44) do not implement `getTags`,
- * in which case an empty array is returned.
+ * 部分条目类型（如笔记，见 issue #44）未实现 `getTags`，此时返回空数组。
  */
 export function getItemTags(item: Zotero.Item): ItemTag[] {
-  // See https://github.com/panhaoyu/zotero-categorial-tags/issues/44
+  // 参见 https://github.com/panhaoyu/zotero-categorial-tags/issues/44
   if (!item.getTags) return [];
 
   return item.getTags();

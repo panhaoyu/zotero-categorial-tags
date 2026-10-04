@@ -39,7 +39,7 @@ export default defineConfig({
         outfile: `build/addon/chrome/content/scripts/${pkg.config.addonRef}.js`,
       },
     ],
-    // If you want to checkout update.json into the repository, uncomment the following lines:
+    // 若希望把 update.json 提交到仓库，取消以下注释：
     // makeUpdateJson: {
     //   hash: false,
     // },
@@ -56,6 +56,6 @@ export default defineConfig({
   //   },
   // },
 
-  // If you need to see a more detailed build log, uncomment the following line:
+  // 若需要查看更详细的构建日志，取消下一行注释：
   // logLevel: "trace",
 });

@@ -1,4 +1,4 @@
-// @ts-check Let TS check this config file
+// @ts-check 让 TypeScript 检查本配置文件
 
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";

@@ -1,5 +1,5 @@
 /**
- * Parsed representation of a keyboard shortcut.
+ * 键盘快捷键的解析结果。
  */
 export interface KeyOptions {
   ctrl: boolean;
@@ -10,7 +10,7 @@ export interface KeyOptions {
 }
 
 /**
- * Parse a shortcut string such as `Ctrl+Shift+T` into its key options.
+ * 将 `Ctrl+Shift+T` 之类的快捷键字符串解析为键位配置。
  */
 export function parseShortcut(shortcut: string): KeyOptions {
   const keys = shortcut

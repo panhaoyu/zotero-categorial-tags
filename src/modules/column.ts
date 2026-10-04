@@ -5,7 +5,7 @@ import { getString } from "../utils/locale";
 const COLUMN_DATA_KEY = "categorial-tags";
 
 /**
- * Adds the categorial tags column to the item list.
+ * 在条目列表中注册分类标签列。
  */
 export class ColumnManager {
   private registeredDataKey?: string;

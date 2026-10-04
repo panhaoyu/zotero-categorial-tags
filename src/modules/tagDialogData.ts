@@ -4,7 +4,7 @@ import { TagFilter } from "./tagFilter";
 import { getItemTags } from "./zoteroUtils";
 
 /**
- * UI state of a single tag inside the dialog.
+ * 对话框中单个标签的界面状态。
  */
 export interface TagState {
   changed: boolean;
@@ -13,7 +13,7 @@ export interface TagState {
 }
 
 /**
- * Business logic of the categorial tag dialog.
+ * 分类标签对话框的业务逻辑。
  */
 export class TagDialogData {
   public itemTags: Record<number, TagState>;

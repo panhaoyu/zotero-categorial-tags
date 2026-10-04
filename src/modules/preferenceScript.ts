@@ -97,7 +97,7 @@ async function showShortcutCaptureDialog(): Promise<void> {
     },
   });
 
-  // Set dialog data with load callback
+  // 设置对话框数据并注册加载回调
   dialog.setDialogData({
     loadCallback: () => {
       const inputElement = dialog.window.document.getElementById(
@@ -119,7 +119,7 @@ async function showShortcutCaptureDialog(): Promise<void> {
           return;
         }
 
-        // Skip Tab and Enter keys
+        // 跳过 Tab 与 Enter 键
         if (event.key === "Tab" || event.key === "Enter") return;
 
         const keys: string[] = [];
@@ -128,7 +128,7 @@ async function showShortcutCaptureDialog(): Promise<void> {
         if (event.shiftKey) keys.push("Shift");
         if (event.metaKey) keys.push("Meta");
 
-        // Exclude modifier keys when pressed alone
+        // 单独按下修饰键时不记录
         if (!["Control", "Alt", "Shift", "Meta"].includes(event.key)) {
           keys.push(event.key);
         }

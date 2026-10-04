@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 
 /**
- * Most of this code is from Zotero team's official Make It Red example[1]
- * or the Zotero 7 documentation[2].
+ * 本文件大部分代码来自 Zotero 官方 Make It Red 示例[1]或 Zotero 7 开发文档[2]。
  * [1] https://github.com/zotero/make-it-red
  * [2] https://www.zotero.org/support/dev/zotero_7_for_developers
  */
@@ -14,7 +13,7 @@ function install(data, reason) {}
 async function startup({ id, version, resourceURI, rootURI }, reason) {
   await Zotero.initializationPromise;
 
-  // String 'rootURI' introduced in Zotero 7
+  // rootURI 字符串自 Zotero 7 引入
   if (!rootURI) {
     rootURI = resourceURI.spec;
   }
@@ -28,10 +27,9 @@ async function startup({ id, version, resourceURI, rootURI }, reason) {
   ]);
 
   /**
-   * Global variables for plugin code.
-   * The `_globalThis` is the global root variable of the plugin sandbox environment
-   * and all child variables assigned to it is globally accessible.
-   * See `src/index.ts` for details.
+   * 插件代码使用的全局变量。
+   * `_globalThis` 是插件沙箱环境的全局根变量，挂载到其上的子变量全局可访问。
+   * 详见 `src/index.ts`。
    */
   const ctx = {
     rootURI,

@@ -3,12 +3,12 @@ import { config } from "../../package.json";
 export { initLocale, getString, getLocaleID };
 
 /**
- * Arguments accepted by fluent messages.
+ * Fluent 消息可接受的参数。
  */
 export type LocalizationArgs = Record<string, string | number>;
 
 /**
- * Options of `getString`.
+ * `getString` 的选项。
  */
 export interface GetStringOptions {
   branch?: string;
@@ -16,7 +16,7 @@ export interface GetStringOptions {
 }
 
 /**
- * Initialize locale data
+ * 初始化本地化数据。
  */
 function initLocale(): void {
   const l10n = new (
@@ -30,26 +30,26 @@ function initLocale(): void {
 }
 
 /**
- * Get locale string, see https://firefox-source-docs.mozilla.org/l10n/fluent/tutorial.html#fluent-translation-list-ftl
- * @param localString ftl key
- * @param options.branch branch name
- * @param options.args args
+ * 获取本地化字符串，参见 https://firefox-source-docs.mozilla.org/l10n/fluent/tutorial.html#fluent-translation-list-ftl
+ * @param localString ftl 键名
+ * @param options.branch 分支名
+ * @param options.args 消息参数
  * @example
  * ```ftl
  * # addon.ftl
- * addon-static-example = This is default branch!
- *     .branch-example = This is a branch under addon-static-example!
+ * addon-static-example = 这是默认分支！
+ *     .branch-example = 这是 addon-static-example 下的一个分支！
  * addon-dynamic-example =
     { $count ->
-        [one] I have { $count } apple
-       *[other] I have { $count } apples
+        [one] 我有 { $count } 个苹果
+       *[other] 我有 { $count } 个苹果
     }
  * ```
  * ```js
- * getString("addon-static-example"); // This is default branch!
- * getString("addon-static-example", { branch: "branch-example" }); // This is a branch under addon-static-example!
- * getString("addon-dynamic-example", { args: { count: 1 } }); // I have 1 apple
- * getString("addon-dynamic-example", { args: { count: 2 } }); // I have 2 apples
+ * getString("addon-static-example"); // 这是默认分支！
+ * getString("addon-static-example", { branch: "branch-example" }); // 这是 addon-static-example 下的一个分支！
+ * getString("addon-dynamic-example", { args: { count: 1 } }); // 我有 1 个苹果
+ * getString("addon-dynamic-example", { args: { count: 2 } }); // 我有 2 个苹果
  * ```
  */
 function getString(localString: string): string;

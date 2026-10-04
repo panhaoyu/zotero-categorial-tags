@@ -2,7 +2,7 @@ import pinyin from "pinyin";
 import FuzzySearch from "fuzzy-search";
 
 /**
- * A tag together with its pinyin representation, used as search index entry.
+ * 标签及其拼音表示，用作搜索索引项。
  */
 export interface TagWithPinyin {
   tag: string;
@@ -15,7 +15,7 @@ interface PinyinCombination {
 }
 
 /**
- * Fuzzy and pinyin based tag filter.
+ * 基于模糊匹配与拼音的标签过滤器。
  */
 export class TagFilter {
   private readonly tagsWithPinyin: TagWithPinyin[];
@@ -56,8 +56,7 @@ export class TagFilter {
   }
 
   /**
-   * Return the names of all tags matching the given input,
-   * keeping the search result order and removing duplicates.
+   * 返回与输入匹配的所有标签名，保持搜索结果顺序并去重。
    */
   public filterTags(input: string): string[] {
     if (!input) return [];

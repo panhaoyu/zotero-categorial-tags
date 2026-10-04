@@ -2,7 +2,7 @@ import { config } from "../../package.json";
 import { getString } from "../utils/locale";
 
 /**
- * Registers the plugin preference pane.
+ * 注册插件偏好设置面板。
  */
 class PreferencesManager {
   async register(): Promise<void> {

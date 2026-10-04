@@ -1,7 +1,7 @@
 import type { TagJson } from "../modules/types";
 
 /**
- * Test-only helpers to build mocked Zotero globals.
+ * 仅用于测试的辅助函数：构建模拟的 Zotero 全局对象。
  */
 
 export interface TagFixture {
@@ -51,7 +51,7 @@ export interface MockZoteroOptions {
 }
 
 /**
- * Install mocked `Zotero` / `ZoteroPane` globals and return the mocked Zotero.
+ * 安装模拟的 `Zotero` / `ZoteroPane` 全局对象，并返回模拟的 Zotero。
  */
 export function createMockZotero(
   fixtures: TagFixture[],
@@ -135,7 +135,7 @@ export function createMockZotero(
 }
 
 /**
- * Create a mocked Zotero item.
+ * 创建一个模拟的 Zotero 条目。
  */
 export function createMockItem(id: number, tags: string[] = []): MockItem {
   return {
@@ -149,7 +149,7 @@ export function createMockItem(id: number, tags: string[] = []): MockItem {
 }
 
 /**
- * Create a mocked item without a `getTags` method (e.g. notes, see #44).
+ * 创建一个没有 `getTags` 方法的模拟条目（例如笔记，见 #44）。
  */
 export function createMockItemWithoutGetTags(id: number): MockItem {
   const item = createMockItem(id, []);

@@ -9,8 +9,8 @@ export { createZToolkit };
 function createZToolkit(): ZoteroToolkit {
   const _ztoolkit = new ZoteroToolkit();
   /**
-   * Alternatively, import toolkit modules you use to minify the plugin size.
-   * You can add the modules under the `MyToolkit` class below and uncomment the following line.
+   * 或者按需引入所用工具模块以减小插件体积：
+   * 在下方 `MyToolkit` 类中添加所需模块，并取消注释下一行。
    */
   // const _ztoolkit = new MyToolkit();
   initZToolkit(_ztoolkit);

@@ -1,5 +1,5 @@
 /**
- * Log to the console of Zotero's main window.
+ * 输出日志到 Zotero 主窗口的控制台。
  */
 class Logger {
   private get target(): Console {

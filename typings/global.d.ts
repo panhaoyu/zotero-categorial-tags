@@ -23,8 +23,7 @@ declare global {
 
   interface Window {
     /**
-     * Zotero 7+ exposes `MozXULElement` on the main window, but
-     * `zotero-types` does not declare it.
+     * Zotero 7+ 在主窗口上提供 `MozXULElement`，但 `zotero-types` 未声明该属性。
      */
     MozXULElement: {
       insertFTLIfNeeded(name: string): void;

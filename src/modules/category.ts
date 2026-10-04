@@ -1,7 +1,7 @@
 import { CategorialTag } from "./categorialTag";
 
 /**
- * A group of categorial tags sharing the same category name.
+ * 同一分类名下的一组分类标签。
  */
 export class Category {
   readonly name: string;

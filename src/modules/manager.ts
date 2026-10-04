@@ -8,8 +8,8 @@ const LIBRARY_POLL_INTERVAL = 100;
 const LIBRARY_POLL_TIMEOUT = 10000;
 
 /**
- * Loads and caches all categorial tags of the selected library, and keeps the
- * cache in sync with Zotero's tag API.
+ * 加载并缓存当前选中库的全部分类标签，
+ * 并通过挂钩 Zotero 标签 API 保持缓存同步。
  */
 export class Manager {
   private categories: Category[] = [];
@@ -20,7 +20,7 @@ export class Manager {
   private updateTimer?: ReturnType<typeof setTimeout>;
 
   /**
-   * Load the initial cache and hook Zotero's tag APIs.
+   * 加载初始缓存并挂钩 Zotero 标签 API。
    */
   async register(): Promise<void> {
     if (this.registered) return;
@@ -30,7 +30,7 @@ export class Manager {
   }
 
   /**
-   * Restore the original Zotero tag APIs and stop pending updates.
+   * 恢复 Zotero 原始标签 API，并停止待处理的刷新。
    */
   unregister(): void {
     if (!this.registered) return;
@@ -46,14 +46,14 @@ export class Manager {
   }
 
   /**
-   * Update the cache after a tag modification.
+   * 标签变动后刷新缓存。
    */
   async onTagChanged(): Promise<void> {
     await this.updateCache();
   }
 
   /**
-   * Update and cache all CategorialTag instances and categories.
+   * 更新并缓存全部分类标签与分类。
    */
   async updateCache(): Promise<void> {
     const libraryId = await this.waitForLibrary();
@@ -123,7 +123,7 @@ export class Manager {
   }
 
   /**
-   * Wait until a library is selected, e.g. after Zotero started.
+   * 等待用户选中某个库（例如 Zotero 启动完成后）。
    */
   private async waitForLibrary(): Promise<number> {
     const start = Date.now();
@@ -148,7 +148,7 @@ export class Manager {
   }
 
   /**
-   * Schedule a cache update, coalescing rapid consecutive changes.
+   * 安排一次缓存刷新，合并短时间内的连续变动。
    */
   private scheduleUpdate(): void {
     if (this.updateTimer !== undefined) {
@@ -163,7 +163,7 @@ export class Manager {
   }
 
   /**
-   * Hook the Zotero tag APIs so that the cache follows tag changes.
+   * 挂钩 Zotero 标签 API，使缓存跟随标签变动。
    */
   private patchZotero(): void {
     const scheduleUpdate = this.scheduleUpdate.bind(this);
