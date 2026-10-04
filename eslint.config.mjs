@@ -13,6 +13,7 @@ export default tseslint.config(
       "data/**",
       "tmp/**",
       ".opencode/**",
+      ".scaffold/**",
     ],
   },
   {

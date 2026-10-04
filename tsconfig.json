@@ -1,12 +1,12 @@
 {
   "extends": "zotero-types/entries/mainWindow/",
-  "include": ["src", "typings"],
+  "include": ["src", "typings", "test"],
   "exclude": ["build", "addon", "node_modules"],
   "compilerOptions": {
     "composite": false,
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "types": ["zotero-types/entries/mainWindow", "jest"],
+    "types": ["zotero-types/entries/mainWindow", "jest", "mocha"],
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

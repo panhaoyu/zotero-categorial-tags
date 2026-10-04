@@ -18,6 +18,17 @@ export default defineConfig({
     asProxy: true,
   },
 
+  test: {
+    // 等待插件初始化完成（快捷键注册为 onStartup 的最后一步）
+    waitForPlugin: `() => !!Zotero.CategorialTags?.data?.ztoolkit?.Keyboard?._keyboardCallbacks?.size`,
+    mocha: {
+      timeout: 30000,
+    },
+    prefs: {
+      "extensions.zotero.categorialtags.shortcut": "Ctrl+T",
+    },
+  },
+
   build: {
     assets: ["addon/**/*.*"],
     define: {
