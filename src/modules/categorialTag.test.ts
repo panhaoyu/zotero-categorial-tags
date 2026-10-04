@@ -32,6 +32,12 @@ describe("CategorialTag", () => {
     ).toThrow("Tag name must start with '#'");
   });
 
+  test("应拒绝缺少 / 的标签", () => {
+    expect(() => new CategorialTag(1, { tag: "#Mathematics" }, [])).toThrow(
+      "'#category/name'",
+    );
+  });
+
   test("多级斜杠只取前两段（与旧行为保持一致）", () => {
     const tag = new CategorialTag(1, { tag: "#A/B/C" }, []);
     expect(tag.categoryName).toBe("A");

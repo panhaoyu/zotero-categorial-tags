@@ -32,6 +32,13 @@ describe("Category", () => {
     expect(category.itemCount).toBe(6);
   });
 
+  test("排序不应修改传入数组", () => {
+    const tags = [createTag(1, "#Subject/A", 1), createTag(2, "#Subject/B", 3)];
+    const original = [...tags];
+    new Category("Subject", tags);
+    expect(tags).toEqual(original);
+  });
+
   test("空标签列表应得到 0 计数", () => {
     const category = new Category("Empty", []);
     expect(category.tags).toEqual([]);
